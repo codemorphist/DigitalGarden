@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "plantgenerator"
+name = "PlantGenerator"
 version = "0.1.0"
 description = "Plant generator (Programing Course 2024 project)"
 authors = [ "Alex Katrenko <112182502+codemorphist@users.noreply.github.com>",
@@ -9,6 +9,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
 
 [build-system]
 requires = ["poetry-core"]

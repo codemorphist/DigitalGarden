@@ -51,7 +51,7 @@ class Vector:
 
         return type(self)(*new_values)
         
-    def __div__(self, other: int | float | complex):
+    def __truediv__(self, other: int | float | complex):
         if not isinstance(other, (int, float, complex)):
             raise Exception(f"Can't divide Vector by {other}")
     
@@ -63,8 +63,10 @@ class Vector:
     def __rmul__(self, other):
         return self * other
 
-    def __rdiv__(self, other):
-        return self / other
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Vector):
+            return False
+        return self.values == other.values
 
     def __str__(self) -> str:
         return str(self.values)
