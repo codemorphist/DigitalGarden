@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "plantgenerator"
+version = "0.1.0"
+description = "Plant generator (Programing Course 2024 project)"
+authors = [ "Alex Katrenko <112182502+codemorphist@users.noreply.github.com>",
+            "karbyshevillia <158076825+karbyshevillia@users.noreply.github.com>"]
+license = "GPL-3.0-only"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
