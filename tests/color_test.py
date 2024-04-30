@@ -1,4 +1,4 @@
-from plantgenerator import Color
+from plantgenerator.utils import Color
 
 
 # TOOD

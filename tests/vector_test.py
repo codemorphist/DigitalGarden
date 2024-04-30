@@ -1,5 +1,4 @@
-from plantgenerator import Vector, Vec2, Vec3
-from random import randint
+from plantgenerator.utils import Vector, Vec2, Vec3
 
 
 def test_vec_operations():
