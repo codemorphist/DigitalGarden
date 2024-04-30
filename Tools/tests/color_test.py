@@ -1,4 +1,4 @@
-from plantgenerator.utils import Vector, Vec2, Vec3
+from tools import Vector, Vec2, Vec3
 
 
 def test_vec_operations():

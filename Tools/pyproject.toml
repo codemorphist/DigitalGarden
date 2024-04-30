@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "digitalgarden"
+name = "tools"
 version = "0.1.0"
-description = "Digital Garden with Digital Plants (Project for Programing Course 2024)"
+description = "Package with useful tools"
 authors = [ "Alex Katrenko <112182502+codemorphist@users.noreply.github.com>",
             "karbyshevillia <158076825+karbyshevillia@users.noreply.github.com>"]
 license = "GPL-3.0-only"
@@ -9,10 +9,11 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-PlantGenerator = { path="./PlantGenerator/" }
-Tools = { path="./Tools/" }
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+pytest-cov = "^5.0.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
