@@ -6,6 +6,7 @@ authors = [ "Alex Katrenko <112182502+codemorphist@users.noreply.github.com>",
             "karbyshevillia <158076825+karbyshevillia@users.noreply.github.com>"]
 license = "GPL-3.0-only"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
