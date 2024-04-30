@@ -2,7 +2,7 @@ class Vector:
     def __init__(self, *values):
         for value in values:
             if not isinstance(value, (int, float, complex)):
-                raise TypeError(f"Invalid type for Vector value: {type(value).__name__}")
+                raise ValueError(f"Invalid type for Vector value: {type(value).__name__}")
 
         self._values: tuple = tuple(values)
         self._size: int = len(values)
@@ -67,7 +67,7 @@ class Vector:
         return self / other
 
     def __str__(self) -> str:
-        return f"{self.values}"
+        return str(self.values)
 
     def __repr__(self) -> str:
         return f"Vector{self.values}"
@@ -84,4 +84,23 @@ class Vec2(Vector):
     @property 
     def y(self) -> float:
         return self._values[1]
+
+
+class Vec3(Vector):
+    def __init__(self, x: float, y: float, z: float):
+        super().__init__(x, y, z)
+
+    @property 
+    def x(self) -> float:
+        return self._values[0]
+
+    @property 
+    def y(self) -> float:
+        return self._values[1]
+
+    @property
+    def z(self):
+        return self._z
+
+
 
