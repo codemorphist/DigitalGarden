@@ -10,8 +10,8 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
-PlantGenerator = { path="./PlantGenerator/" }
-Tools = { path="./Tools/" }
+plantgenerator = { path="./plantgenerator/" }
+tools = { path="./tools/" }
 
 [build-system]
 requires = ["poetry-core"]
