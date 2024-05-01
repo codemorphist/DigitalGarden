@@ -1,7 +1,7 @@
 name: Tools Test
 
 on:
-  push: 
+  push:
     branches:
       - main
 
@@ -21,15 +21,23 @@ jobs:
       - name: Install Poetry
         uses: snok/install-poetry@v1
 
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root
 
       - name: Install project
         run: |
-          cd ./tools/
+          cd ./tools
           poetry install --no-interaction
 
       - name: Run tests
         run: |
-          poetry run pytest --cov=plant_generator
+          cd ./tools
+          poetry run pytest --cov=tools
