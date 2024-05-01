@@ -33,4 +33,3 @@ jobs:
       - name: Run tests
         run: |
           poetry run pytest --cov=plant_generator
-          coverage report
