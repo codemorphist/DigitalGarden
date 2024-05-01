@@ -34,6 +34,5 @@ jobs:
 
       - name: Run tests
         run: |
-          poetry shell
-          pytest ./plant_generator/tests/ --cov=plant_generator
+          poetry run pytest ./plant_generator/tests/ --cov=plant_generator
           coverage report
