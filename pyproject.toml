@@ -10,7 +10,8 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
-plantgenerator = { path="./plantgenerator/" }
+
+plant_generator = { path="./plant_generator/" }
 tools = { path="./tools/" }
 
 [build-system]
