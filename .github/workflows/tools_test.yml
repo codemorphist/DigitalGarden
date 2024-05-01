@@ -1,4 +1,4 @@
-name: PlantGeneator Test
+name: Tools Test
 
 on: push
 
@@ -34,6 +34,6 @@ jobs:
 
       - name: Run tests
         run: |
-          source .venv/bin/activate
+          poetry shell
           pytest ./tools/tests/ --cov=plant_generator
           coverage report

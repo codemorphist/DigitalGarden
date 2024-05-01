@@ -34,6 +34,6 @@ jobs:
 
       - name: Run tests
         run: |
-          source .venv/bin/activate
+          poetry shell
           pytest ./plant_generator/tests/ --cov=plant_generator
           coverage report
