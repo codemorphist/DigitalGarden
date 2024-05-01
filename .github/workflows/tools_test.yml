@@ -35,5 +35,5 @@ jobs:
       - name: Run tests
         run: |
           source .venv/bin/activate
-          pytest ./plant_generator/tests/ --cov=plant_generator
+          pytest ./tools/tests/ --cov=plant_generator
           coverage report
