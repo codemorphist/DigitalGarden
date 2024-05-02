@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import ttk
+
 from plant_generator import Plant
 from tools import Color, Vec2
 
