@@ -1,3 +1,7 @@
+from __future__ import annotations
+from random import randint
+
+
 class Vector:
     def __init__(self, *values):
         for value in values:
@@ -86,6 +90,13 @@ class Vec2(Vector):
     @property 
     def y(self) -> float:
         return self._values[1]
+
+    @staticmethod
+    def random():
+        return Vec2(
+            randint(-100, 100),
+            randint(-100, 100)
+        )
 
 
 class Vec3(Vector):
