@@ -1,4 +1,5 @@
-from .vector import Vector
+from __future__ import annotations
+from random import randint
 
 
 class Color:
@@ -9,6 +10,14 @@ class Color:
         :param b: blue  color value (from 0 to 255)
         """
         self._rgb = (r % 256, g % 256, b % 256)
+
+    @staticmethod
+    def random() -> Color:
+        return Color(
+            randint(0, 255),
+            randint(0, 255),
+            randint(0, 255)
+        ) 
 
     def __iter__(self):
         yield self.r
@@ -55,7 +64,7 @@ class Color:
         else:
             raise TypeError(f"Invalid type {type(other)} to sub from Color")
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if isinstance(other, Color):
             return self.rgb == other.rgb
         elif isinstance(other, tuple):
