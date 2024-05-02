@@ -10,9 +10,9 @@ class Circle:
         self.radius = radius
         self.color = color
 
-    @classmethod
-    def random(cls) -> Circle:
-        Circle(
+    @staticmethod
+    def random() -> Circle:
+        return Circle(
             Vec2.random(),
             randint(1, 20),
             Color.random()
