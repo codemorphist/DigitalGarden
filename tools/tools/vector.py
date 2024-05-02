@@ -56,7 +56,7 @@ class Vector:
             raise Exception(f"Can't divide Vector by {other}")
     
         if other == 0:
-            raise ZerroDivisionError("Can't divide Vector by Zero")
+            raise ZeroDivisionError("Can't divide Vector by Zero")
 
         return self * (1/other)
 
