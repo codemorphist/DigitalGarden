@@ -31,4 +31,9 @@ class AgentGenom:
 
 
 class PlantGenom:
-    pass
+    def __init__(self, genom: list[AgentGenom]):
+        self._genom = genom
+
+    def evolve(generation: int, 
+               agent_genom: AgentGenom) -> AgentGenom:
+        pass
