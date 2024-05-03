@@ -5,7 +5,7 @@ from plant_generator import Plant, TestPlant
 from tools import Color, Vec2, Circle
 
 
-class PlantGeneratrorFrame(ttk.Frame):
+class PlantGeneratorFrame(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
 
