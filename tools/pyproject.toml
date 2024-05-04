@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tools"
-version = "0.1.0"
+version = "0.1.1"
 description = "Package with useful tools"
 authors = [ "Alex Katrenko <112182502+codemorphist@users.noreply.github.com>",
             "karbyshevillia <158076825+karbyshevillia@users.noreply.github.com>"]

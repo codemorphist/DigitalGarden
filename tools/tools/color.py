@@ -29,6 +29,10 @@ class Color:
         return self._rgb
 
     @property
+    def hex(self):
+        return "#%02x%02x%02x" % self.rgb
+
+    @property
     def r(self):
         return self._rgb[0]
 

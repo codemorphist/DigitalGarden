@@ -6,19 +6,32 @@ from random import randint
 
 
 class TestPlant():
-    def __init__(self, lenght: int):
-        self.lenght = lenght
+    """
+    Plant wich generate random circles
+    Usage example:
+
+        from plant_generator import TestPlant
+
+        plant = TestPlant(10)
+
+        while plant.is_growing():
+            for circle in plant.get_circles():
+                print(circle)
+    """
+    def __init__(self, length: int):
+        self.length = length
+        self.circle_count = 10
 
     def __iter__(self):
         return self.get_circles()
 
+    def is_growing(self) -> bool:
+        return self.length > 0
+
     def get_circles(self):
-        return Circle(
-            pos=Vec2.random(),
-            radius=randint(1, 10),
-            color=Color.random()
-        )
-        
+        for _ in range(self.circle_count):
+            yield Circle.random()       
+        self.length -= 1
 
 
 class Plant:

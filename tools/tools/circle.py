@@ -18,6 +18,8 @@ class Circle:
             Color.random()
         )
 
+    def __repr__(self) -> str:
+        return f"Circle(position={self.pos}, radius={self.radius}, color={self.color})"
              
 
 
