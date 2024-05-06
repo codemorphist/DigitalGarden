@@ -9,7 +9,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-tools = { path="../tools/" }
+tools = { path="../tools/", develop=true}
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.2.0"
