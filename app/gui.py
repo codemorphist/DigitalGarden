@@ -28,6 +28,11 @@ class GenomTableFrame(ttk.Frame):
         self.import_button.grid(row=self.table_height + 5, column=2)
         self.export_button.grid(row=self.table_height + 5, column=6)
 
+        self.plant = self.get_plant()
+
+    def get_plant(self):
+        return TestPlant(10)
+
 
 class PlantGeneratorFrame(ttk.Frame):
     def __init__(self, container):
@@ -49,14 +54,12 @@ class PlantGeneratorFrame(ttk.Frame):
         self.genom_input = GenomTableFrame(self)
         self.genom_input.grid(row=0, column=11)
 
-    def get_plant(self):
-        return TestPlant(10)
 
     def draw(self):
         """
         Draws the TestPlant circles
         """
-        test_plant = self.get_plant()
+        test_plant = self.genom_input.plant
         while test_plant.is_growing():
             for circle in test_plant.get_circles():
                 circle.canvas_turtle_draw(self.canvas_turtle)
