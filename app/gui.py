@@ -75,7 +75,7 @@ class PlantGeneratorFrame(tk.Frame):
         for circle in self.plant.get_circles():
             self.draw_circle(circle)
         if self.plant.is_growing():
-            self.after(0, self.draw)
+            self.after(10, self.draw)
 
 
 class App(tk.Tk):
