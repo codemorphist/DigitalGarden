@@ -58,7 +58,11 @@ class PlantGeneratorFrame(tk.Frame):
         y0 = canvas_center_y + y - radius
         x1 = canvas_center_x + x + radius
         y1 = canvas_center_y + y + radius        
+        dark = (circle.color + Color(10, 10, 10)).hex
+        light= (circle.color - Color(10, 10, 10)).hex
         self.canvas.create_oval(x0, y0, x1, y1, outline=color, fill=color)
+        self.canvas.create_oval(x0-1, y0-1, x1-1, y1-1, outline=dark, fill=dark)
+        self.canvas.create_oval(x0+1, y0+1, x1+1, y1+1, outline=light, fill=light)
 
     def start_drawing(self):
         self.canvas.delete("all")
