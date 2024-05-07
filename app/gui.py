@@ -28,6 +28,8 @@ class GenomTableFrame(ttk.Frame):
         self.import_button.grid(row=self.table_height + 5, column=2)
         self.export_button.grid(row=self.table_height + 5, column=6)
 
+        self.plant = None
+
     def get_plant(self):
         # return TestPlant(10)
         return Plant.random()
@@ -70,6 +72,7 @@ class PlantGeneratorFrame(tk.Frame):
         self.draw()
 
     def get_delay(self, agents_count: int) -> int:
+        return 0 
         if agents_count <= 2:
             return 10
         elif agents_count <= 10:
@@ -82,10 +85,13 @@ class PlantGeneratorFrame(tk.Frame):
     def draw(self):
         if self.plant is None:
             return
+
         for circle in self.plant.get_circles():
             self.draw_circle(circle)
         if self.plant.is_growing():
             self.after(self.get_delay(len(self.plant.agents)), self.draw)
+        else:
+            self.plant = None
 
 
 class App(tk.Tk):
