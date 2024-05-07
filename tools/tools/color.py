@@ -34,7 +34,7 @@ class Color:
 
     @property
     def rgb(self):
-        return self._rgb
+        return tuple([int(v) for v in self._rgb]) 
 
     @property
     def orgb(self):

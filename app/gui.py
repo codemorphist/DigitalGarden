@@ -33,69 +33,41 @@ class GenomTableFrame(ttk.Frame):
         return Plant.random()
 
 
-class PlantGeneratorFrame(ttk.Frame):
+class PlantGeneratorFrame(tk.Frame):
     def __init__(self, container):
         super().__init__(container)
 
-        self.canvas = tk.Canvas(master=self, width=800, height=800)
-        self.canvas.grid(padx=10, pady=10, row=0, column=0, rowspan=10, columnspan=10)
-        self.canvas_turtle = turtle.RawTurtle(self.canvas)
-        self.canvas_turtle.setheading(90)
-        self.canvas_turtle.speed(0)
-        self.canvas_turtle.ht()
+        self.canvas_width = 800
+        self.canvas_height = 800
 
-        self.generate_button = tk.Button(master=self,
-                                         text="Generate",
-                                         command=self.draw)
-        self.generate_button.grid(padx=2,
-                                  pady=2,
-                                  row=1,
-                                  column=11,
-                                  sticky='nsew')
+        self.canvas = tk.Canvas(master=self, width=self.canvas_width, height=self.canvas_height, bg="white")
+        self.canvas.grid(padx=10, pady=10, row=0, column=0, rowspan=10, columnspan=10)
+
+        self.generate_button = tk.Button(master=self, text="Generate", command=self.draw)
+        self.generate_button.grid(padx=2, pady=2, row=1, column=11, sticky='nsew')
 
         self.genom_input = GenomTableFrame(self)
         self.genom_input.grid(row=0, column=11)
 
-    def draw_circle(self, circle: Circle):
-        """
-
-        This Circle method draws a given circle with a given turtle,
-        which is thought as tied to a specific canvas; the parameters of
-        the drawn circle match those of the Object.
-
-        """
-
-        head = self.canvas_turtle.heading()
-        self.canvas_turtle.penup()
-        self.canvas_turtle.goto(*circle.pos)
-        self.canvas_turtle.forward(circle.radius)
-        self.canvas_turtle.left(90)
-
-        self.canvas_turtle.pendown()
-        self.canvas_turtle.begin_fill()
-        # self.canvas_turtle.fillcolor(*circle.color.rgb)
-        self.canvas_turtle.color(*circle.color.orgb)
-
-        self.canvas_turtle.circle(circle.radius)
-
-        self.canvas_turtle.end_fill()
-        self.canvas_turtle.penup()
-
-        self.canvas_turtle.goto(*circle.pos)
-        self.canvas_turtle.setheading(head)
+    def draw_circle(self, circle):
+        x, y, radius = *circle.pos, circle.radius
+        color = circle.color.hex
+        canvas_center_x = self.canvas_width // 2
+        canvas_center_y = self.canvas_height // 2
+        x0 = canvas_center_x + x - radius
+        y0 = canvas_center_y + y - radius
+        x1 = canvas_center_x + x + radius
+        y1 = canvas_center_y + y + radius        
+        self.canvas.create_oval(x0, y0, x1, y1, outline=color, fill=color)
 
     def draw(self):
-        """
-        Draws the TestPlant circles
-        """
-        self.canvas_turtle.clear()
-
+        self.canvas.delete("all")
         test_plant = self.genom_input.get_plant()
         while test_plant.is_growing():
             for circle in test_plant.get_circles():
                 self.draw_circle(circle)
-
-
+                self.canvas.update_idletasks()
+                # self.canvas.draw()
 
 class App(tk.Tk):
     def __init__(self):
