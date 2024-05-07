@@ -1,6 +1,6 @@
 from __future__ import annotations
 from random import randint
-from math import sin, cos
+from math import sin, cos, sqrt
 
 
 class Vector:
@@ -78,6 +78,14 @@ class Vector:
 
     def __repr__(self) -> str:
         return f"Vector{self.values}"
+
+    @property
+    def len(self) -> float:
+        return sqrt(sum([c*c for c in self]))
+
+    @property
+    def ort(self):
+        return self / self.len
     
 
 class Vec2(Vector):
