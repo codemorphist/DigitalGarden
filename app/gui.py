@@ -67,7 +67,6 @@ class PlantGeneratorFrame(tk.Frame):
     def start_drawing(self):
         self.canvas.delete("all")
         self.plant = self.genom_input.get_plant()
-        print(self.plant.agents)
         self.draw()
 
     def draw(self):

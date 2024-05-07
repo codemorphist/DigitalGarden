@@ -65,7 +65,10 @@ class PlantGenom:
     def evolve(self,
                generation: int, 
                agent_genom: AgentGenom) -> AgentGenom:
-        evolved_genom = self._genom[generation-1]
+        if generation >= len(self._genom):
+            return AgentGenom(*([0]*20))
+
+        evolved_genom = self._genom[generation]
 
         size_percent = evolved_genom.size_from_ancestor / 100 
         evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2

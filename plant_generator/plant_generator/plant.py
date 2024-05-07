@@ -46,7 +46,7 @@ class Plant:
         self.agents.append(Agent(
             agent_genom=self.plant_genom._genom[0],
             plant_genom=self.plant_genom,
-            generation=1,
+            generation=0,
             start_pos=start_pos
         ))
 
