@@ -44,7 +44,6 @@ class Plant:
     def init_agents(self, start_pos: Vec2):
         zero_agent = EmptyAgent(self.plant_genom, start_pos) 
         self.agents = zero_agent.get_heirs()
-        print(self.agents)
 
     def is_growing(self) -> bool:
         return len(self.agents) > 0
@@ -64,7 +63,6 @@ class Plant:
             else:
                 new_agents += agent.get_heirs()
         self.agents = new_agents
-        __import__('pprint').pprint(self.agents)
 
     @staticmethod
     def random() -> Plant:

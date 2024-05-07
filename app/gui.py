@@ -41,6 +41,8 @@ class PlantGeneratorFrame(ttk.Frame):
         self.canvas.grid(padx=10, pady=10, row=0, column=0, rowspan=10, columnspan=10)
         self.canvas_turtle = turtle.RawTurtle(self.canvas)
         self.canvas_turtle.setheading(90)
+        self.canvas_turtle.speed(0)
+        self.canvas_turtle.ht()
 
         self.generate_button = tk.Button(master=self,
                                          text="Generate",
@@ -64,7 +66,6 @@ class PlantGeneratorFrame(ttk.Frame):
         """
 
         head = self.canvas_turtle.heading()
-        self.canvas_turtle.speed(0)
         self.canvas_turtle.penup()
         self.canvas_turtle.goto(*circle.pos)
         self.canvas_turtle.forward(circle.radius)

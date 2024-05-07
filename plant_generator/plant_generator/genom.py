@@ -29,7 +29,7 @@ class AgentGenom:
 
     turn: Vec2
     # random_turn: Vec2
-    # random_angle: float
+    random_angle: float
 
     @staticmethod
     def random() -> AgentGenom:
@@ -39,16 +39,17 @@ class AgentGenom:
         return AgentGenom(
             randint(100, 200),
             randint(0, 5),
-            randint(5, 20),
+            randint(10, 30),
             randint(0, 100),
             randint(0, 20), 
             0,
             r, g, b, 
             rc, gc, bc,
-            randint(1, 4),
+            randint(1, 10),
             randint(45, 270),
             randint(20, 90),
-            Vec2(0, 1)
+            Vec2(0, 1),
+            uniform(0, 60)
         )
 
 

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from random import uniform
 from plant_generator.genom import AgentGenom, PlantGenom
 from tools import Vec2, Circle, Color
 from math import pi
@@ -16,11 +17,28 @@ class Agent:
         self.generation = generation
         self.pos = start_pos
 
+        rangle = self.agent_genom.random_angle
+        turn = self.agent_genom.turn
+        self.agent_genom.turn = turn.rotate(uniform(-rangle, rangle))
+
     def get_circle(self) -> Circle:
         r = self.agent_genom.red
         g = self.agent_genom.green
         b = self.agent_genom.blue
-        circle = Circle(self.pos, self.agent_genom.size, Color(r, g, b))
+
+        rc = self.agent_genom.red_changes/255
+        gc = self.agent_genom.green_changes/255
+        bc = self.agent_genom.blue_changes/255
+
+        c1 = Color(r, g, b)
+        c2 = Color(rc, gc, bc)
+
+        circle = Circle(self.pos, self.agent_genom.size, c1)
+
+        c1 += c2
+        self.agent_genom.red = c1.r
+        self.agent_genom.green = c1.g
+        self.agent_genom.blue = c1.b
 
         self.agent_genom.size += self.agent_genom.size_changes 
         self.pos += self.agent_genom.turn
@@ -60,7 +78,7 @@ class EmptyAgent(Agent):
     def __init__(self, plant_genom: PlantGenom, 
                  start_pos: Vec2):
         empty_agent_genom = AgentGenom(
-            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, Vec2(0, 0)
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, Vec2(0, 0), 0
         )
         super().__init__(
             agent_genom=empty_agent_genom,
