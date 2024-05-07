@@ -40,7 +40,7 @@ class PlantGeneratorFrame(tk.Frame):
         self.canvas_width = 800
         self.canvas_height = 800
 
-        self.canvas = tk.Canvas(master=self, width=self.canvas_width, height=self.canvas_height, bg="white")
+        self.canvas = tk.Canvas(master=self, width=self.canvas_width, height=self.canvas_height, bg="lightgray")
         self.canvas.grid(padx=10, pady=10, row=0, column=0, rowspan=10, columnspan=10)
 
         self.generate_button = tk.Button(master=self, text="Generate", command=self.start_drawing)
@@ -71,7 +71,7 @@ class PlantGeneratorFrame(tk.Frame):
         for circle in self.plant.get_circles():
             self.draw_circle(circle)
         if self.plant.is_growing():
-            self.after(10, self.draw)
+            self.after(0, self.draw)
 
 
 class App(tk.Tk):

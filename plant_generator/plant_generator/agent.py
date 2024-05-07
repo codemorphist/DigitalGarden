@@ -17,7 +17,7 @@ class Agent:
         self.generation = generation
         self.pos = start_pos
 
-        if self.generation >= 2:
+        if self.generation > 1:
             rangle = self.agent_genom.random_angle
             turn = self.agent_genom.turn
             self.agent_genom.turn = turn.rotate(uniform(-rangle, rangle))

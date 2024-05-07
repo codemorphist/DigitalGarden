@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from tools import Vec2, Color
 from random import randint, uniform
+from math import pi
 
 
 @dataclass
@@ -39,18 +40,17 @@ class AgentGenom:
         return AgentGenom(
             randint(10, 100),
             0,
-            # randint(-1, 1),
-            randint(1, 5),
+            randint(2, 6),
             randint(20, 80),
             randint(0, 6), 
-            0,
+            uniform(-0.05, 0.05),
             r, g, b, 
             rc, gc, bc,
-            randint(1, 4),
+            randint(1, 2),
             randint(45, 270),
             randint(20, 90),
             Vec2(0, -1),
-            uniform(0, 10)
+            uniform(0, 10 * pi / 180)
         )
 
 
@@ -64,8 +64,8 @@ class PlantGenom:
         evolved_genom = self._genom[generation-1]
 
         size_percent = evolved_genom.size_from_ancestor / 100 
-        evolved_genom.size = (size_percent * agent_genom.size + evolved_genom.size) / 2
         evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
+        evolved_genom.size = size_percent * (agent_genom.size + evolved_genom.size)
 
         evolved_genom.length += randint(0, agent_genom.length_deviation)
         evolved_genom.angle_branches += agent_genom.angle_deviation
