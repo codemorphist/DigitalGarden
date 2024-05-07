@@ -37,7 +37,7 @@ class AgentGenom:
         rc, gc, bc = Color.random()
 
         return AgentGenom(
-            randint(10, 50),
+            randint(10, 150),
             randint(0, 5),
             randint(5, 20),
             randint(0, 100),
@@ -49,7 +49,7 @@ class AgentGenom:
             randint(45, 270),
             randint(20, 90),
             Vec2(0, 1),
-            uniform(0, 60)
+            uniform(0, 10)
         )
 
 

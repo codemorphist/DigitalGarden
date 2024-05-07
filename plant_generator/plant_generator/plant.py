@@ -68,6 +68,6 @@ class Plant:
     def random() -> Plant:
         return Plant(
             PlantGenom.random(),
-            Vec2(0, -300)
+            Vec2(0, 100)
         )
     
