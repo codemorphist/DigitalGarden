@@ -17,9 +17,10 @@ class Agent:
         self.generation = generation
         self.pos = start_pos
 
-        # rangle = self.agent_genom.random_angle
-        # turn = self.agent_genom.turn
-        # self.agent_genom.turn = turn.rotate(uniform(-rangle, rangle))
+        if self.generation >= 2:
+            rangle = self.agent_genom.random_angle
+            turn = self.agent_genom.turn
+            self.agent_genom.turn = turn.rotate(uniform(-rangle, rangle))
 
     def get_circle(self) -> Circle:
         r = self.agent_genom.red
