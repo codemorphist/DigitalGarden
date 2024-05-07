@@ -22,8 +22,8 @@ class UserFrame(ttk.Frame):
         for column in range(self.table_width):
             self.columnconfigure(column, weight = 1)
 
-        self.rowconfigure(self.table_height, weight = 5)
-        self.rowconfigure(self.table_height + 1, weight = 5)
+        self.rowconfigure(self.table_height, weight = 3)
+        self.rowconfigure(self.table_height + 1, weight = 3)
 
         """
         In the above, the "weight" parameter seems 
@@ -42,6 +42,9 @@ class UserFrame(ttk.Frame):
                                                  padx = 5,
                                                  pady = 5)
                 counter += 1
+
+        button_style = ttk.Style()
+        button_style.configure("TButton", font = ("Charter", 14))
 
         self.import_button = ttk.Button(self, text = "Import")
         self.export_button = ttk.Button(self, text = "Export")
@@ -71,6 +74,7 @@ class UserFrame(ttk.Frame):
                                 columnspan = 9,
                                 sticky = "nsew",
                                 padx = 5)
+
 
     def get_plant(self):
         return TestPlant(10)
