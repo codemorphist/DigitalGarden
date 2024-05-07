@@ -43,6 +43,7 @@ class Agent:
 
         self.agent_genom.size += self.agent_genom.size_changes 
         self.pos += self.agent_genom.turn
+        self.agent_genom.turn = (self.agent_genom.turn + self.agent_genom.down / 100 * Vec2(0, 1)).ort
         self.agent_genom.length -= 1
 
         return circle
@@ -79,7 +80,7 @@ class EmptyAgent(Agent):
     def __init__(self, plant_genom: PlantGenom, 
                  start_pos: Vec2):
         empty_agent_genom = AgentGenom(
-            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, Vec2(0, 0), 0
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, Vec2(0, 0), 0, 0
         )
         super().__init__(
             agent_genom=empty_agent_genom,
