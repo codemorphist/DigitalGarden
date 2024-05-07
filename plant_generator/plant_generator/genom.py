@@ -63,7 +63,7 @@ class PlantGenom:
 
         size_percent = evolved_genom.size_from_ancestor / 100 
         evolved_genom.size = (size_percent * agent_genom.size + evolved_genom.size) / 2
-        # evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
+        evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
 
         evolved_genom.length += randint(0, agent_genom.length_deviation)
         evolved_genom.angle_branches += agent_genom.angle_deviation
