@@ -9,7 +9,15 @@ class Color:
         :param g: green color value (from 0 to 255)
         :param b: blue  color value (from 0 to 255)
         """
-        self._rgb = (int(r) % 256, int(g) % 256, int(b) % 256)
+        self._rgb = (self.norm(r), self.norm(g), self.norm(b))
+
+    def norm(self, value: float) -> float:
+        if value > 255:
+            return 255
+        elif value < 0:
+            return 0
+        else:
+            return value
 
     @staticmethod
     def random() -> Color:
@@ -30,7 +38,7 @@ class Color:
 
     @property
     def orgb(self):
-        return tuple([(i / 255) if <= i <= 255  for i in self.rgb])
+        return tuple([v / 255 for v in self.rgb])
 
     @property
     def hex(self):
