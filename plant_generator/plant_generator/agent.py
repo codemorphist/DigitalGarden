@@ -59,8 +59,10 @@ class Agent:
 
     def get_heirs(self) -> list[Agent]:
         heirs = []
-        heirs_genom = self.plant_genom.evolve(
-            self.generation, self.agent_genom)
+        heirs_genom = self.plant_genom.evolve(self.generation, self.agent_genom)
+
+        if heirs_genom is None:
+            return []
 
         n = self.agent_genom.number_branches
         for i in range(n):

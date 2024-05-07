@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from typing import Optional
 from tools import Vec2, Color
 from random import randint, random, uniform
 from math import pi
@@ -64,9 +65,9 @@ class PlantGenom:
 
     def evolve(self,
                generation: int, 
-               agent_genom: AgentGenom) -> AgentGenom:
+               agent_genom: AgentGenom) -> Optional[AgentGenom]:
         if generation >= len(self._genom):
-            return AgentGenom(*([0]*20))
+            return None
 
         evolved_genom = self._genom[generation]
 
