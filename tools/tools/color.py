@@ -80,6 +80,13 @@ class Color:
         else:
             raise TypeError(f"Invalid type {type(other)} to sub from Color")
 
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            new_value = [int(v * other) for v in self._rgb] 
+            return Color(*new_value)
+        else:
+            raise TypeError(f"Invalid type {type(other)} to mul on Color")
+
     def __eq__(self, other) -> bool:
         if isinstance(other, Color):
             return self.rgb == other.rgb

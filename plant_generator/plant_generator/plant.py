@@ -1,6 +1,6 @@
 from __future__ import annotations
 from plant_generator.genom import PlantGenom
-from plant_generator.agent import EmptyAgent
+from plant_generator.agent import Agent
 from tools import Vec2, Circle, Color
 
 
@@ -42,8 +42,13 @@ class Plant:
         self.init_agents(start_pos)
 
     def init_agents(self, start_pos: Vec2):
-        zero_agent = EmptyAgent(self.plant_genom, start_pos) 
-        self.agents = zero_agent.get_heirs()
+        # zero_agent = EmptyAgent(self.plant_genom, start_pos) 
+        self.agents.append(Agent(
+            agent_genom=self.plant_genom._genom[0],
+            plant_genom=self.plant_genom,
+            generation=1,
+            start_pos=start_pos
+        ))
 
     def is_growing(self) -> bool:
         return len(self.agents) > 0
@@ -68,6 +73,6 @@ class Plant:
     def random() -> Plant:
         return Plant(
             PlantGenom.random(),
-            Vec2(0, 100)
+            Vec2(0, 300)
         )
     

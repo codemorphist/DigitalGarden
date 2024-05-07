@@ -67,6 +67,7 @@ class PlantGeneratorFrame(tk.Frame):
     def start_drawing(self):
         self.canvas.delete("all")
         self.plant = self.genom_input.get_plant()
+        print(self.plant.agents)
         self.draw()
 
     def draw(self):
@@ -83,7 +84,7 @@ class App(tk.Tk):
         super().__init__()
 
         self.title("Digital Garden")
-        self.geometry("1280x900")
+        self.geometry("1280x1000")
 
         self.__create_widgets__()
 
