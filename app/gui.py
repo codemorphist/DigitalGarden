@@ -52,6 +52,25 @@ class PlantGeneratorFrame(ttk.Frame):
         self.genom_input = GenomTableFrame(self)
         self.genom_input.grid(row=0, column=11)
 
+    def draw_circle(self, circle: Circle):
+        """
+
+        This Circle method draws a given circle with a given turtle,
+        which is thought as tied to a specific canvas; the parameters of
+        the drawn circle match those of the Object.
+
+        """
+        self.canvas_turtle.speed(0)
+        # turtle.colormode(255)
+        self.canvas_turtle.penup()
+        self.canvas_turtle.goto(*circle.pos)
+        self.canvas_turtle.forward(circle.radius)
+        self.canvas_turtle.left(90)
+        self.canvas_turtle.pendown()
+        # canvas_turtle.pencolor(self.color.rgb)
+        self.canvas_turtle.circle(circle.radius)
+        self.canvas_turtle.penup()
+        self.canvas_turtle.goto(*circle.pos)
 
     def draw(self):
         """
@@ -60,7 +79,7 @@ class PlantGeneratorFrame(ttk.Frame):
         test_plant = self.genom_input.get_plant()
         while test_plant.is_growing():
             for circle in test_plant.get_circles():
-                circle.canvas_turtle_draw(self.canvas_turtle)
+                self.draw_circle(circle)
 
 
 
