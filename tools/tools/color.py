@@ -9,7 +9,7 @@ class Color:
         :param g: green color value (from 0 to 255)
         :param b: blue  color value (from 0 to 255)
         """
-        self._rgb = (r % 256, g % 256, b % 256)
+        self._rgb = (int(r) % 256, int(g) % 256, int(b) % 256)
 
     @staticmethod
     def random() -> Color:
@@ -30,7 +30,7 @@ class Color:
 
     @property
     def orgb(self):
-        return tuple([i / 255 for i in self.rgb])
+        return tuple([(i / 255) if <= i <= 255  for i in self.rgb])
 
     @property
     def hex(self):
