@@ -1,6 +1,9 @@
 from __future__ import annotations
-from .vector import Vec2
-from .color import Color
+
+import turtle
+
+from tools.vector import Vec2
+from tools.color import Color
 from random import randint
 
 
@@ -14,12 +17,10 @@ class Circle:
     def random() -> Circle:
         return Circle(
             Vec2.random(),
-            randint(1, 20),
+            randint(10, 20),
             Color.random()
         )
 
     def __repr__(self) -> str:
         return f"Circle(position={self.pos}, radius={self.radius}, color={self.color})"
-             
-
 

@@ -1,3 +1,3 @@
-from .genom import AgentGenom, PlantGenom
-from .agent import Agent
-from .plant import Plant, TestPlant
+from plant_generator.genom import AgentGenom, PlantGenom
+from plant_generator.agent import Agent
+from plant_generator.plant import Plant, TestPlant

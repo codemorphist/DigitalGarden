@@ -11,4 +11,4 @@ def test_color():
     c1 = Color(255, 23, 156)
     c2 = Color(45, 243, 156)
     assert c1 + c2 == (44, 10, 56), "Invalid addition rgb result"
-    assert c2 - c1 == (46, 220, 0), "Invalid substraction rgb result"
+    assert c2 - c1 == (46, 220, 0), "Invalid subtraction rgb result"

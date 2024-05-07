@@ -1,5 +1,5 @@
 from __future__ import annotations
-from .genom import AgentGenom, PlantGenom
+from plant_generator.genom import AgentGenom, PlantGenom
 from tools import Vec2, Circle
 
 

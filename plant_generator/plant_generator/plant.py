@@ -5,9 +5,9 @@ from tools import Vec2, Circle, Color
 from random import randint
 
 
-class TestPlant():
+class TestPlant:
     """
-    Plant wich generate random circles
+    Plant which generates random circles
     Usage example:
 
         from plant_generator import TestPlant
@@ -31,7 +31,7 @@ class TestPlant():
     def get_circles(self):
         for _ in range(self.circle_count):
             yield Circle.random()       
-        self.length -= 1
+            self.length -= 1
 
 
 class Plant:
