@@ -48,7 +48,7 @@ class AgentGenom:
             randint(1, 10),
             randint(45, 270),
             randint(20, 90),
-            Vec2(0, 1),
+            Vec2(0, -1),
             uniform(0, 10)
         )
 
