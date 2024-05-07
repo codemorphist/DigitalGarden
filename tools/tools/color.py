@@ -29,6 +29,10 @@ class Color:
         return self._rgb
 
     @property
+    def orgb(self):
+        return tuple([i / 255 for i in self.rgb])
+
+    @property
     def hex(self):
         return "#%02x%02x%02x" % self.rgb
 

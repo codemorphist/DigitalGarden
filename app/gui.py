@@ -29,7 +29,8 @@ class GenomTableFrame(ttk.Frame):
         self.export_button.grid(row=self.table_height + 5, column=6)
 
     def get_plant(self):
-        return TestPlant(10)
+        # return TestPlant(10)
+        return Plant.random()
 
 
 class PlantGeneratorFrame(ttk.Frame):
@@ -39,6 +40,7 @@ class PlantGeneratorFrame(ttk.Frame):
         self.canvas = tk.Canvas(master=self, width=800, height=800)
         self.canvas.grid(padx=10, pady=10, row=0, column=0, rowspan=10, columnspan=10)
         self.canvas_turtle = turtle.RawTurtle(self.canvas)
+        self.canvas_turtle.setheading(90)
 
         self.generate_button = tk.Button(master=self,
                                          text="Generate",
@@ -60,22 +62,33 @@ class PlantGeneratorFrame(ttk.Frame):
         the drawn circle match those of the Object.
 
         """
+
+        head = self.canvas_turtle.heading()
         self.canvas_turtle.speed(0)
-        # turtle.colormode(255)
         self.canvas_turtle.penup()
         self.canvas_turtle.goto(*circle.pos)
         self.canvas_turtle.forward(circle.radius)
         self.canvas_turtle.left(90)
+
         self.canvas_turtle.pendown()
-        # canvas_turtle.pencolor(self.color.rgb)
+        self.canvas_turtle.begin_fill()
+        # self.canvas_turtle.fillcolor(*circle.color.rgb)
+        self.canvas_turtle.color(*circle.color.orgb)
+
         self.canvas_turtle.circle(circle.radius)
+
+        self.canvas_turtle.end_fill()
         self.canvas_turtle.penup()
+
         self.canvas_turtle.goto(*circle.pos)
+        self.canvas_turtle.setheading(head)
 
     def draw(self):
         """
         Draws the TestPlant circles
         """
+        self.canvas_turtle.clear()
+
         test_plant = self.genom_input.get_plant()
         while test_plant.is_growing():
             for circle in test_plant.get_circles():

@@ -1,8 +1,7 @@
-from .genom import AgentGenom, PlantGenom
-from .agent import Agent, EmptyAgent
+from __future__ import annotations
+from plant_generator.genom import PlantGenom
+from plant_generator.agent import EmptyAgent
 from tools import Vec2, Circle, Color
-
-from random import randint
 
 
 class TestPlant:
@@ -22,12 +21,12 @@ class TestPlant:
         self.length = length
         self.circle_count = 10
 
-    def __iter__(self):
-        return self.get_circles()
-
     def is_growing(self) -> bool:
         return self.length > 0
 
+    def __iter__(self):
+        return self.get_circles()
+   
     def get_circles(self):
         for _ in range(self.circle_count):
             yield Circle.random()       
@@ -45,13 +44,18 @@ class Plant:
     def init_agents(self, start_pos: Vec2):
         zero_agent = EmptyAgent(self.plant_genom, start_pos) 
         self.agents = zero_agent.get_heirs()
+        print(self.agents)
+
+    def is_growing(self) -> bool:
+        return len(self.agents) > 0
 
     def __iter__(self):
         return self.get_circles()  
 
     def get_circles(self):
         for agent in self.agents:
-            yield agent.get_circle()
+            circle = agent.get_circle()
+            yield circle
         
         new_agents = []
         for agent in self.agents:
@@ -60,4 +64,12 @@ class Plant:
             else:
                 new_agents += agent.get_heirs()
         self.agents = new_agents
+        __import__('pprint').pprint(self.agents)
+
+    @staticmethod
+    def random() -> Plant:
+        return Plant(
+            PlantGenom.random(),
+            Vec2(0, -300)
+        )
     

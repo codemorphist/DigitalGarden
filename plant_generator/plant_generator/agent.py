@@ -1,6 +1,8 @@
 from __future__ import annotations
 from plant_generator.genom import AgentGenom, PlantGenom
-from tools import Vec2, Circle
+from tools import Vec2, Circle, Color
+from math import pi
+from copy import deepcopy
 
 
 class Agent:
@@ -15,21 +17,50 @@ class Agent:
         self.pos = start_pos
 
     def get_circle(self) -> Circle:
-        pass
+        r = self.agent_genom.red
+        g = self.agent_genom.green
+        b = self.agent_genom.blue
+        circle = Circle(self.pos, self.agent_genom.size, Color(r, g, b))
+
+        self.agent_genom.size += self.agent_genom.size_changes 
+        self.pos += self.agent_genom.turn
+        self.agent_genom.length -= 1
+
+        return circle
 
     @property
     def is_live(self) -> bool:
-        pass
+        return self.agent_genom.length > 0
 
     def get_heirs(self) -> list[Agent]:
-        pass
+        heirs = []
+        heirs_genom = self.plant_genom.evolve(
+            self.generation, self.agent_genom)
+
+        n = self.agent_genom.number_branches
+        for i in range(n):
+            heir_genom = deepcopy(heirs_genom)
+
+            a = self.agent_genom.angle_branches * pi / 180
+            heir_genom.turn = heir_genom.turn.rotate(n//2 * a + i * a)
+
+            heir = Agent(agent_genom=heir_genom,
+                         plant_genom=self.plant_genom, 
+                         generation=self.generation+1, 
+                         start_pos=self.pos)
+            heirs.append(heir)
+
+        return heirs
+
+    def __repr__(self) -> str:
+        return f"Agent(pos={self.pos}, agent_genom={self.agent_genom})"
 
 
 class EmptyAgent(Agent):
     def __init__(self, plant_genom: PlantGenom, 
                  start_pos: Vec2):
         empty_agent_genom = AgentGenom(
-            0, 0, 0, 0, 0, 0, 0, 0, 0, Vec2(0, 0), 0, 0
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, Vec2(0, 0)
         )
         super().__init__(
             agent_genom=empty_agent_genom,
