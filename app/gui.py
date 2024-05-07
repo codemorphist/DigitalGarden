@@ -69,13 +69,23 @@ class PlantGeneratorFrame(tk.Frame):
         self.plant = self.genom_input.get_plant()
         self.draw()
 
+    def get_delay(self, agents_count: int) -> int:
+        if agents_count <= 2:
+            return 10
+        elif agents_count <= 10:
+            return 5
+        elif agents_count <= 100:
+            return 1
+        else:
+            return 1
+
     def draw(self):
         if self.plant is None:
             return
         for circle in self.plant.get_circles():
             self.draw_circle(circle)
         if self.plant.is_growing():
-            self.after(10, self.draw)
+            self.after(self.get_delay(len(self.plant.agents)), self.draw)
 
 
 class App(tk.Tk):
