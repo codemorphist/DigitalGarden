@@ -12,6 +12,12 @@ class Agent:
                  plant_genom: PlantGenom,
                  generation: int,
                  start_pos: Vec2):
+        """
+        :param agent_genom: Genom of Agent
+        :param plant_genom: Genom of Plant
+        :param generation: Generation of Agent
+        :param start_pos: Start position of Agent
+        """
         self.agent_genom = agent_genom
         self.plant_genom = plant_genom
         self.generation = generation
@@ -19,6 +25,26 @@ class Agent:
         self.turn = Vec2(0, -1)
 
     def get_circle(self) -> Circle:
+        """
+        Return circle that draw Agent
+        """
+
+        # Get color values from genom
+        r = self.agent_genom.red
+        g = self.agent_genom.green
+        b = self.agent_genom.blue
+
+        color = Color(r, g, b)
+        circle = Circle(self.pos, self.agent_genom.size, color)
+
+        self.__grow_up__()
+
+        return circle
+
+    def __grow_up__(self):
+        """
+        Update genom and postion of Agent
+        """
         r = self.agent_genom.red
         g = self.agent_genom.green
         b = self.agent_genom.blue
@@ -29,9 +55,7 @@ class Agent:
 
         c1 = Color(r, g, b)
         c2 = Color(rc, gc, bc)
-
-        circle = Circle(self.pos, self.agent_genom.size, c1)
-
+        
         c1 += c2
         self.agent_genom.red = c1.r
         self.agent_genom.green = c1.g
@@ -45,13 +69,21 @@ class Agent:
         self.turn = self.turn.rotate(uniform(-rangle, rangle))
         self.agent_genom.length -= 1
 
-        return circle
-
     @property
     def is_live(self) -> bool:
+        """
+        Return life status of Agent
+
+        :return: True is Agent is live else False
+        """
         return self.agent_genom.length > 0
 
     def get_heirs(self) -> list[Agent]:
+        """
+        Return heirs of Agent
+
+        :return: list of new Agents (heirs of current Agent)
+        """
         heirs = []
         heirs_genom = self.plant_genom.evolve(self.generation, self.agent_genom)
 

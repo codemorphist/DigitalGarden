@@ -1,48 +1,25 @@
 from __future__ import annotations
 from plant_generator.genom import PlantGenom
 from plant_generator.agent import Agent
-from tools import Vec2, Circle
-
-
-class TestPlant:
-    """
-    Plant which generates random circles
-    Usage example:
-
-        from plant_generator import TestPlant
-
-        plant = TestPlant(10)
-
-        while plant.is_growing():
-            for circle in plant.get_circles():
-                print(circle)
-    """
-    def __init__(self, length: int):
-        self.length = length
-        self.circle_count = 10
-
-    def is_growing(self) -> bool:
-        return self.length > 0
-
-    def __iter__(self):
-        return self.get_circles()
-   
-    def get_circles(self):
-        for _ in range(self.circle_count):
-            yield Circle.random()       
-            self.length -= 1
+from tools import Vec2
 
 
 class Plant:
     def __init__(self, 
                  plant_genom: PlantGenom,
                  start_pos: Vec2):
+        """
+        :param plant_genom: Genom of Plant
+        :param start_pos: Start postion of Plant
+        """
         self.plant_genom = plant_genom
         self.agents = []
         self.init_agents(start_pos)
 
     def init_agents(self, start_pos: Vec2):
-        # zero_agent = EmptyAgent(self.plant_genom, start_pos) 
+        """
+        Init first Agent of Plant
+        """
         self.agents.append(Agent(
             agent_genom=self.plant_genom._genom[0],
             plant_genom=self.plant_genom,
@@ -51,12 +28,18 @@ class Plant:
         ))
 
     def is_growing(self) -> bool:
+        """
+        Return life status of Plant
+        """
         return len(self.agents) > 0
 
     def __iter__(self):
         return self.get_circles()  
 
     def get_circles(self):
+        """
+        Get circles from all Agents of Plant
+        """
         for agent in self.agents:
             circle = agent.get_circle()
             yield circle

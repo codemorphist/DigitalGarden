@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-
 from plant_generator import Plant
 from tools import Color
 
@@ -30,8 +29,7 @@ class GenomTableFrame(ttk.Frame):
         self.plant = None
 
     def get_plant(self):
-        # return TestPlant(10)
-        return Plant.random()
+        return Plant.random() 
 
 
 class PlantGeneratorFrame(tk.Frame):
@@ -74,15 +72,12 @@ class PlantGeneratorFrame(tk.Frame):
         self.draw()
 
     def get_delay(self, agents_count: int) -> int:
-        # return 0 
         if agents_count <= 2:
             return 10
-        elif agents_count <= 10:
+        elif agents_count <= 50:
             return 5
-        elif agents_count <= 100:
-            return 1
         else:
-            return 1
+            return 0
 
     def draw(self):
         if self.plant is None:

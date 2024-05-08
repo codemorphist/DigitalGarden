@@ -2,8 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 from tools import Vec2, Color
-from random import randint, uniform
-from math import pi
+from random import randint
 
 
 @dataclass
@@ -41,7 +40,7 @@ class AgentGenom:
         return AgentGenom(
             length=randint(10, 200),
             length_deviation=randint(0, 50),
-            size=randint(1, 10),
+            size=randint(1, 6),
             size_from_ancestor=randint(30, 80),
             size_from_level=randint(2, 6), 
             size_changes=randint(-5, 5),
@@ -49,7 +48,7 @@ class AgentGenom:
             red_changes=rc, green_changes=gc, blue_changes=bc,
             color_deviation=randint(-10, 10),
             color_from_ancestor=randint(0, 80),
-            number_branches=randint(1, 2),
+            number_branches=randint(1, 3),
             angle_branches=randint(45, 270),
             angle_deviation=randint(20, 90),
             turn=randint(-10, 10),
@@ -65,6 +64,9 @@ class PlantGenom:
     def evolve(self,
                generation: int, 
                agent_genom: AgentGenom) -> Optional[AgentGenom]:
+        """
+        Evolute genom of Agent to new generation
+        """
         if generation >= len(self._genom):
             return None
 
