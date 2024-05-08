@@ -1,9 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-import time
 
-from plant_generator import Plant, TestPlant
-from tools import Color, Vec2, Circle
+from plant_generator import Plant
+from tools import Color
 
 
 class GenomTableFrame(ttk.Frame):
@@ -72,7 +71,7 @@ class PlantGeneratorFrame(tk.Frame):
         self.draw()
 
     def get_delay(self, agents_count: int) -> int:
-        return 0 
+        # return 0 
         if agents_count <= 2:
             return 10
         elif agents_count <= 10:
@@ -91,6 +90,7 @@ class PlantGeneratorFrame(tk.Frame):
         if self.plant.is_growing():
             self.after(self.get_delay(len(self.plant.agents)), self.draw)
         else:
+            del self.plant
             self.plant = None
 
 

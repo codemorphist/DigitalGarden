@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 from tools import Vec2, Color
-from random import randint, random, uniform
+from random import randint, uniform
 from math import pi
 
 

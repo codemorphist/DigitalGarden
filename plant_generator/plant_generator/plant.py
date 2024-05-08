@@ -1,7 +1,7 @@
 from __future__ import annotations
 from plant_generator.genom import PlantGenom
 from plant_generator.agent import Agent
-from tools import Vec2, Circle, Color
+from tools import Vec2, Circle
 
 
 class TestPlant:
@@ -75,4 +75,8 @@ class Plant:
             PlantGenom.random(),
             Vec2(0, 300)
         )
+
+    def __del__(self):
+        del self.plant_genom
+        del self
     

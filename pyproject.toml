@@ -13,6 +13,9 @@ python = "^3.11"
 plant_generator = { path="./plant_generator/", develop=true }
 tools = {path = "tools", develop=true}
 
+[tool.poetry.group.test.dependencies]
+ruff = "^0.4.3"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

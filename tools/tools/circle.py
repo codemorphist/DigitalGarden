@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import turtle
 
 from tools.vector import Vec2
 from tools.color import Color
