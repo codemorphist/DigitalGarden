@@ -41,7 +41,10 @@ class PlantGeneratorFrame(tk.Frame):
         self.canvas_width = 800
         self.canvas_height = 800
 
-        self.canvas = tk.Canvas(master=self, width=self.canvas_width, height=self.canvas_height, bg="lightgray")
+        self.canvas = tk.Canvas(master=self, 
+                                width=self.canvas_width, 
+                                height=self.canvas_height, 
+                                bg="lightgray")
         self.canvas.grid(padx=10, pady=10, row=0, column=0, rowspan=10, columnspan=10)
 
         self.generate_button = tk.Button(master=self, text="Generate", command=self.start_drawing)

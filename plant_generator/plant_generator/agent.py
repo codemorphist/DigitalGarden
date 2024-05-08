@@ -16,10 +16,7 @@ class Agent:
         self.plant_genom = plant_genom
         self.generation = generation
         self.pos = start_pos
-
-        rangle = self.agent_genom.random_angle
-        self.turn = Vec2(0,-1).rotate(self.agent_genom.turn * pi / 180).ort
-        self.turn = self.turn.rotate(uniform(-rangle, rangle))
+        self.turn = Vec2(0, -1)
 
     def get_circle(self) -> Circle:
         r = self.agent_genom.red
@@ -40,15 +37,12 @@ class Agent:
         self.agent_genom.green = c1.g
         self.agent_genom.blue = c1.b
 
-        self.agent_genom.size += self.agent_genom.size_changes 
+        self.agent_genom.size += self.agent_genom.size_changes / 100
 
-        self.pos += self.turn
-
+        self.pos += self.turn.rotate(self.agent_genom.turn * pi / 180)
         self.turn = (self.turn + self.agent_genom.down / 100 * Vec2(0, 1)).ort
-
         rangle = self.agent_genom.random_turn * pi / 180
         self.turn = self.turn.rotate(uniform(-rangle, rangle))
-        
         self.agent_genom.length -= 1
 
         return circle

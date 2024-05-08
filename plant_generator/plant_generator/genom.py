@@ -23,7 +23,7 @@ class AgentGenom:
     green_changes: int
     blue_changes: int
     color_from_ancestor: float
-    # color_deviation: float
+    color_deviation: float
 
     number_branches: int
     angle_branches: float
@@ -31,7 +31,6 @@ class AgentGenom:
 
     turn: Vec2
     random_turn: int
-    random_angle: float
     down: float
 
     @staticmethod
@@ -40,21 +39,21 @@ class AgentGenom:
         rc, gc, bc = Color.random()
 
         return AgentGenom(
-            length=randint(20, 150),
-            length_deviation=0,
-            size=randint(1, 3),
-            size_from_ancestor=randint(20, 60),
-            size_from_level=randint(0, 3), 
-            size_changes=uniform(-0.05, 0.05),
+            length=randint(10, 200),
+            length_deviation=randint(0, 50),
+            size=randint(1, 10),
+            size_from_ancestor=randint(30, 80),
+            size_from_level=randint(2, 6), 
+            size_changes=randint(-5, 5),
             red=r, green=g, blue=b, 
             red_changes=rc, green_changes=gc, blue_changes=bc,
+            color_deviation=randint(-10, 10),
             color_from_ancestor=randint(0, 80),
             number_branches=randint(1, 2),
             angle_branches=randint(45, 270),
             angle_deviation=randint(20, 90),
             turn=randint(-10, 10),
             random_turn=randint(0, 40),
-            random_angle=uniform(0, 20 * pi / 180),
             down=randint(-2, 2)
         )
 
@@ -75,12 +74,14 @@ class PlantGenom:
         evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
         evolved_genom.size = size_percent * (agent_genom.size + evolved_genom.size)
 
-        evolved_genom.length += randint(0, agent_genom.length_deviation)
+        len_deviation = agent_genom.length_deviation
+        evolved_genom.length += randint(-len_deviation, len_deviation)
         evolved_genom.angle_branches += agent_genom.angle_deviation
     
-        ar = agent_genom.red
-        ag = agent_genom.green
-        ab = agent_genom.blue
+        ar = agent_genom.red + evolved_genom.color_deviation
+        ag = agent_genom.green + evolved_genom.color_deviation
+        ab = agent_genom.blue + evolved_genom.color_deviation
+
 
         sr = evolved_genom.red
         sg = evolved_genom.green
@@ -98,7 +99,7 @@ class PlantGenom:
         return evolved_genom
 
     @staticmethod
-    def random() -> PlantGenom:
+    def random(generations: int = 9) -> PlantGenom:
         return PlantGenom([
-            AgentGenom.random() for _ in range(9)
+            AgentGenom.random() for _ in range(generations)
         ])
