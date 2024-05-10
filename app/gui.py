@@ -104,7 +104,7 @@ class UserFrame(ttk.Frame):
 
     def get_plant(self) -> Plant:
         plant_genome = self.get_plant_genome()
-        start_pos = Vec2(0, 300)
+        start_pos = Vec2(0, 200)
         plant = Plant(plant_genome, start_pos)
         return plant
 
