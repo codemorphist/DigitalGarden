@@ -162,14 +162,14 @@ class PlantFrame(ttk.Frame):
         self.plant = self.genom_input.get_plant()
         self.draw()
 
-    # def get_delay(self, agents_count: int) -> int:
-    #     return 1
-    #     if agents_count <= 2:
-    #         return 10
-    #     elif agents_count <= 50:
-    #         return 5
-    #     else:
-    #         return 0
+    def get_delay(self, agents_count: int) -> int:
+        return 1
+        # if agents_count <= 2:
+        #     return 10
+        # elif agents_count <= 50:
+        #     return 5
+        # else:
+        #     return 0
 
     def draw(self):
         if self.plant is None:
