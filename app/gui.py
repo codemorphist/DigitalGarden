@@ -4,6 +4,7 @@ from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Color, Vec2
 from dataclasses import astuple
 
+
 class UserFrame(ttk.Frame):
     """
     Contains the User side of the interface, i.e.
@@ -114,9 +115,10 @@ class UserFrame(ttk.Frame):
         """
         random_genome = PlantGenom.random()
         for column in range(self.table_width):
-            agent_genome = random_genome._genom[column]
+            agent_genome = random_genome.genom[column]
             for row in range(self.table_height):
                 self.genom_entries_tkvar[(row, column)].set(astuple(agent_genome)[row])
+
 
 class PlantFrame(ttk.Frame):
     """
@@ -159,15 +161,6 @@ class PlantFrame(ttk.Frame):
         self.plant = self.genom_input.get_plant()
         self.draw()
 
-    def get_delay(self, agents_count: int) -> int:
-        return 1
-        # if agents_count <= 2:
-        #     return 10
-        # elif agents_count <= 50:
-        #     return 5
-        # else:
-        #     return 0
-
     def draw(self):
         if self.plant is None:
             return
@@ -175,7 +168,7 @@ class PlantFrame(ttk.Frame):
         for circle in self.plant.get_circles():
             self.draw_circle(circle)
         if self.plant.is_growing():
-            self.after(self.get_delay(len(self.plant.agents)), self.draw)
+            self.after(1, self.draw)
         else:
             del self.plant
             self.plant = None

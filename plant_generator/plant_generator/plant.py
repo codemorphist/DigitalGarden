@@ -21,7 +21,7 @@ class Plant:
         Init first Agent of Plant
         """
         self.agents.append(Agent(
-            agent_genom=self.plant_genom._genom[0],
+            agent_genom=self.plant_genom.genom[0],
             plant_genom=self.plant_genom,
             generation=0,
             start_pos=start_pos
