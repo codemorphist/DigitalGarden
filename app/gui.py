@@ -6,6 +6,7 @@ from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Color, Vec2
 from dataclasses import astuple
 
+
 class UserFrame(ttk.Frame):
     """
     Contains the User side of the interface, i.e.
@@ -214,13 +215,7 @@ class PlantFrame(ttk.Frame):
         self.canvas.delete("all")
         self.plant = self.genom_input.get_plant()
         self.draw()
-
-    def update_plant_progress(self):
-        if self.plant is None or self.plant.died == self.plant.total:
-            return 
-
-        self.after(50, self.update_plant_progress)
-
+        
     def draw(self):
         if self.plant is None:
             return
