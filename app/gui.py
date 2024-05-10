@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter.filedialog import asksaveasfilename, askopenfilename
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Color, Vec2
 from dataclasses import astuple
@@ -48,8 +49,8 @@ class UserFrame(ttk.Frame):
         button_style = ttk.Style()
         button_style.configure("TButton", font=("Charter", 14))
 
-        self.import_button = ttk.Button(self, text="Import")
-        self.export_button = ttk.Button(self, text="Export")
+        self.import_button = ttk.Button(self, text="Import", command=self.genome_unpack)
+        self.export_button = ttk.Button(self, text="Export", command=self.genome_pack)
         self.random_button = ttk.Button(self, text="Random", command=self.set_random)
         self.generate_button = ttk.Button(self, text="Generate Plant")
 
@@ -119,6 +120,32 @@ class UserFrame(ttk.Frame):
             for row in range(self.table_height):
                 self.genom_entries_tkvar[(row, column)].set(astuple(agent_genome)[row])
 
+    def genome_pack(self):
+        """
+        The function that realises the "Import" function through
+        the file dialogue opener
+        """
+        host_file = asksaveasfilename(filetypes=[("Text File", "*.txt")],
+                                      defaultextension=".txt")
+        with open(host_file, "w") as file:
+            for row in range(self.table_height):
+                string = ""
+                for column in range(self.table_width):
+                    string += f"{self.genom_entries_tkvar[(row, column)].get()} "
+                file.write(string + "\n")
+
+    def genome_unpack(self):
+        """
+        The function that realises the "Export" function through
+        the file dialogue opener
+        """
+        file = askopenfilename()
+        with open(file) as f:
+            lines = f.readlines()
+            for row in range(len(lines)):
+                entries = list(map(int, lines[row].split()))
+                for column in range(self.table_width):
+                    self.genom_entries_tkvar[(row, column)].set(entries[column])
 
 class PlantFrame(ttk.Frame):
     """
