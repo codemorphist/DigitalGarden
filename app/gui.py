@@ -12,7 +12,7 @@ class UserFrame(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
 
-        self.table_height = 9
+        self.table_height = 20
         self.table_width = 9
 
         for row in range(self.table_height):
@@ -152,6 +152,7 @@ class App(tk.Tk):
         self.title("Digital Garden")
         
         self.geometry("1280x1000")
+        self.minsize(1024, 512)
 
         self.__create_widgets__()
 
