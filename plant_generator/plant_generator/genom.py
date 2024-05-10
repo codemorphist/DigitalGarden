@@ -39,12 +39,12 @@ class AgentGenom:
         rc, gc, bc = Color.random()
 
         return AgentGenom(
-            length=randint(20, 80),
+            length=randint(20, 100),
             length_deviation=randint(0, 30),
-            size=randint(1, 3),
-            size_from_ancestor=randint(40, 80),
-            size_from_level=randint(2, 3), 
-            size_changes=randint(-2, 3),
+            size=randint(1, 20),
+            size_from_ancestor=randint(10, 90),
+            size_from_level=randint(5, 13), 
+            size_changes=randint(-20, 20),
             red=r, green=g, blue=b, 
             red_changes=rc, green_changes=gc, blue_changes=bc,
             color_deviation=randint(-20, 20),
@@ -60,7 +60,7 @@ class AgentGenom:
 
 class PlantGenom:
     def __init__(self, genom: list[AgentGenom]):
-        self._genom = genom
+        self.genom = genom
 
     def evolve(self,
                generation: int, 
@@ -68,14 +68,14 @@ class PlantGenom:
         """
         Evolute genom of Agent to new generation
         """
-        if generation >= len(self._genom):
+        if generation >= len(self.genom):
             return None
 
 
-        evolved_genom = deepcopy(self._genom[generation])
+        evolved_genom = deepcopy(self.genom[generation])
 
         size_percent = evolved_genom.size_from_ancestor / 100 
-        # evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
+        evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
         evolved_genom.size = size_percent * (agent_genom.size + evolved_genom.size)
 
         len_deviation = agent_genom.length_deviation

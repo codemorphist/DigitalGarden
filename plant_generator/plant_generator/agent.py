@@ -23,9 +23,11 @@ class Agent:
         self.agent_genom = agent_genom
         self.plant_genom = plant_genom
         self.generation = generation
+
         self.pos = start_pos
         self.direction = direction
         self.vec = vec
+        self.agent_genom.size /= 10
 
     def get_circle(self) -> Circle:
         """
@@ -64,7 +66,7 @@ class Agent:
         self.agent_genom.green = c1.g
         self.agent_genom.blue = c1.b
 
-        self.agent_genom.size += self.agent_genom.size_changes / 100
+        self.agent_genom.size += self.agent_genom.size_changes / 1000
 
         self.pos += self.vec
         self.vec = self.vec.rotate(self.direction * self.agent_genom.turn * pi / 180 / 100)
@@ -84,7 +86,7 @@ class Agent:
 
         :return: True is Agent is live else False
         """
-        return self.agent_genom.length > 0
+        return self.agent_genom.length >= 0
 
     def get_heirs(self) -> list[Agent]:
         """
@@ -123,4 +125,4 @@ class Agent:
 
     def __repr__(self) -> str:
         return f"Agent({id(self)})"
-        return f"Agent(pos={self.pos}, agent_genom={self.agent_genom})"
+        # return f"Agent(pos={self.pos}, agent_genom={self.agent_genom})"
