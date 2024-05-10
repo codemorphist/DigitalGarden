@@ -176,7 +176,20 @@ class PlantFrame(ttk.Frame):
                                 width=self.canvas_width,
                                 height=self.canvas_height,
                                 bg="lightgray")
-        self.canvas.grid(padx=10, pady=10, row=0, column=0, rowspan=10, columnspan=10)
+        self.canvas.grid(padx=10, 
+                         pady=10, 
+                         row=0, 
+                         column=1, 
+                         rowspan=10, 
+                         columnspan=10)
+
+        self.progress_var = tk.DoubleVar()
+        self.plant_progress = ttk.Progressbar(self, 
+                                              orient=tk.VERTICAL,
+                                              length=820,
+                                              variable=self.progress_var,
+                                              maximum=100)
+        self.plant_progress.grid(row=0, column=0)
 
         self.genom_input = None
 
@@ -202,15 +215,24 @@ class PlantFrame(ttk.Frame):
         self.plant = self.genom_input.get_plant()
         self.draw()
 
+    def update_plant_progress(self):
+        if self.plant is None or self.plant.died == self.plant.total:
+            return 
+
+        self.after(50, self.update_plant_progress)
+
     def draw(self):
         if self.plant is None:
             return
 
         for circle in self.plant.get_circles():
             self.draw_circle(circle)
+        self.progress_var.set(self.plant.drawed/self.plant.total*100)
+
         if self.plant.is_growing():
             self.after(1, self.draw)
         else:
+            self.progress_var.set(100)
             del self.plant
             self.plant = None
 
