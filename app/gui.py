@@ -37,7 +37,6 @@ class UserFrame(ttk.Frame):
         for row in range(self.table_height):
             for column in range(self.table_width):
                 self.genom_entries_tkvar[(row, column)] = tk.IntVar(value=0)
-                self.genom_entries[(row, column)] = self.genom_entries_tkvar[(row, column)].get()
                 self.genom_entry_fields[(row, column)] = ttk.Entry(self,
                                                                    width=5,
                                                                    textvariable=self.genom_entries_tkvar[(row, column)])
@@ -87,7 +86,7 @@ class UserFrame(ttk.Frame):
         """
         agent_genome_entries = []
         for row in range(self.table_height):
-            agent_genome_entries.append(self.genom_entries[(row, column)])
+            agent_genome_entries.append(self.genom_entries_tkvar[(row, column)].get())
         agent_genome_entries = tuple(agent_genome_entries)
         agent_genome = AgentGenom(*agent_genome_entries)
         return agent_genome
