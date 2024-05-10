@@ -6,33 +6,83 @@ from plant_generator import Plant, TestPlant
 from tools import Color, Vec2, Circle
 
 
-class GenomTableFrame(ttk.Frame):
+class UserFrame(ttk.Frame):
+    """
+    Contains the User side of the interface, i.e.
+    the buttons and the genome input table
+    """
     def __init__(self, container):
         super().__init__(container)
 
-        self.genom_entries = {}
-
         self.table_height = 9
         self.table_width = 9
+
+        for row in range(self.table_height):
+            self.rowconfigure(row, weight = 1)
+        for column in range(self.table_width):
+            self.columnconfigure(column, weight = 1)
+
+        self.rowconfigure(self.table_height, weight = 3)
+        self.rowconfigure(self.table_height + 1, weight = 3)
+
+        """
+        In the above, the "weight" parameter seems 
+        to have no impact on the size of the buttons.
+        Leave as it is, but fix later with styling.
+        """
+
+        self.genom_entries = {}
         counter = 0
+
         for row in range(self.table_height):
             for column in range(self.table_width):
                 self.genom_entries[counter] = ttk.Entry(self, width=5)
-                self.genom_entries[counter].grid(padx=1, pady=1,
-                                                 row=row, column=column)
+                self.genom_entries[counter].grid(row = row,
+                                                 column = column,
+                                                 padx = 5,
+                                                 pady = 5)
                 counter += 1
 
-        self.import_button = ttk.Button(self, text="Import")
-        self.export_button = ttk.Button(self, text="Export")
+        button_style = ttk.Style()
+        button_style.configure("TButton", font = ("Charter", 14))
 
-        self.import_button.grid(row=self.table_height + 5, column=2)
-        self.export_button.grid(row=self.table_height + 5, column=6)
+        self.import_button = ttk.Button(self, text = "Import")
+        self.export_button = ttk.Button(self, text = "Export")
+        self.random_button = ttk.Button(self, text = "Random")
+        self.generate_button = ttk.Button(self, text = "Generate Plant")
+
+        self.import_button.grid(row = self.table_height,
+                                column = 0,
+                                columnspan = 3,
+                                sticky = "nsew",
+                                padx = 5,
+                                pady = 10)
+        self.random_button.grid(row = self.table_height,
+                                column = 3,
+                                columnspan = 3,
+                                sticky = "nsew",
+                                padx = 5,
+                                pady = 10)
+        self.export_button.grid(row = self.table_height,
+                                column = 6,
+                                columnspan = 3,
+                                sticky = "nsew",
+                                padx = 5,
+                                pady = 10)
+        self.generate_button.grid(row = self.table_height + 1,
+                                column = 0,
+                                columnspan = 9,
+                                sticky = "nsew",
+                                padx = 5)
+
 
     def get_plant(self):
         return TestPlant(10)
 
-
-class PlantGeneratorFrame(ttk.Frame):
+class PlantFrame(ttk.Frame):
+    """
+    Contains the canvas where the plant is drawn
+    """
     def __init__(self, container):
         super().__init__(container)
 
@@ -40,25 +90,13 @@ class PlantGeneratorFrame(ttk.Frame):
         self.canvas.grid(padx=10, pady=10, row=0, column=0, rowspan=10, columnspan=10)
         self.canvas_turtle = turtle.RawTurtle(self.canvas)
 
-        self.generate_button = tk.Button(master=self,
-                                         text="Generate",
-                                         command=self.draw)
-        self.generate_button.grid(padx=2,
-                                  pady=2,
-                                  row=1,
-                                  column=11,
-                                  sticky='nsew')
-
-        self.genom_input = GenomTableFrame(self)
-        self.genom_input.grid(row=0, column=11)
+        # self.genom_input = self.master.user_frame
+        self.genom_input = None
 
     def draw_circle(self, circle: Circle):
         """
-
-        This Circle method draws a given circle with a given turtle,
-        which is thought as tied to a specific canvas; the parameters of
-        the drawn circle match those of the Object.
-
+        This Circle method draws a given circle using the turtle
+        defined herein
         """
         self.canvas_turtle.speed(0)
         # turtle.colormode(255)
@@ -81,17 +119,35 @@ class PlantGeneratorFrame(ttk.Frame):
             for circle in test_plant.get_circles():
                 self.draw_circle(circle)
 
-
-
 class App(tk.Tk):
+    """
+    Main application window
+    """
     def __init__(self):
         super().__init__()
 
         self.title("Digital Garden")
         self.geometry("1280x900")
+        self.minsize(1024, 512)
 
         self.__create_widgets__()
 
+
     def __create_widgets__(self):
-        generate_frame = PlantGeneratorFrame(self)
-        generate_frame.grid(column=0, row=0)
+        """
+        Self-explanatory
+        """
+        self.plant_frame = PlantFrame(self)
+        self.user_frame = UserFrame(self)
+
+        self.plant_frame.genom_input = self.user_frame
+        self.user_frame.generate_button.configure(command = self.plant_frame.draw)
+
+        self.columnconfigure(0, weight = 1)
+        self.columnconfigure(1, weight = 1)
+        self.rowconfigure(0, weight = 1)
+
+        self.plant_frame.grid(column = 0, row = 0, padx = 20, pady = 20)
+        self.user_frame.grid(column = 1, row = 0, padx = 20, pady = 20)
+
+
