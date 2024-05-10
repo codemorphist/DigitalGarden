@@ -65,7 +65,7 @@ class UserFrame(ttk.Frame):
                                 sticky="nsew",
                                 padx=5,
                                 pady=10)
-        import_tip = Hovertip(self.import_button, "Import a genome (.txt) to fill out the table")
+        import_tip = Hovertip(self.import_button, "Import a genome (.txt) \nto fill out the table")
 
         self.random_button.grid(row=self.table_height,
                                 column=3,
@@ -73,7 +73,7 @@ class UserFrame(ttk.Frame):
                                 sticky="nsew",
                                 padx=5,
                                 pady=10)
-        random_tip = Hovertip(self.random_button, "Fill out a random gene (you could get lucky!)")
+        random_tip = Hovertip(self.random_button, "Fill out a random gene \n(you could get lucky!)")
 
         self.export_button.grid(row=self.table_height,
                                 column=6,
@@ -81,7 +81,7 @@ class UserFrame(ttk.Frame):
                                 sticky="nsew",
                                 padx=5,
                                 pady=10)
-        export_tip = Hovertip(self.export_button, "Export a genome you find the best in the .txt "
+        export_tip = Hovertip(self.export_button, "Export a genome you find the best \nin the .txt "
                                                   "format (tip: share!)")
 
         self.generate_button.grid(row=self.table_height + 1,
