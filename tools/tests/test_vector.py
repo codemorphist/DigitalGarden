@@ -1,4 +1,4 @@
-from tools import Vector, Vec2, Vec3
+from tools import Vector
 
 
 def test_vec_operations():

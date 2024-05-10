@@ -1,5 +1,6 @@
 from __future__ import annotations
 from random import randint
+from math import sin, cos, sqrt
 
 
 class Vector:
@@ -77,6 +78,14 @@ class Vector:
 
     def __repr__(self) -> str:
         return f"Vector{self.values}"
+
+    @property
+    def len(self) -> float:
+        return sqrt(sum([c*c for c in self]))
+
+    @property
+    def ort(self):
+        return self / self.len
     
 
 class Vec2(Vector):
@@ -97,6 +106,22 @@ class Vec2(Vector):
             randint(-100, 100),
             randint(-100, 100)
         )
+
+    def rotate(self, angle: float) -> Vec2:
+        """
+        Rotate angle by given angle, 
+        using rotation matrix
+
+        | cos(a)  -sin(a) |   | x |
+        |                 | x |   |
+        | sin(a)   cos(a) |   | y |
+
+        :param angle: angle in radians
+        """
+        x, y = self
+        return Vec2(x * cos(angle) - y * sin(angle), 
+                    x * sin(angle) + y * cos(angle)) 
+
 
 
 class Vec3(Vector):

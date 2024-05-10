@@ -9,7 +9,15 @@ class Color:
         :param g: green color value (from 0 to 255)
         :param b: blue  color value (from 0 to 255)
         """
-        self._rgb = (r % 256, g % 256, b % 256)
+        self._rgb = (self.norm(r), self.norm(g), self.norm(b))
+
+    def norm(self, value: float) -> float:
+        if value > 255:
+            return 255
+        elif value < 0:
+            return 0
+        else:
+            return value
 
     @staticmethod
     def random() -> Color:
@@ -26,7 +34,11 @@ class Color:
 
     @property
     def rgb(self):
-        return self._rgb
+        return tuple([int(v) for v in self._rgb]) 
+
+    @property
+    def orgb(self):
+        return tuple([v / 255 for v in self.rgb])
 
     @property
     def hex(self):
@@ -67,6 +79,13 @@ class Color:
             )
         else:
             raise TypeError(f"Invalid type {type(other)} to sub from Color")
+
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            new_value = [int(v * other) for v in self._rgb] 
+            return Color(*new_value)
+        else:
+            raise TypeError(f"Invalid type {type(other)} to mul on Color")
 
     def __eq__(self, other) -> bool:
         if isinstance(other, Color):
