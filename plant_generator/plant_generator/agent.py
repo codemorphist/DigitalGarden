@@ -68,10 +68,9 @@ class Agent:
 
         self.pos += self.vec
         self.vec = self.vec.rotate(self.direction * self.agent_genom.turn * pi / 180 / 100)
-        # self.turn = self.turn.rotate(self.agent_genom.down)
 
-        rangle = self.agent_genom.random_turn * pi / 180
-        self.agent_genom.turn += uniform(-rangle, rangle)
+        rangle = self.agent_genom.random_turn * pi / 180 / 10
+        self.vec = self.vec.rotate(uniform(-rangle, rangle))
 
         self.agent_genom.length -= 1
 
@@ -106,9 +105,7 @@ class Agent:
             heir_angle = i * angle * pi / 180
             heir_vec = vec.rotate(heir_angle)
 
-            print(heir_angle / pi * 180)
-
-            direction = 0 if heir_angle == pi/4 else (-1 if heir_angle < pi/4 else 1)
+            direction = 0 if heir_angle == pi/8 else (-1 if heir_angle < pi/8 else 1)
             
             heir = Agent(agent_genom=heir_genom,
                          plant_genom=self.plant_genom, 

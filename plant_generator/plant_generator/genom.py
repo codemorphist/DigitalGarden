@@ -49,11 +49,11 @@ class AgentGenom:
             red_changes=rc, green_changes=gc, blue_changes=bc,
             color_deviation=randint(-10, 10),
             color_from_ancestor=randint(0, 80),
-            number_branches=3,
+            number_branches=2,
             angle_branches=45,
             angle_deviation=0,
-            turn=10,
-            random_turn=0,
+            turn=0,
+            random_turn=20,
             down=0
         )
 
