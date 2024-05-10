@@ -102,6 +102,8 @@ class PlantFrame(ttk.Frame):
         self.genom_input = GenomTableFrame(self)
         self.genom_input.grid(row=0, column=11)
 
+        self.plant = None
+
     def draw_circle(self, circle):
         x, y, radius = *circle.pos, circle.radius
         color = circle.color.hex
@@ -123,33 +125,14 @@ class PlantFrame(ttk.Frame):
         self.draw()
 
     def get_delay(self, agents_count: int) -> int:
+        return 1
         if agents_count <= 2:
             return 10
         elif agents_count <= 50:
             return 5
         else:
             return 0
-          
-        # self.genom_input = self.master.user_frame
-        self.genom_input = None
-
-    def draw_circle(self, circle: Circle):
-        """
-        This Circle method draws a given circle using the turtle
-        defined herein
-        """
-        self.canvas_turtle.speed(0)
-        # turtle.colormode(255)
-        self.canvas_turtle.penup()
-        self.canvas_turtle.goto(*circle.pos)
-        self.canvas_turtle.forward(circle.radius)
-        self.canvas_turtle.left(90)
-        self.canvas_turtle.pendown()
-        # canvas_turtle.pencolor(self.color.rgb)
-        self.canvas_turtle.circle(circle.radius)
-        self.canvas_turtle.penup()
-        self.canvas_turtle.goto(*circle.pos)
-
+  
     def draw(self):
         if self.plant is None:
             return
