@@ -6,7 +6,7 @@ def test_color():
     assert c.rgb == (3, 5, 6), "Invalid rgb value"
 
     c = Color(256, 256, 256)
-    assert c.rgb == (0, 0, 0), "Invalid rgb value"
+    assert c.rgb == (255, 255, 255), "Invalid rgb value"
 
     c1 = Color(255, 23, 156)
     c2 = Color(45, 243, 156)

@@ -3,7 +3,7 @@ from random import randint
 
 
 class Color:
-    def __init__(self, r: int, g: int, b: int, alpha: int = 1):
+    def __init__(self, r: float, g: float, b: float, alpha: float = 1):
         """
         :param r: red   color value (from 0 to 255)
         :param g: green color value (from 0 to 255)
