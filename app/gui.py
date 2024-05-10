@@ -119,7 +119,7 @@ class UserFrame(ttk.Frame):
             agent_genome = random_genome._genom[column]
             for row in range(self.table_height):
                 self.genom_entries_tkvar[(row, column)].set(astuple(agent_genome)[row])
-
+                self.genom_entries[(row, column)] = self.genom_entries_tkvar[(row, column)].get()
 
 class PlantFrame(ttk.Frame):
     """
