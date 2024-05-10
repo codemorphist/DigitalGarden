@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Color, Vec2
-
+from dataclasses import astuple
 
 class UserFrame(ttk.Frame):
     """
@@ -31,16 +31,16 @@ class UserFrame(ttk.Frame):
         """
 
         self.genom_entry_fields = {}
-        self.genom_entries_tk = {}
+        self.genom_entries_tkvar = {}
         self.genom_entries = {}
 
         for row in range(self.table_height):
             for column in range(self.table_width):
-                self.genom_entries_tk[(row, column)] = tk.IntVar(value=0)
-                self.genom_entries[(row, column)] = self.genom_entries_tk[(row, column)].get()
+                self.genom_entries_tkvar[(row, column)] = tk.IntVar(value=0)
+                self.genom_entries[(row, column)] = self.genom_entries_tkvar[(row, column)].get()
                 self.genom_entry_fields[(row, column)] = ttk.Entry(self,
                                                                    width=5,
-                                                                   textvariable=self.genom_entries_tk[(row, column)])
+                                                                   textvariable=self.genom_entries_tkvar[(row, column)])
                 self.genom_entry_fields[(row, column)].grid(row=row,
                                                             column=column,
                                                             padx=5,
@@ -51,7 +51,7 @@ class UserFrame(ttk.Frame):
 
         self.import_button = ttk.Button(self, text="Import")
         self.export_button = ttk.Button(self, text="Export")
-        self.random_button = ttk.Button(self, text="Random")
+        self.random_button = ttk.Button(self, text="Random", command=self.set_random)
         self.generate_button = ttk.Button(self, text="Generate Plant")
 
         self.import_button.grid(row=self.table_height,
@@ -81,6 +81,10 @@ class UserFrame(ttk.Frame):
         self.plant = None
 
     def get_agent_genome(self, column: int) -> AgentGenom:
+        """
+        Returns an agent genome based upon the entries from
+        a column of the entry table
+        """
         agent_genome_entries = []
         for row in range(self.table_height):
             agent_genome_entries.append(self.genom_entries[(row, column)])
@@ -88,18 +92,33 @@ class UserFrame(ttk.Frame):
         agent_genome = AgentGenom(*agent_genome_entries)
         return agent_genome
 
-    def get_plant_genome(self):
+    def get_plant_genome(self) -> PlantGenom:
+        """
+        Returns a plant genome based upon the agent genomes
+        to have been obtained by means of get_agent_genome() for
+        all the columns of the entry table
+        """
         agent_genomes = []
         for column in range(self.table_width):
             agent_genomes.append(self.get_agent_genome(column))
         plant_genome = PlantGenom(agent_genomes)
         return plant_genome
 
-    def get_plant(self):
+    def get_plant(self) -> Plant:
         plant_genome = self.get_plant_genome()
         start_pos = Vec2(0, 300)
         plant = Plant(plant_genome, start_pos)
         return plant
+
+    def set_random(self):
+        """
+        Sets random table entry values; bound to the "Random" button
+        """
+        random_genome = PlantGenom.random()
+        for column in range(self.table_width):
+            agent_genome = random_genome._genom[column]
+            for row in range(self.table_height):
+                self.genom_entries_tkvar[(row, column)].set(astuple(agent_genome)[row])
 
 
 class PlantFrame(ttk.Frame):
@@ -143,14 +162,14 @@ class PlantFrame(ttk.Frame):
         self.plant = self.genom_input.get_plant()
         self.draw()
 
-    def get_delay(self, agents_count: int) -> int:
-        return 1
-        if agents_count <= 2:
-            return 10
-        elif agents_count <= 50:
-            return 5
-        else:
-            return 0
+    # def get_delay(self, agents_count: int) -> int:
+    #     return 1
+    #     if agents_count <= 2:
+    #         return 10
+    #     elif agents_count <= 50:
+    #         return 5
+    #     else:
+    #         return 0
 
     def draw(self):
         if self.plant is None:
