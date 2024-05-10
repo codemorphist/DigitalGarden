@@ -57,6 +57,10 @@ class AgentGenom:
             down=randint(-30, 30)
         )
 
+    @classmethod
+    def attr_list(cls) -> list:
+        class_attributes = [attr for attr in AgentGenom.__annotations__]
+        return class_attributes
 
 class PlantGenom:
     def __init__(self, genom: list[AgentGenom]):
