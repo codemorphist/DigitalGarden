@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Optional
 from tools import Vec2, Color
 from random import randint
+from copy import deepcopy
 
 
 @dataclass
@@ -38,8 +39,8 @@ class AgentGenom:
         rc, gc, bc = Color.random()
 
         return AgentGenom(
-            length=randint(10, 200),
-            length_deviation=randint(0, 50),
+            length=50,
+            length_deviation=0,
             size=randint(1, 6),
             size_from_ancestor=randint(30, 80),
             size_from_level=randint(2, 6), 
@@ -48,12 +49,12 @@ class AgentGenom:
             red_changes=rc, green_changes=gc, blue_changes=bc,
             color_deviation=randint(-10, 10),
             color_from_ancestor=randint(0, 80),
-            number_branches=randint(1, 3),
-            angle_branches=randint(45, 270),
-            angle_deviation=randint(20, 90),
-            turn=randint(-10, 10),
-            random_turn=randint(0, 40),
-            down=randint(-2, 2)
+            number_branches=3,
+            angle_branches=45,
+            angle_deviation=0,
+            turn=0,
+            random_turn=0,
+            down=0
         )
 
 
@@ -70,10 +71,11 @@ class PlantGenom:
         if generation >= len(self._genom):
             return None
 
-        evolved_genom = self._genom[generation]
+
+        evolved_genom = deepcopy(self._genom[generation])
 
         size_percent = evolved_genom.size_from_ancestor / 100 
-        evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
+        # evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
         evolved_genom.size = size_percent * (agent_genom.size + evolved_genom.size)
 
         len_deviation = agent_genom.length_deviation

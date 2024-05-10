@@ -22,7 +22,7 @@ class Agent:
         self.plant_genom = plant_genom
         self.generation = generation
         self.pos = start_pos
-        self.turn = Vec2(0, -1)
+        self.turn = Vec2(0, -1).rotate(self.agent_genom.turn * pi / 180)
 
     def get_circle(self) -> Circle:
         """
@@ -63,10 +63,12 @@ class Agent:
 
         self.agent_genom.size += self.agent_genom.size_changes / 100
 
-        self.pos += self.turn.rotate(self.agent_genom.turn * pi / 180)
-        self.turn = (self.turn + self.agent_genom.down / 100 * Vec2(0, 1)).ort
+        self.pos += self.turn
+        self.turn = self.turn.rotate(self.agent_genom.down)
+
         rangle = self.agent_genom.random_turn * pi / 180
         self.turn = self.turn.rotate(uniform(-rangle, rangle))
+
         self.agent_genom.length -= 1
 
     @property
@@ -85,25 +87,29 @@ class Agent:
         :return: list of new Agents (heirs of current Agent)
         """
         heirs = []
-        heirs_genom = self.plant_genom.evolve(self.generation, self.agent_genom)
+        heirs_genom = self.plant_genom.evolve(self.generation+1, self.agent_genom)
 
         if heirs_genom is None:
             return []
 
         n = self.agent_genom.number_branches
+        angle = self.agent_genom.angle_branches
+        heirs_genom.turn += self.agent_genom.turn
+        heirs_genom.turn -= angle * (n // 2) + (0 if n % 2 else - angle / 2)
         for i in range(n):
             heir_genom = deepcopy(heirs_genom)
 
-            a = self.agent_genom.angle_branches * pi / 180
-            heir_genom.turn = heir_genom.turn + (n//2 * a + i * a)
+            heir_genom.turn = heir_genom.turn + i * angle
 
             heir = Agent(agent_genom=heir_genom,
                          plant_genom=self.plant_genom, 
                          generation=self.generation+1, 
                          start_pos=self.pos)
+
             heirs.append(heir)
 
         return heirs
 
     def __repr__(self) -> str:
+        return f"Agent({id(self)})"
         return f"Agent(pos={self.pos}, agent_genom={self.agent_genom})"
