@@ -72,6 +72,9 @@ class Agent:
         rangle = self.agent_genom.random_turn * pi / 180 / 10
         self.vec = self.vec.rotate(uniform(-rangle, rangle))
 
+        self.vec += Vec2(0, 1) * self.agent_genom.down / 1000
+        self.vec = self.vec.ort
+
         self.agent_genom.length -= 1
 
     @property

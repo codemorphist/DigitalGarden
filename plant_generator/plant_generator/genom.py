@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 from tools import Vec2, Color
-from random import randint
+from random import randint, random
 from copy import deepcopy
 
 
@@ -39,22 +39,22 @@ class AgentGenom:
         rc, gc, bc = Color.random()
 
         return AgentGenom(
-            length=50,
-            length_deviation=0,
-            size=randint(1, 6),
-            size_from_ancestor=randint(30, 80),
-            size_from_level=randint(2, 6), 
-            size_changes=randint(-5, 5),
+            length=randint(20, 80),
+            length_deviation=randint(0, 30),
+            size=randint(1, 3),
+            size_from_ancestor=randint(40, 80),
+            size_from_level=randint(2, 3), 
+            size_changes=randint(-2, 3),
             red=r, green=g, blue=b, 
             red_changes=rc, green_changes=gc, blue_changes=bc,
-            color_deviation=randint(-10, 10),
+            color_deviation=randint(-20, 20),
             color_from_ancestor=randint(0, 80),
-            number_branches=2,
-            angle_branches=45,
-            angle_deviation=0,
-            turn=0,
-            random_turn=20,
-            down=0
+            number_branches=randint(1, 3),
+            angle_branches=randint(0, 120),
+            angle_deviation=randint(10, 30),
+            turn=randint(-120, 120),
+            random_turn=randint(0, 80),
+            down=randint(-30, 30)
         )
 
 
@@ -106,4 +106,4 @@ class PlantGenom:
     def random(generations: int = 9) -> PlantGenom:
         return PlantGenom([
             AgentGenom.random() for _ in range(generations)
-        ])
+        ]) 
