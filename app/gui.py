@@ -96,11 +96,7 @@ class PlantFrame(ttk.Frame):
                                 bg="lightgray")
         self.canvas.grid(padx=10, pady=10, row=0, column=0, rowspan=10, columnspan=10)
 
-        self.generate_button = tk.Button(master=self, text="Generate", command=self.start_drawing)
-        self.generate_button.grid(padx=2, pady=2, row=1, column=11, sticky='nsew')
-
-        self.genom_input = GenomTableFrame(self)
-        self.genom_input.grid(row=0, column=11)
+        self.genom_input = None
 
         self.plant = None
 
@@ -168,7 +164,7 @@ class App(tk.Tk):
         self.user_frame = UserFrame(self)
 
         self.plant_frame.genom_input = self.user_frame
-        self.user_frame.generate_button.configure(command = self.plant_frame.draw)
+        self.user_frame.generate_button.configure(command=self.plant_frame.start_drawing)
 
         self.columnconfigure(0, weight = 1)
         self.columnconfigure(1, weight = 1)
