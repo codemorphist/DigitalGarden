@@ -57,6 +57,25 @@ class AgentGenom:
             down=randint(-30, 30)
         )
 
+    @classmethod
+    def attr_list(cls) -> list:
+        class_attributes = ["length",
+                            "length_deviation",
+                            "size",
+                            "size_from_ancestor",
+                            "size_from_level",
+                            "size_changes",
+                            "red", "green", "blue",
+                            "red_changes", "green_changes", "blue_changes",
+                            "color_deviation",
+                            "color_from_ancestor",
+                            "number_branches",
+                            "angle_branches",
+                            "angle_deviation",
+                            "turn",
+                            "random_turn",
+                            "down"]
+        return class_attributes
 
 class PlantGenom:
     def __init__(self, genom: list[AgentGenom]):

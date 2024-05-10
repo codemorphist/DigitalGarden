@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.filedialog import asksaveasfilename, askopenfilename
+from idlelib.tooltip import Hovertip
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Color, Vec2
 from dataclasses import astuple
-
 
 class UserFrame(ttk.Frame):
     """
@@ -34,6 +34,7 @@ class UserFrame(ttk.Frame):
 
         self.genom_entry_fields = {}
         self.genom_entries_tkvar = {}
+        self.entry_tips = {}
 
         for row in range(self.table_height):
             for column in range(self.table_width):
@@ -45,6 +46,10 @@ class UserFrame(ttk.Frame):
                                                             column=column,
                                                             padx=5,
                                                             pady=5)
+                self.entry_tips[(row, column)] = Hovertip(self.genom_entry_fields[(row, column)],
+                                                          f"Agent generation: {column + 1} "
+                                                           f"\nGene: {AgentGenom.attr_list()[row]}",
+                                                          hover_delay=0)
 
         button_style = ttk.Style()
         button_style.configure("TButton", font=("Charter", 14))
@@ -60,23 +65,32 @@ class UserFrame(ttk.Frame):
                                 sticky="nsew",
                                 padx=5,
                                 pady=10)
+        import_tip = Hovertip(self.import_button, "Import a genome (.txt) to fill out the table")
+
         self.random_button.grid(row=self.table_height,
                                 column=3,
                                 columnspan=3,
                                 sticky="nsew",
                                 padx=5,
                                 pady=10)
+        random_tip = Hovertip(self.random_button, "Fill out a random gene (you could get lucky!)")
+
         self.export_button.grid(row=self.table_height,
                                 column=6,
                                 columnspan=3,
                                 sticky="nsew",
                                 padx=5,
                                 pady=10)
+        export_tip = Hovertip(self.export_button, "Export a genome you find the best in the .txt "
+                                                  "format (tip: share!)")
+
         self.generate_button.grid(row=self.table_height + 1,
                                   column=0,
                                   columnspan=9,
                                   sticky="nsew",
                                   padx=5)
+        generate_tip = Hovertip(self.generate_button, "See what happens!")
+
 
         self.plant = None
 
