@@ -11,7 +11,9 @@ class Agent:
                  agent_genom: AgentGenom, 
                  plant_genom: PlantGenom,
                  generation: int,
-                 start_pos: Vec2):
+                 start_pos: Vec2, 
+                 direction: int = 0,
+                 vec : Vec2 = Vec2(0, -1)):
         """
         :param agent_genom: Genom of Agent
         :param plant_genom: Genom of Plant
@@ -22,7 +24,8 @@ class Agent:
         self.plant_genom = plant_genom
         self.generation = generation
         self.pos = start_pos
-        self.turn = Vec2(0, -1).rotate(self.agent_genom.turn * pi / 180)
+        self.direction = direction
+        self.vec = vec
 
     def get_circle(self) -> Circle:
         """
@@ -63,11 +66,12 @@ class Agent:
 
         self.agent_genom.size += self.agent_genom.size_changes / 100
 
-        self.pos += self.turn
-        self.turn = self.turn.rotate(self.agent_genom.down)
+        self.pos += self.vec
+        self.vec = self.vec.rotate(self.direction * self.agent_genom.turn * pi / 180 / 100)
+        # self.turn = self.turn.rotate(self.agent_genom.down)
 
         rangle = self.agent_genom.random_turn * pi / 180
-        self.turn = self.turn.rotate(uniform(-rangle, rangle))
+        self.agent_genom.turn += uniform(-rangle, rangle)
 
         self.agent_genom.length -= 1
 
@@ -94,17 +98,24 @@ class Agent:
 
         n = self.agent_genom.number_branches
         angle = self.agent_genom.angle_branches
-        heirs_genom.turn += self.agent_genom.turn
-        heirs_genom.turn -= angle * (n // 2) + (0 if n % 2 else - angle / 2)
+
+        vec = self.vec.rotate(-(angle * (n // 2) + (0 if n % 2 else - angle / 2))*pi/180)
         for i in range(n):
             heir_genom = deepcopy(heirs_genom)
 
-            heir_genom.turn = heir_genom.turn + i * angle
+            heir_angle = i * angle * pi / 180
+            heir_vec = vec.rotate(heir_angle)
 
+            print(heir_angle / pi * 180)
+
+            direction = 0 if heir_angle == pi/4 else (-1 if heir_angle < pi/4 else 1)
+            
             heir = Agent(agent_genom=heir_genom,
                          plant_genom=self.plant_genom, 
                          generation=self.generation+1, 
-                         start_pos=self.pos)
+                         start_pos=self.pos,
+                         direction=direction,
+                         vec=heir_vec)
 
             heirs.append(heir)
 

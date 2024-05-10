@@ -52,7 +52,7 @@ class AgentGenom:
             number_branches=3,
             angle_branches=45,
             angle_deviation=0,
-            turn=0,
+            turn=10,
             random_turn=0,
             down=0
         )
