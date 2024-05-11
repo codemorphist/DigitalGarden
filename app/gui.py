@@ -186,7 +186,6 @@ class PlantFrame(ttk.Frame):
                          columnspan=10)
 
         self.style = ttk.Style()
-        self.style.theme_use("clam")
         self.style.configure("Custom.Vertical.TProgressbar", 
                              troughcolor='gray')
         self.progress_var = tk.DoubleVar()
@@ -216,8 +215,12 @@ class PlantFrame(ttk.Frame):
         self.canvas.create_oval(x0 - 1, y0 - 1, x1 - 1, y1 - 1, outline=dark, fill=dark)
         self.canvas.create_oval(x0 + 1, y0 + 1, x1 + 1, y1 + 1, outline=light, fill=light)
 
-    def update_progress(self):
-        self.progress_var.set(self.plant.drawed/self.plant.total*100)
+    def update_progress(self, value: float):
+        """
+        Update status and color of progressbar 
+        by given value
+        """
+        self.progress_var.set(value)
         current_value = self.plant_progress["value"]
         
         hue = (current_value / 100.0) * 0.3
@@ -239,11 +242,11 @@ class PlantFrame(ttk.Frame):
 
         for circle in self.plant.get_circles():
             self.draw_circle(circle)
-        self.update_progress() 
+        self.update_progress(self.plant.drawed/self.plant.total*100) 
         if self.plant.is_growing():
             self.after(1, self.draw)
         else:
-            self.progress_var.set(100)
+            self.update_progress(100.0)
             del self.plant
             self.plant = None
 

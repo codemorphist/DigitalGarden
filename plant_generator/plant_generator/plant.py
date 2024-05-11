@@ -20,6 +20,8 @@ class Plant:
         for agent in self.plant_genom.genom[::-1]:
             self.total *= agent.number_branches 
             self.total += agent.length
+        self.total += 1
+
         # Conut of dead agents
         self.drawed = 0
 
