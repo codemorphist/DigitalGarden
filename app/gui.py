@@ -5,6 +5,7 @@ from idlelib.tooltip import Hovertip
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Color, Vec2
 from dataclasses import astuple
+from colorsys import hsv_to_rgb
 
 
 class UserFrame(ttk.Frame):
@@ -184,8 +185,13 @@ class PlantFrame(ttk.Frame):
                          rowspan=10, 
                          columnspan=10)
 
+        self.style = ttk.Style()
+        self.style.theme_use("clam")
+        self.style.configure("Custom.Vertical.TProgressbar", 
+                             troughcolor='gray')
         self.progress_var = tk.DoubleVar()
         self.plant_progress = ttk.Progressbar(self, 
+                                              style="Custom.Vertical.TProgressbar",
                                               orient=tk.VERTICAL,
                                               length=800,
                                               variable=self.progress_var,
@@ -210,6 +216,18 @@ class PlantFrame(ttk.Frame):
         self.canvas.create_oval(x0 - 1, y0 - 1, x1 - 1, y1 - 1, outline=dark, fill=dark)
         self.canvas.create_oval(x0 + 1, y0 + 1, x1 + 1, y1 + 1, outline=light, fill=light)
 
+    def update_progress(self):
+        self.progress_var.set(self.plant.drawed/self.plant.total*100)
+        current_value = self.plant_progress["value"]
+        
+        hue = (current_value / 100.0) * 0.3
+        r, g, b = hsv_to_rgb(hue, 1, 1)
+        color = '#%02x%02x%02x' % (int(r * 255), int(g * 255), int(b * 255))
+
+        self.style.configure("Custom.Vertical.TProgressbar", 
+                             foreground=color, background=color)
+        self.plant_progress.config(style="Custom.Vertical.TProgressbar")
+
     def start_drawing(self):
         self.canvas.delete("all")
         self.plant = self.genom_input.get_plant()
@@ -221,8 +239,7 @@ class PlantFrame(ttk.Frame):
 
         for circle in self.plant.get_circles():
             self.draw_circle(circle)
-        self.progress_var.set(self.plant.drawed/self.plant.total*100)
-
+        self.update_progress() 
         if self.plant.is_growing():
             self.after(1, self.draw)
         else:
