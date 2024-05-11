@@ -177,7 +177,7 @@ class PlantFrame(ttk.Frame):
                                 width=self.canvas_width,
                                 height=self.canvas_height,
                                 bg="lightgray")
-        self.canvas.grid(padx=10, 
+        self.canvas.grid(padx=0, 
                          pady=10, 
                          row=0, 
                          column=1, 
@@ -187,13 +187,12 @@ class PlantFrame(ttk.Frame):
         self.progress_var = tk.DoubleVar()
         self.plant_progress = ttk.Progressbar(self, 
                                               orient=tk.VERTICAL,
-                                              length=820,
+                                              length=800,
                                               variable=self.progress_var,
                                               maximum=100)
-        self.plant_progress.grid(row=0, column=0)
+        self.plant_progress.grid(row=0, column=0, pady=10)
 
         self.genom_input = None
-
         self.plant = None
 
     def draw_circle(self, circle):
