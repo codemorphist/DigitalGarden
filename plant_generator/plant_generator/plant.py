@@ -14,6 +14,17 @@ class Plant:
         """
         self.plant_genom = plant_genom
         self.agents = []
+
+        # Total count of agents
+        self.total = 1
+        for agent in self.plant_genom.genom[::-1]:
+            self.total *= agent.number_branches 
+            self.total += agent.length
+        self.total += 1
+
+        # Conut of dead agents
+        self.drawed = 0
+
         self.init_agents(start_pos)
 
     def init_agents(self, start_pos: Vec2):
@@ -42,6 +53,7 @@ class Plant:
         """
         for agent in self.agents:
             circle = agent.get_circle()
+            self.drawed += 1
             yield circle
         
         new_agents = []
