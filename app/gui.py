@@ -54,7 +54,7 @@ class UserFrame(ttk.Frame):
                                                           hover_delay=0)
 
         button_style = ttk.Style()
-        button_style.configure("TButton", font=("Charter", 14))
+        button_style.configure("TButton", font=("Times New Roman", 18))
 
         self.import_button = ttk.Button(self, text="Import", command=self.genome_unpack)
         self.export_button = ttk.Button(self, text="Export", command=self.genome_pack)
