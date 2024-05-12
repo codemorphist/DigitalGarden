@@ -159,6 +159,10 @@ class UserFrame(ttk.Frame):
         the file dialogue opener
         """
         file = askopenfilename()
+
+        if not file: # Exception when user was not chosen any file
+            return 
+
         with open(file) as f:
             lines = f.readlines()
             for row in range(len(lines)):
