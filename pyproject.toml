@@ -12,6 +12,7 @@ package-mode = false
 python = "^3.11"
 plant_generator = { path="./plant_generator/", develop=true }
 tools = {path = "tools", develop=true}
+pillow = "^10.3.0"
 
 [tool.poetry.group.test.dependencies]
 ruff = "^0.4.3"

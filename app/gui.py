@@ -2,10 +2,13 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from idlelib.tooltip import Hovertip
-from plant_generator import Plant, PlantGenom, AgentGenom
-from tools import Color, Vec2
 from dataclasses import astuple
 from colorsys import hsv_to_rgb
+
+from PIL import Image, ImageDraw, ImageTk
+
+from plant_generator import Plant, PlantGenom, AgentGenom
+from tools import Color, Vec2, Circle
 
 
 class UserFrame(ttk.Frame):
@@ -54,7 +57,7 @@ class UserFrame(ttk.Frame):
                                                           hover_delay=0)
 
         button_style = ttk.Style()
-        button_style.configure("TButton", font=("Times New Roman", 18))
+        button_style.configure("TButton", font=("Charter", 14))
 
         self.import_button = ttk.Button(self, text="Import", command=self.genome_unpack)
         self.export_button = ttk.Button(self, text="Export", command=self.genome_pack)
@@ -185,6 +188,11 @@ class PlantFrame(ttk.Frame):
                          rowspan=10, 
                          columnspan=10)
 
+        self.plant_image = Image.new("RGB",
+                                     (self.canvas_width, self.canvas_height),
+                                     (255, 255, 255))
+        self.plant_draw = ImageDraw.Draw(self.plant_image)
+
         self.style = ttk.Style()
         self.style.configure("Custom.Vertical.TProgressbar", 
                              troughcolor='gray')
@@ -200,20 +208,37 @@ class PlantFrame(ttk.Frame):
         self.genom_input = None
         self.plant = None
 
-    def draw_circle(self, circle):
-        x, y, radius = *circle.pos, circle.radius
-        color = circle.color.hex
-        canvas_center_x = self.canvas_width // 2
-        canvas_center_y = self.canvas_height // 2
-        x0 = canvas_center_x + x - radius
-        y0 = canvas_center_y + y - radius
-        x1 = canvas_center_x + x + radius
-        y1 = canvas_center_y + y + radius
-        dark = (circle.color + Color(10, 10, 10)).hex
-        light = (circle.color - Color(10, 10, 10)).hex
-        self.canvas.create_oval(x0, y0, x1, y1, outline=color, fill=color)
-        self.canvas.create_oval(x0 - 1, y0 - 1, x1 - 1, y1 - 1, outline=dark, fill=dark)
-        self.canvas.create_oval(x0 + 1, y0 + 1, x1 + 1, y1 + 1, outline=light, fill=light)
+    # def draw_circle(self, circle):
+    #     x, y, radius = *circle.pos, circle.radius
+    #     color = circle.color.hex
+    #     canvas_center_x = self.canvas_width // 2
+    #     canvas_center_y = self.canvas_height // 2
+    #     x0 = canvas_center_x + x - radius
+    #     y0 = canvas_center_y + y - radius
+    #     x1 = canvas_center_x + x + radius
+    #     y1 = canvas_center_y + y + radius
+    #     dark = (circle.color + Color(10, 10, 10)).hex
+    #     light = (circle.color - Color(10, 10, 10)).hex
+    #     self.canvas.create_oval(x0, y0, x1, y1, outline=color, fill=color)
+    #     self.canvas.create_oval(x0 - 1, y0 - 1, x1 - 1, y1 - 1, outline=dark, fill=dark)
+    #     self.canvas.create_oval(x0 + 1, y0 + 1, x1 + 1, y1 + 1, outline=light, fill=light)
+
+    def draw_circle(self, circle: Circle):
+        width = self.canvas_width
+        height = self.canvas_height
+
+        x, y = circle.pos + Vec2(width//2, height//2)
+        if x < 0 or x > width or y < 0 or y > height:
+            return
+         
+        r = circle.radius
+        self.plant_draw.ellipse((x - r, y - r, x + r, y + r),
+                                fill=circle.color.rgb)
+
+    def update_canvas(self):
+        self.canvas.image = ImageTk.PhotoImage(self.plant_image)
+        self.canvas.create_image(self.canvas_width//2, self.canvas_height//2,
+                                 anchor=tk.CENTER, image=self.canvas.image)
 
     def update_progress(self, value: float):
         """
@@ -243,11 +268,12 @@ class PlantFrame(ttk.Frame):
         for circle in self.plant.get_circles():
             self.draw_circle(circle)
         self.update_progress(self.plant.drawed/self.plant.total*100) 
+        self.update_canvas()
+
         if self.plant.is_growing():
             self.after(1, self.draw)
         else:
             self.update_progress(100.0)
-            del self.plant
             self.plant = None
 
 
