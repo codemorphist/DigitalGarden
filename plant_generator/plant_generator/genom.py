@@ -41,9 +41,9 @@ class AgentGenom:
         return AgentGenom(
             length=randint(20, 100),
             length_deviation=randint(0, 30),
-            size=randint(1, 80),
+            size=randint(5, 80),
             size_from_ancestor=randint(10, 90),
-            size_from_level=randint(5, 13), 
+            size_from_level=randint(5, 100), 
             size_changes=randint(-30, 30),
             red=r, green=g, blue=b, 
             red_changes=rc, green_changes=gc, blue_changes=bc,
