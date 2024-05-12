@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from idlelib.tooltip import Hovertip
 from dataclasses import astuple
@@ -70,7 +71,7 @@ class UserFrame(ttk.Frame):
                                 sticky="nsew",
                                 padx=5,
                                 pady=10)
-        import_tip = Hovertip(self.import_button, "Import a genome (.txt) \nto fill out the table")
+        self.import_tip = Hovertip(self.import_button, "Import a genome (.txt) \nto fill out the table")
 
         self.random_button.grid(row=self.table_height,
                                 column=3,
@@ -78,7 +79,7 @@ class UserFrame(ttk.Frame):
                                 sticky="nsew",
                                 padx=5,
                                 pady=10)
-        random_tip = Hovertip(self.random_button, "Fill out a random gene \n(you could get lucky!)")
+        self.random_tip = Hovertip(self.random_button, "Fill out a random gene \n(you could get lucky!)")
 
         self.export_button.grid(row=self.table_height,
                                 column=6,
@@ -86,7 +87,7 @@ class UserFrame(ttk.Frame):
                                 sticky="nsew",
                                 padx=5,
                                 pady=10)
-        export_tip = Hovertip(self.export_button, "Export a genome you find the best \nin the .txt "
+        self.export_tip = Hovertip(self.export_button, "Export a genome you find the best \nin the .txt "
                                                   "format (tip: share!)")
 
         self.generate_button.grid(row=self.table_height + 1,
@@ -94,7 +95,7 @@ class UserFrame(ttk.Frame):
                                   columnspan=9,
                                   sticky="nsew",
                                   padx=5)
-        generate_tip = Hovertip(self.generate_button, "See what happens!")
+        self.generate_tip = Hovertip(self.generate_button, "See what happens!")
 
 
         self.plant = None
@@ -106,7 +107,8 @@ class UserFrame(ttk.Frame):
         """
         agent_genome_entries = []
         for row in range(self.table_height):
-            agent_genome_entries.append(self.genom_entries_tkvar[(row, column)].get())
+            value = self.genom_entries_tkvar[(row, column)].get()
+            agent_genome_entries.append(value)
         agent_genome_entries = tuple(agent_genome_entries)
         agent_genome = AgentGenom(*agent_genome_entries)
         return agent_genome
@@ -119,7 +121,11 @@ class UserFrame(ttk.Frame):
         """
         agent_genomes = []
         for column in range(self.table_width):
-            agent_genomes.append(self.get_agent_genome(column))
+            try:
+                agent_genomes.append(self.get_agent_genome(column))
+            except tk.TclError:
+                messagebox.showerror("showerror", f"Неправильне значення геному")
+                return
         plant_genome = PlantGenom(agent_genomes)
         return plant_genome
 
@@ -163,12 +169,15 @@ class UserFrame(ttk.Frame):
         if not file: # Exception when user was not chosen any file
             return 
 
-        with open(file) as f:
-            lines = f.readlines()
-            for row in range(len(lines)):
-                entries = list(map(int, lines[row].split()))
-                for column in range(self.table_width):
-                    self.genom_entries_tkvar[(row, column)].set(entries[column])
+        try:
+            with open(file) as f:
+                lines = f.readlines()
+                for row in range(len(lines)):
+                    entries = list(map(int, lines[row].split()))
+                    for column in range(self.table_width):
+                        self.genom_entries_tkvar[(row, column)].set(entries[column])
+        except:
+            messagebox.showerror("showerror", "Неправильний формат геному!")
 
 
 class PlantFrame(ttk.Frame):
