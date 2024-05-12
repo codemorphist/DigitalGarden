@@ -125,7 +125,7 @@ class UserFrame(ttk.Frame):
 
     def get_plant(self) -> Plant:
         plant_genome = self.get_plant_genome()
-        start_pos = Vec2(0, 200)
+        start_pos = Vec2(0, 250)
         plant = Plant(plant_genome, start_pos)
         return plant
 
@@ -188,7 +188,7 @@ class PlantFrame(ttk.Frame):
                          rowspan=10, 
                          columnspan=10)
 
-        self.plant_image = Image.new("RGB",
+        self.plant_image = Image.new("RGBA",
                                      (self.canvas_width, self.canvas_height),
                                      (255, 255, 255))
         self.plant_draw = ImageDraw.Draw(self.plant_image)
@@ -196,6 +196,7 @@ class PlantFrame(ttk.Frame):
         self.style = ttk.Style()
         self.style.configure("Custom.Vertical.TProgressbar", 
                              troughcolor='gray')
+
         self.progress_var = tk.DoubleVar()
         self.plant_progress = ttk.Progressbar(self, 
                                               style="Custom.Vertical.TProgressbar",
@@ -206,22 +207,14 @@ class PlantFrame(ttk.Frame):
         self.plant_progress.grid(row=0, column=0, pady=10)
 
         self.genom_input = None
-        self.plant = None
+        self.current_drawing = None
 
-    # def draw_circle(self, circle):
-    #     x, y, radius = *circle.pos, circle.radius
-    #     color = circle.color.hex
-    #     canvas_center_x = self.canvas_width // 2
-    #     canvas_center_y = self.canvas_height // 2
-    #     x0 = canvas_center_x + x - radius
-    #     y0 = canvas_center_y + y - radius
-    #     x1 = canvas_center_x + x + radius
-    #     y1 = canvas_center_y + y + radius
-    #     dark = (circle.color + Color(10, 10, 10)).hex
-    #     light = (circle.color - Color(10, 10, 10)).hex
-    #     self.canvas.create_oval(x0, y0, x1, y1, outline=color, fill=color)
-    #     self.canvas.create_oval(x0 - 1, y0 - 1, x1 - 1, y1 - 1, outline=dark, fill=dark)
-    #     self.canvas.create_oval(x0 + 1, y0 + 1, x1 + 1, y1 + 1, outline=light, fill=light)
+    def clear_canvas(self):
+        self.plant_image = Image.new("RGB",
+                                     (self.canvas_width, self.canvas_height),
+                                     (255, 255, 255))
+        self.plant_draw = ImageDraw.Draw(self.plant_image)
+        self.update_canvas()
 
     def draw_circle(self, circle: Circle):
         width = self.canvas_width
@@ -230,10 +223,20 @@ class PlantFrame(ttk.Frame):
         x, y = circle.pos + Vec2(width//2, height//2)
         if x < 0 or x > width or y < 0 or y > height:
             return
+        r = abs(circle.radius) + 1
+
+        x0, y0 = x - r, y - r
+        x1, y1 = x + r, y + r
          
-        r = circle.radius
-        self.plant_draw.ellipse((x - r, y - r, x + r, y + r),
-                                fill=circle.color.rgb)
+        default_color = circle.color.rgb
+        dark_color = (circle.color + Color(10, 10, 10)).rgb
+        light_color = (circle.color - Color(20, 20, 20)).rgb
+        self.plant_draw.ellipse((x0, y0, x1, y1),
+                                fill=(*light_color, 80))
+        self.plant_draw.ellipse((x0-1, y0-1, x1-1, y1-1),
+                                fill=default_color)
+        self.plant_draw.ellipse((x0+1, y0+1, x1+1, y1+1),
+                                fill=(*dark_color, 50))
 
     def update_canvas(self):
         self.canvas.image = ImageTk.PhotoImage(self.plant_image)
@@ -257,24 +260,24 @@ class PlantFrame(ttk.Frame):
         self.plant_progress.config(style="Custom.Vertical.TProgressbar")
 
     def start_drawing(self):
-        self.canvas.delete("all")
-        self.plant = self.genom_input.get_plant()
-        self.draw()
+        if self.current_drawing:
+            self.after_cancel(self.current_drawing)
+        self.clear_canvas()
+        self.progress_var.set(0)
+        plant = self.genom_input.get_plant()
+        self.current_drawing = self.after(1, self.draw, plant)
         
-    def draw(self):
-        if self.plant is None:
-            return
-
-        for circle in self.plant.get_circles():
+    def draw(self, plant: Plant):
+        for circle in plant.get_circles():
             self.draw_circle(circle)
-        self.update_progress(self.plant.drawed/self.plant.total*100) 
+        self.update_progress(plant.drawed/plant.total*100) 
         self.update_canvas()
 
-        if self.plant.is_growing():
-            self.after(1, self.draw)
+        if plant.is_growing():
+            self.current_drawing = self.after(1, self.draw, plant)
         else:
             self.update_progress(100.0)
-            self.plant = None
+            self.current_drawing = None
 
 
 class App(tk.Tk):
