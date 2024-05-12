@@ -166,6 +166,7 @@ class UserFrame(ttk.Frame):
                 for column in range(self.table_width):
                     self.genom_entries_tkvar[(row, column)].set(entries[column])
 
+
 class PlantFrame(ttk.Frame):
     """
     Contains the canvas where the plant is drawn
@@ -182,8 +183,6 @@ class PlantFrame(ttk.Frame):
         # Canvas with plant
         self.canvas_width = 800
         self.canvas_height = 800
-
-        self.current_drawing = None
 
         self.canvas = tk.Canvas(master=self,
                                 width=self.canvas_width,
@@ -214,6 +213,9 @@ class PlantFrame(ttk.Frame):
         self.plant_progress.grid(row=0, column=0, pady=10)
 
         self.genom_input = None
+
+        # Plant generation process
+        self.current_drawing = None
 
     def update_canvas(self):
         """
@@ -251,15 +253,15 @@ class PlantFrame(ttk.Frame):
         x0, y0 = x - r, y - r
         x1, y1 = x + r, y + r
          
-        default_color = circle.color.rgb
-        dark_color = (circle.color + Color(10, 10, 10)).rgb
-        light_color = (circle.color - Color(20, 20, 20)).rgb
+        default_color = circle.color
+        dark_color = circle.color + Color(20, 20, 20)
+        light_color = circle.color - Color(20, 20, 20)
         self.plant_draw.ellipse((x0, y0, x1, y1),
-                                fill=(*light_color, 80))
+                                fill=light_color.rgb)
         self.plant_draw.ellipse((x0-1, y0-1, x1-1, y1-1),
-                                fill=default_color)
+                                fill=default_color.rgb)
         self.plant_draw.ellipse((x0+1, y0+1, x1+1, y1+1),
-                                fill=(*dark_color, 50))
+                                fill=dark_color.rgb)
 
     def update_progress(self, value: float):
         """

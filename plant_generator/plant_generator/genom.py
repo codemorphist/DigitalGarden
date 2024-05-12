@@ -39,7 +39,7 @@ class AgentGenom:
         rc, gc, bc = Color.random()
 
         return AgentGenom(
-            length=randint(20, 100),
+            length=randint(20, 150),
             length_deviation=randint(0, 30),
             size=randint(5, 80),
             size_from_ancestor=randint(10, 90),
