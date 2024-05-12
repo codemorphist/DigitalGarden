@@ -188,9 +188,10 @@ class PlantFrame(ttk.Frame):
                          rowspan=10, 
                          columnspan=10)
 
+        self.background = Color(250, 250, 250)
         self.plant_image = Image.new("RGBA",
                                      (self.canvas_width, self.canvas_height),
-                                     (255, 255, 255))
+                                     self.background.rgb)
         self.plant_draw = ImageDraw.Draw(self.plant_image)
 
         self.style = ttk.Style()
@@ -212,7 +213,7 @@ class PlantFrame(ttk.Frame):
     def clear_canvas(self):
         self.plant_image = Image.new("RGB",
                                      (self.canvas_width, self.canvas_height),
-                                     (255, 255, 255))
+                                     self.background.rgb)
         self.plant_draw = ImageDraw.Draw(self.plant_image)
         self.update_canvas()
 
