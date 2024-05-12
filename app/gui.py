@@ -174,8 +174,16 @@ class PlantFrame(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
 
+        # Style of program
+        self.style = ttk.Style()
+        self.style.configure("Custom.Vertical.TProgressbar", 
+                             troughcolor='gray')
+
+        # Canvas with plant
         self.canvas_width = 800
         self.canvas_height = 800
+
+        self.current_drawing = None
 
         self.canvas = tk.Canvas(master=self,
                                 width=self.canvas_width,
@@ -188,16 +196,14 @@ class PlantFrame(ttk.Frame):
                          rowspan=10, 
                          columnspan=10)
 
+        # Image on which draw plant
         self.background = Color(250, 250, 250)
         self.plant_image = Image.new("RGBA",
                                      (self.canvas_width, self.canvas_height),
                                      self.background.rgb)
         self.plant_draw = ImageDraw.Draw(self.plant_image)
 
-        self.style = ttk.Style()
-        self.style.configure("Custom.Vertical.TProgressbar", 
-                             troughcolor='gray')
-
+        # Progress bar 
         self.progress_var = tk.DoubleVar()
         self.plant_progress = ttk.Progressbar(self, 
                                               style="Custom.Vertical.TProgressbar",
@@ -208,9 +214,19 @@ class PlantFrame(ttk.Frame):
         self.plant_progress.grid(row=0, column=0, pady=10)
 
         self.genom_input = None
-        self.current_drawing = None
+
+    def update_canvas(self):
+        """
+        Show image on canvas
+        """
+        self.canvas.image = ImageTk.PhotoImage(self.plant_image)
+        self.canvas.create_image(self.canvas_width//2, self.canvas_height//2,
+                                 anchor=tk.CENTER, image=self.canvas.image)
 
     def clear_canvas(self):
+        """
+        Clear image with plant and update canvas
+        """
         self.plant_image = Image.new("RGB",
                                      (self.canvas_width, self.canvas_height),
                                      self.background.rgb)
@@ -218,6 +234,12 @@ class PlantFrame(ttk.Frame):
         self.update_canvas()
 
     def draw_circle(self, circle: Circle):
+        """
+        Draw circle on image
+
+        Draw 3 circles, main, darker and ligher 
+        for 3d effect
+        """
         width = self.canvas_width
         height = self.canvas_height
 
@@ -239,11 +261,6 @@ class PlantFrame(ttk.Frame):
         self.plant_draw.ellipse((x0+1, y0+1, x1+1, y1+1),
                                 fill=(*dark_color, 50))
 
-    def update_canvas(self):
-        self.canvas.image = ImageTk.PhotoImage(self.plant_image)
-        self.canvas.create_image(self.canvas_width//2, self.canvas_height//2,
-                                 anchor=tk.CENTER, image=self.canvas.image)
-
     def update_progress(self, value: float):
         """
         Update status and color of progressbar 
@@ -261,6 +278,13 @@ class PlantFrame(ttk.Frame):
         self.plant_progress.config(style="Custom.Vertical.TProgressbar")
 
     def start_drawing(self):
+        """
+        Start drawing and generation of plant
+
+        1. Stop all previous drawing (if exist)
+        2. Get new plant
+        3. Start drawing and generating new plant
+        """
         if self.current_drawing:
             self.after_cancel(self.current_drawing)
         self.clear_canvas()
@@ -269,6 +293,9 @@ class PlantFrame(ttk.Frame):
         self.current_drawing = self.after(1, self.draw, plant)
         
     def draw(self, plant: Plant):
+        """
+        Draw plant while it is growing
+        """
         for circle in plant.get_circles():
             self.draw_circle(circle)
         self.update_progress(plant.drawed/plant.total*100) 
