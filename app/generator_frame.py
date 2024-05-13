@@ -18,19 +18,12 @@ class UserFrame(ttk.Frame):
     the buttons and the genome input table
     """
 
-    def __init__(self, container):
+    def __init__(self, container, controller):
         super().__init__(container)
+        self.controller = controller
 
         self.table_height = 20
         self.table_width = 9
-
-        for row in range(self.table_height):
-            self.rowconfigure(row, weight=1)
-        for column in range(self.table_width):
-            self.columnconfigure(column, weight=1)
-
-        self.rowconfigure(self.table_height, weight=3)
-        self.rowconfigure(self.table_height + 1, weight=3)
 
         """
         In the above, the "weight" parameter seems 
@@ -48,6 +41,33 @@ class UserFrame(ttk.Frame):
                 self.genom_entry_fields[(row, column)] = ttk.Entry(self,
                                                                    width=5,
                                                                    textvariable=self.genom_entries_tkvar[(row, column)])
+
+
+        button_style = ttk.Style()
+        button_style.configure("TButton", font=("Times New Roman", 18))
+
+        self.import_button = ttk.Button(self, text="Import", command=self.genome_unpack)
+        self.export_button = ttk.Button(self, text="Export", command=self.genome_pack)
+        self.random_button = ttk.Button(self, text="Random", command=self.set_random)
+        self.generate_button = ttk.Button(self, text="Generate Plant", 
+                                          command=self.controller.plant_frame.start_drawing)
+
+        self.configure_widgets()
+        
+    def configure_widgets(self):
+        """
+        Configure place and style of widgets and frames
+        """
+        for row in range(self.table_height):
+            self.rowconfigure(row, weight=1)
+        for column in range(self.table_width):
+            self.columnconfigure(column, weight=1)
+
+        self.rowconfigure(self.table_height, weight=3)
+        self.rowconfigure(self.table_height + 1, weight=3)
+
+        for row in range(self.table_height):
+            for column in range(self.table_width):
                 self.genom_entry_fields[(row, column)].grid(row=row,
                                                             column=column,
                                                             padx=5,
@@ -56,14 +76,6 @@ class UserFrame(ttk.Frame):
                                                           f"Agent generation: {column + 1} "
                                                            f"\nGene: {AgentGenom.attr_list()[row]}",
                                                           hover_delay=0)
-
-        button_style = ttk.Style()
-        button_style.configure("TButton", font=("Times New Roman", 18))
-
-        self.import_button = ttk.Button(self, text="Import", command=self.genome_unpack)
-        self.export_button = ttk.Button(self, text="Export", command=self.genome_pack)
-        self.random_button = ttk.Button(self, text="Random", command=self.set_random)
-        self.generate_button = ttk.Button(self, text="Generate Plant")
 
         self.import_button.grid(row=self.table_height,
                                 column=0,
@@ -97,8 +109,6 @@ class UserFrame(ttk.Frame):
                                   padx=5)
         self.generate_tip = Hovertip(self.generate_button, "See what happens!")
 
-
-        self.plant = None
 
     def get_agent_genome(self, column: int) -> AgentGenom:
         """
@@ -152,6 +162,9 @@ class UserFrame(ttk.Frame):
         """
         host_file = asksaveasfilename(filetypes=[("Text File", "*.txt")],
                                       defaultextension=".txt")
+        if not host_file:
+            return
+
         with open(host_file, "w") as file:
             for row in range(self.table_height):
                 string = ""
@@ -185,14 +198,10 @@ class PlantFrame(ttk.Frame):
     Contains the canvas where the plant is drawn
     """
 
-    def __init__(self, container):
+    def __init__(self, container, controller):
         super().__init__(container)
-
-        # Style of program
-        self.style = ttk.Style()
-        self.style.configure("Custom.Vertical.TProgressbar", 
-                             troughcolor='gray')
-
+        self.controller = controller
+               
         # Canvas with plant
         self.canvas_width = 800
         self.canvas_height = 800
@@ -201,13 +210,7 @@ class PlantFrame(ttk.Frame):
                                 width=self.canvas_width,
                                 height=self.canvas_height,
                                 bg="lightgray")
-        self.canvas.grid(padx=0, 
-                         pady=10, 
-                         row=0, 
-                         column=1, 
-                         rowspan=10, 
-                         columnspan=10)
-
+        
         # Image on which draw plant
         self.background = Color(250, 250, 250)
         self.plant_image = Image.new("RGBA",
@@ -223,13 +226,30 @@ class PlantFrame(ttk.Frame):
                                               length=800,
                                               variable=self.progress_var,
                                               maximum=100)
-        self.plant_progress.grid(row=0, column=0, pady=10)
-
-        self.genom_input = None
 
         # Plant generation process
         self.current_drawing = None
+        self.configure_widgets()
 
+    def configure_widgets(self):
+        # Style of program
+        self.style = ttk.Style()
+        self.style.configure("Custom.Vertical.TProgressbar", 
+                             troughcolor='gray')
+
+        # Back button
+        
+        # Configure Canvas
+        self.canvas.grid(padx=0, 
+                         pady=10, 
+                         row=0, 
+                         column=1, 
+                         rowspan=10, 
+                         columnspan=10)
+
+        # Configure progress bar
+        self.plant_progress.grid(row=0, column=0, pady=10)
+        
     def update_canvas(self):
         """
         Show image on canvas
@@ -304,7 +324,7 @@ class PlantFrame(ttk.Frame):
             self.after_cancel(self.current_drawing)
         self.clear_canvas()
         self.progress_var.set(0)
-        plant = self.genom_input.get_plant()
+        plant = self.controller.user_frame.get_plant()
         self.current_drawing = self.after(1, self.draw, plant)
         
     def draw(self, plant: Plant):
@@ -323,34 +343,33 @@ class PlantFrame(ttk.Frame):
             self.current_drawing = None
 
 
-class App(tk.Tk):
+class PlantGenerator(ttk.Frame):
     """
     Main application window
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, container, controller):
+        super().__init__(container)
+        self.controller = controller
 
-        self.title("Digital Garden")
+        # Back button 
+        self.back_button = ttk.Button(self, text="Back",
+            command=lambda: self.controller.show_frame("Menu"))
 
-        self.geometry("1280x1000")
-        self.minsize(1024, 512)
 
-        self.__create_widgets__()
+        self.plant_frame = PlantFrame(self, self)
+        self.user_frame = UserFrame(self, self)
 
-    def __create_widgets__(self):
+        self.configure_widgets()
+
+    def configure_widgets(self):
         """
-        Self-explanatory
+        Configure place and style of widgets and frames
         """
-        self.plant_frame = PlantFrame(self)
-        self.user_frame = UserFrame(self)
-
-        self.plant_frame.genom_input = self.user_frame
-        self.user_frame.generate_button.configure(command=self.plant_frame.start_drawing)
-
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
 
         self.plant_frame.grid(column=0, row=0, padx=20, pady=20)
         self.user_frame.grid(column=1, row=0, padx=20, pady=20)
+        self.back_button.grid(row=1, column=0, pady=20)
