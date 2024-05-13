@@ -1,7 +1,7 @@
-from gui import App
+from root import RootWindow
 
 if __name__ == "__main__":
-    app = App()
+    app = RootWindow()
     app.mainloop()
     
     

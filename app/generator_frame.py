@@ -323,22 +323,17 @@ class PlantFrame(ttk.Frame):
             self.current_drawing = None
 
 
-class App(tk.Tk):
+class PlantGenerator(ttk.Frame):
     """
     Main application window
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, container, controller):
+        super().__init__(container)
+        self.controller = controller
+        self.create_widgets()
 
-        self.title("Digital Garden")
-
-        self.geometry("1280x1000")
-        self.minsize(1024, 512)
-
-        self.__create_widgets__()
-
-    def __create_widgets__(self):
+    def create_widgets(self):
         """
         Self-explanatory
         """
