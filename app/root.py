@@ -23,11 +23,11 @@ class RootWindow(tk.Tk):
         self.frames = {}  
         for F in (Menu, PlantGenerator):
             frame = F(container, self)
-            self.frames[F] = frame 
+            self.frames[F.__name__] = frame 
             frame.grid(row=0, column=0, sticky="nsew")
   
         # Show Menu Frame
-        self.show_frame(Menu)
+        self.show_frame("Menu")
 
     def setup_window(self):
         """
@@ -38,9 +38,9 @@ class RootWindow(tk.Tk):
         self.geometry("1280x1000")
         self.minsize(1024, 512)
   
-    def show_frame(self, cont):
+    def show_frame(self, frame_name: str):
         """
         Display frame passed by parameter
         """
-        frame = self.frames[cont]
+        frame = self.frames[frame_name]
         frame.tkraise()

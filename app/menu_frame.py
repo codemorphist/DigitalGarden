@@ -24,7 +24,7 @@ class Menu(ttk.Frame):
         self.controller = controller
 
         buttons = {
-            "Generate Plant": lambda: self.controller.show_frame(PlantGenerator),
+            "Generate Plant": lambda: self.controller.show_frame("PlantGenerator"),
             "Smash Plant": lambda: None,
             "Exit": lambda: self.controller.destroy()
         }
@@ -34,7 +34,7 @@ class Menu(ttk.Frame):
      
     def configure_widgets(self):
         """
-        Self-explanatory
+        Configure place and style of widgets and frames
         """
         self.buttons_frame.place(relx=0.5, rely=0.5, 
                                  anchor=tk.CENTER) 

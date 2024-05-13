@@ -201,7 +201,7 @@ class PlantFrame(ttk.Frame):
     def __init__(self, container, controller):
         super().__init__(container)
         self.controller = controller
-       
+               
         # Canvas with plant
         self.canvas_width = 800
         self.canvas_height = 800
@@ -236,6 +236,8 @@ class PlantFrame(ttk.Frame):
         self.style = ttk.Style()
         self.style.configure("Custom.Vertical.TProgressbar", 
                              troughcolor='gray')
+
+        # Back button
         
         # Configure Canvas
         self.canvas.grid(padx=0, 
@@ -245,10 +247,9 @@ class PlantFrame(ttk.Frame):
                          rowspan=10, 
                          columnspan=10)
 
-
         # Configure progress bar
         self.plant_progress.grid(row=0, column=0, pady=10)
-
+        
     def update_canvas(self):
         """
         Show image on canvas
@@ -351,6 +352,11 @@ class PlantGenerator(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
+        # Back button 
+        self.back_button = ttk.Button(self, text="Back",
+            command=lambda: self.controller.show_frame("Menu"))
+
+
         self.plant_frame = PlantFrame(self, self)
         self.user_frame = UserFrame(self, self)
 
@@ -366,3 +372,4 @@ class PlantGenerator(ttk.Frame):
 
         self.plant_frame.grid(column=0, row=0, padx=20, pady=20)
         self.user_frame.grid(column=1, row=0, padx=20, pady=20)
+        self.back_button.grid(row=1, column=0, pady=20)
