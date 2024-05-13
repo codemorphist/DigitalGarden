@@ -55,6 +55,9 @@ class UserFrame(ttk.Frame):
         self.configure_widgets()
         
     def configure_widgets(self):
+        """
+        Configure place and style of widgets and frames
+        """
         for row in range(self.table_height):
             self.rowconfigure(row, weight=1)
         for column in range(self.table_width):
@@ -159,6 +162,9 @@ class UserFrame(ttk.Frame):
         """
         host_file = asksaveasfilename(filetypes=[("Text File", "*.txt")],
                                       defaultextension=".txt")
+        if not host_file:
+            return
+
         with open(host_file, "w") as file:
             for row in range(self.table_height):
                 string = ""
@@ -344,16 +350,16 @@ class PlantGenerator(ttk.Frame):
     def __init__(self, container, controller):
         super().__init__(container)
         self.controller = controller
-        self.create_widgets()
 
-    def create_widgets(self):
-        """
-        Self-explanatory
-        """
         self.plant_frame = PlantFrame(self, self)
         self.user_frame = UserFrame(self, self)
 
+        self.configure_widgets()
 
+    def configure_widgets(self):
+        """
+        Configure place and style of widgets and frames
+        """
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
