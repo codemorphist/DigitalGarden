@@ -18,8 +18,9 @@ class UserFrame(ttk.Frame):
     the buttons and the genome input table
     """
 
-    def __init__(self, container):
+    def __init__(self, container, controller):
         super().__init__(container)
+        self.controller = controller
 
         self.table_height = 20
         self.table_width = 9
@@ -63,7 +64,8 @@ class UserFrame(ttk.Frame):
         self.import_button = ttk.Button(self, text="Import", command=self.genome_unpack)
         self.export_button = ttk.Button(self, text="Export", command=self.genome_pack)
         self.random_button = ttk.Button(self, text="Random", command=self.set_random)
-        self.generate_button = ttk.Button(self, text="Generate Plant")
+        self.generate_button = ttk.Button(self, text="Generate Plant", 
+                                          command=self.controller.plant_frame.start_drawing)
 
         self.import_button.grid(row=self.table_height,
                                 column=0,
@@ -96,9 +98,6 @@ class UserFrame(ttk.Frame):
                                   sticky="nsew",
                                   padx=5)
         self.generate_tip = Hovertip(self.generate_button, "See what happens!")
-
-
-        self.plant = None
 
     def get_agent_genome(self, column: int) -> AgentGenom:
         """
@@ -185,8 +184,9 @@ class PlantFrame(ttk.Frame):
     Contains the canvas where the plant is drawn
     """
 
-    def __init__(self, container):
+    def __init__(self, container, controller):
         super().__init__(container)
+        self.controller = controller
 
         # Style of program
         self.style = ttk.Style()
@@ -224,8 +224,6 @@ class PlantFrame(ttk.Frame):
                                               variable=self.progress_var,
                                               maximum=100)
         self.plant_progress.grid(row=0, column=0, pady=10)
-
-        self.genom_input = None
 
         # Plant generation process
         self.current_drawing = None
@@ -304,7 +302,7 @@ class PlantFrame(ttk.Frame):
             self.after_cancel(self.current_drawing)
         self.clear_canvas()
         self.progress_var.set(0)
-        plant = self.genom_input.get_plant()
+        plant = self.controller.user_frame.get_plant()
         self.current_drawing = self.after(1, self.draw, plant)
         
     def draw(self, plant: Plant):
@@ -337,11 +335,9 @@ class PlantGenerator(ttk.Frame):
         """
         Self-explanatory
         """
-        self.plant_frame = PlantFrame(self)
-        self.user_frame = UserFrame(self)
+        self.plant_frame = PlantFrame(self, self)
+        self.user_frame = UserFrame(self, self)
 
-        self.plant_frame.genom_input = self.user_frame
-        self.user_frame.generate_button.configure(command=self.plant_frame.start_drawing)
 
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
