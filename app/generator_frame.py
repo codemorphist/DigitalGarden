@@ -144,7 +144,9 @@ class UserFrame(ttk.Frame):
         return plant_genome
 
     def get_plant(self) -> Plant:
-        self.input_is_valid = UserFrame.user_input_is_genome(self.genome_entries_tkvar)
+        self.input_is_valid = PlantGenom.dict_is_genome(
+            { k: v.get() for k, v in self.genome_entries_tkvar.items()} 
+        ) 
         assert self.controller.user_frame.input_is_valid
         plant_genome = self.get_plant_genome()
         start_pos = Vec2(0, 250)
