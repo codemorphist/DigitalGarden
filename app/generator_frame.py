@@ -9,7 +9,7 @@ from colorsys import hsv_to_rgb
 from PIL import Image, ImageDraw, ImageTk
 
 from plant_generator import Plant, PlantGenom, AgentGenom
-from tools import Circle, Color, Vec2, transpose
+from tools import Circle, Color, Vec2
 
 
 class UserFrame(ttk.Frame):
@@ -25,18 +25,18 @@ class UserFrame(ttk.Frame):
         self.table_height = 20
         self.table_width = 9
 
-        self.genom_entry_fields = {}
-        self.genom_entries_tkvar = {}
+        self.genome_entry_fields = {}
+        self.genome_entries_tkvar = {}
         self.entry_tips = {}
 
         self.input_is_valid = None
 
         for row in range(self.table_height):
             for column in range(self.table_width):
-                self.genom_entries_tkvar[(row, column)] = tk.IntVar(value=0)
-                self.genom_entry_fields[(row, column)] = ttk.Entry(self,
-                                                                   width=5,
-                                                                   textvariable=self.genom_entries_tkvar[(row, column)])
+                self.genome_entries_tkvar[(row, column)] = tk.StringVar(value="0")
+                self.genome_entry_fields[(row, column)] = ttk.Entry(self,
+                                                                    width=5,
+                                                                    textvariable=self.genome_entries_tkvar[(row, column)])
 
         button_style = ttk.Style()
         button_style.configure("TButton", font=("Times New Roman", 17))
@@ -65,11 +65,11 @@ class UserFrame(ttk.Frame):
 
         for row in range(self.table_height):
             for column in range(self.table_width):
-                self.genom_entry_fields[(row, column)].grid(row=row,
-                                                            column=column,
-                                                            padx=5,
-                                                            pady=5)
-                self.entry_tips[(row, column)] = Hovertip(self.genom_entry_fields[(row, column)],
+                self.genome_entry_fields[(row, column)].grid(row=row,
+                                                             column=column,
+                                                             padx=5,
+                                                             pady=5)
+                self.entry_tips[(row, column)] = Hovertip(self.genome_entry_fields[(row, column)],
                                                           f"Agent generation: {column + 1} "
                                                           f"\nGene: {AgentGenom.attr_list()[row]}",
                                                           hover_delay=0)
@@ -114,20 +114,21 @@ class UserFrame(ttk.Frame):
                               padx=5)
         self.save_tip = Hovertip(self.save_button, "Save a picture of your gorgeous plant!")
 
-
-    def get_entries(self):
+    @staticmethod
+    def user_input_is_genome(entries_dict: dict) -> bool:
         """
-        Reads the entries as strings and composes out of them
-        an array to be used further on
+        This static method echoes that of the PlantGenom class, but is instead
+        used for the case when the variables are tk-variables; that is to say,
+        it is set dynamically to track if the user input is capable of being
+        a seen as a genome, and is also very gui-oriented
         """
-        arrays = []
-        for column in range(self.table_width):
-            column_array = []
-            for row in range(self.table_height):
-                value = self.genom_entry_fields[(row, column)].get()
-                column_array.append(value)
-            arrays.append(column_array)
-        return arrays
+        try:
+            for row in range(20):
+                for column in range(9):
+                    entry_check = int(entries_dict[(row, column)].get())
+            return True
+        except:
+            return False
 
 
     def get_agent_genome(self, column: int) -> AgentGenom:
@@ -135,8 +136,9 @@ class UserFrame(ttk.Frame):
         Returns an agent genome based upon the entries from
         a column of the entry table
         """
-        arrays = self.get_entries()
-        agent_genome_as_list = list(map(int, arrays[column]))
+        agent_genome_as_list = []
+        for row in range(self.table_height):
+            agent_genome_as_list.append(int(self.genome_entries_tkvar[(row, column)].get()))
         agent_genome_entries = tuple(agent_genome_as_list)
         agent_genome = AgentGenom(*agent_genome_entries)
         return agent_genome
@@ -159,6 +161,8 @@ class UserFrame(ttk.Frame):
         return plant_genome
 
     def get_plant(self) -> Plant:
+        self.input_is_valid = UserFrame.user_input_is_genome(self.genome_entries_tkvar)
+        assert self.controller.user_frame.input_is_valid
         plant_genome = self.get_plant_genome()
         start_pos = Vec2(0, 250)
         plant = Plant(plant_genome, start_pos)
@@ -172,14 +176,14 @@ class UserFrame(ttk.Frame):
         for column in range(self.table_width):
             agent_genome = random_genome.genom[column]
             for row in range(self.table_height):
-                self.genom_entries_tkvar[(row, column)].set(astuple(agent_genome)[row])
+                self.genome_entries_tkvar[(row, column)].set(astuple(agent_genome)[row])
 
     def genome_pack(self):
         """
         The function that realises the "Export" function through
         the file dialogue opener
         """
-        self.input_is_valid = PlantGenom.check_if_genome(self.get_entries())
+        self.input_is_valid = UserFrame.user_input_is_genome(self.genome_entries_tkvar)
         try:
             assert self.input_is_valid
             host_file = asksaveasfilename(filetypes=[("Text file", "*.txt")],
@@ -190,10 +194,10 @@ class UserFrame(ttk.Frame):
                 for row in range(self.table_height):
                     string = ""
                     for column in range(self.table_width):
-                        string += f"{self.genom_entry_fields[(row, column)].get()} "
+                        string += f"{self.genome_entries_tkvar[(row, column)].get()} "
                     file.write(string + "\n")
             messagebox.showinfo("Message", "Genome exported successfully!")
-        except AssertionError:
+        except:
             messagebox.showerror("Error", "Please enter a valid genome to enable export:\n"
                                           "All the entries have to be filled out with integers")
 
@@ -206,15 +210,15 @@ class UserFrame(ttk.Frame):
             file = askopenfilename()
             if not file:  # Exception when user has not chosen any file
                 return
+            entries = {}
             with open(file) as f:
-                lines = f.readlines()
-                converted = transpose(list(map(lambda string: string.split(), lines)))
-                assert PlantGenom.check_if_genome(converted)
-                for column in range(self.table_width):
-                    entries = list(map(int, converted[column]))
-                    for row in range(self.table_height):
-                        self.genom_entries_tkvar[(row, column)].set(entries[row])
-                messagebox.showinfo("Message", "Genome imported successfully!")
+                for r, row in enumerate(f):
+                    for c, entry in enumerate(row.split()):
+                        entries[(r, c)] = entry
+            assert PlantGenom.dict_is_genome(entries)
+            for pair, entry in entries.items():
+                self.genome_entries_tkvar[pair].set(entries[pair])
+            messagebox.showinfo("Message", "Genome imported successfully!")
         except:
             messagebox.showerror("Error", "Import attempted with an invalid genome:\n"
                                           "The genome has to be a .txt file with a 20x9 table of \n"
@@ -222,7 +226,11 @@ class UserFrame(ttk.Frame):
 
 
     def save_plant_as(self):
-
+        """
+        This method realises the "Save" button functionality;
+        it saves the current canvas picture (including during
+        generation) in the .png format
+        """
         host_file = asksaveasfilename(filetypes=[("Image", "*.png")],
                                       defaultextension=".png")
         if not host_file:
@@ -361,16 +369,13 @@ class PlantFrame(ttk.Frame):
         3. Start drawing and generating new plant
         """
         try:
-            self.controller.user_frame.input_is_valid = (
-                PlantGenom.check_if_genome(self.controller.user_frame.get_entries()))
-            assert self.controller.user_frame.input_is_valid
             if self.current_drawing:
                 self.after_cancel(self.current_drawing)
             self.clear_canvas()
             self.progress_var.set(0)
             plant = self.controller.user_frame.get_plant()
             self.current_drawing = self.after(1, self.draw, plant)
-        except AssertionError:
+        except:
             messagebox.showerror("Error", "Generation attempted with an invalid genome:\n"
                                           "All the entries have to be filled out with integers")
 

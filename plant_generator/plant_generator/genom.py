@@ -29,7 +29,7 @@ class AgentGenom:
     angle_branches: int
     angle_deviation: int
 
-    turn: Vec2
+    turn: int
     random_turn: int
     down: int
 
@@ -67,7 +67,7 @@ class PlantGenom:
         self.genom = genom
 
     def evolve(self,
-               generation: int, 
+               generation: int,
                agent_genom: AgentGenom) -> Optional[AgentGenom]:
         """
         Evolute genom of Agent to new generation
@@ -112,14 +112,18 @@ class PlantGenom:
             AgentGenom.random() for _ in range(generations)
         ]) 
 
+
     @staticmethod
-    def check_if_genome(entries_list: list[list]) -> bool:
+    def dict_is_genome(entries_dict: dict) -> bool:
+        """
+        This static method echoes that of the UserFrame class, but is instead
+        used for the case when the variables are ordinary strings; that is to say,
+        it is a simple check for being capable of being seen as a genome
+        """
         try:
-            assert len(entries_list) == 9
-            for k in range(len(entries_list)):
-                entries = list(map(int, entries_list[k]))
-                assert len(entries) == 20
+            for row in range(20):
+                for column in range(9):
+                    entry_check = int(entries_dict[(row, column)])
             return True
         except:
             return False
-
