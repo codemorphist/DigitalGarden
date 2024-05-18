@@ -11,10 +11,10 @@ class AgentGenom:
     length: int
     length_deviation: int
 
-    size: float
-    size_from_ancestor: float
-    size_from_level: float
-    size_changes: float
+    size: int
+    size_from_ancestor: int
+    size_from_level: int
+    size_changes: int
 
     red: int
     green: int
@@ -22,16 +22,16 @@ class AgentGenom:
     red_changes: int
     green_changes: int
     blue_changes: int
-    color_from_ancestor: float
-    color_deviation: float
+    color_from_ancestor: int
+    color_deviation: int
 
     number_branches: int
-    angle_branches: float
-    angle_deviation: float
+    angle_branches: int
+    angle_deviation: int
 
     turn: Vec2
     random_turn: int
-    down: float
+    down: int
 
     @staticmethod
     def random() -> AgentGenom:
@@ -111,3 +111,15 @@ class PlantGenom:
         return PlantGenom([
             AgentGenom.random() for _ in range(generations)
         ]) 
+
+    @staticmethod
+    def check_if_genome(entries_list: list[list]) -> bool:
+        try:
+            assert len(entries_list) == 9
+            for k in range(len(entries_list)):
+                entries = list(map(int, entries_list[k]))
+                assert len(entries) == 20
+            return True
+        except:
+            return False
+
