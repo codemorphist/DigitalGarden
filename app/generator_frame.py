@@ -410,4 +410,4 @@ class PlantGenerator(ttk.Frame):
 
         self.plant_frame.grid(column=0, row=0, padx=20, pady=20)
         self.user_frame.grid(column=1, row=0, padx=20, pady=30)
-        self.back_button.place(x=5, y=0)
+        self.back_button.place(x=10, y=10)
