@@ -113,24 +113,7 @@ class UserFrame(ttk.Frame):
                               sticky="nsew",
                               padx=5)
         self.save_tip = Hovertip(self.save_button, "Save a picture of your gorgeous plant!")
-
-    @staticmethod
-    def user_input_is_genome(entries_dict: dict) -> bool:
-        """
-        This static method echoes that of the PlantGenom class, but is instead
-        used for the case when the variables are tk-variables; that is to say,
-        it is set dynamically to track if the user input is capable of being
-        a seen as a genome, and is also very gui-oriented
-        """
-        try:
-            for row in range(20):
-                for column in range(9):
-                    entry_check = int(entries_dict[(row, column)].get())
-            return True
-        except:
-            return False
-
-
+   
     def get_agent_genome(self, column: int) -> AgentGenom:
         """
         Returns an agent genome based upon the entries from
@@ -183,7 +166,9 @@ class UserFrame(ttk.Frame):
         The function that realises the "Export" function through
         the file dialogue opener
         """
-        self.input_is_valid = UserFrame.user_input_is_genome(self.genome_entries_tkvar)
+        self.input_is_valid = PlantGenom.dict_is_genome(
+            { k: v.get() for k, v in self.genome_entries_tkvar.items()} 
+        ) 
         try:
             assert self.input_is_valid
             host_file = asksaveasfilename(filetypes=[("Text file", "*.txt")],
@@ -223,7 +208,6 @@ class UserFrame(ttk.Frame):
             messagebox.showerror("Error", "Import attempted with an invalid genome:\n"
                                           "The genome has to be a .txt file with a 20x9 table of \n"
                                           "integer inputs separated by spaces")
-
 
     def save_plant_as(self):
         """

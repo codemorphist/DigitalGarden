@@ -121,9 +121,8 @@ class PlantGenom:
         it is a simple check for being capable of being seen as a genome
         """
         try:
-            for row in range(20):
-                for column in range(9):
-                    entry_check = int(entries_dict[(row, column)])
+            for _, val in entries_dict.items():
+                int(val)
             return True
         except:
             return False
