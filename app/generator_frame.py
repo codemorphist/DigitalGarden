@@ -237,8 +237,8 @@ class PlantFrame(ttk.Frame):
         self.controller = controller
 
         # Canvas with plant
-        self.canvas_width = 800
-        self.canvas_height = 800
+        # self.canvas_width = 800
+        # self.canvas_height = 800
 
         self.canvas = tk.Canvas(master=self,
                                 width=self.canvas_width,
@@ -257,13 +257,21 @@ class PlantFrame(ttk.Frame):
         self.plant_progress = ttk.Progressbar(self,
                                               style="Custom.Vertical.TProgressbar",
                                               orient=tk.VERTICAL,
-                                              length=800,
+                                              length=self.canvas_height,
                                               variable=self.progress_var,
                                               maximum=100)
 
         # Plant generation process
         self.current_drawing = None
         self.configure_widgets()
+
+    @property
+    def canvas_width(self):
+        return 800
+
+    @property
+    def canvas_height(self):
+        return 800
 
     def configure_widgets(self):
         # Style of program
