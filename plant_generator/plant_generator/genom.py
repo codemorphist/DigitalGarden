@@ -142,10 +142,28 @@ class PlantGenom:
 
     @staticmethod
     def export_genom(genom: str) -> PlantGenom:
-        pass
+        values = []
+        for row in genom.split("\n"):
+            val_row = []
+            for val in row.rstrip().split():
+                val_row.append(int(val))
+            values.append(val_row)
+            
+        agents = []
+        for c in range(len(values[0])):
+            gens = []
+            for v in range(len(values)):
+                gens.append(values[v][c])
+            agents.append(AgentGenom(*gens))
+        return PlantGenom(agents)
+
+    def __repr__(self) -> str:
+        return str(self.genom)
 
 
 if __name__ == "__main__":
-    print(PlantGenom.import_genom(PlantGenom.random()))
+    # print(PlantGenom.import_genom(PlantGenom.random()))
+    f = open("./coral_palm.txt", "r")
+    __import__('pprint').pprint(PlantGenom.export_genom(f.read().rstrip()))
 
 
