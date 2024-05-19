@@ -74,4 +74,7 @@ class Plant:
     def __del__(self):
         del self.plant_genom
         del self
+
+    def import(self):
+        pass
     

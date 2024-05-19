@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Optional
 from tools import Vec2, Color
 from random import randint, random
@@ -62,6 +62,7 @@ class AgentGenom:
         class_attributes = [attr for attr in AgentGenom.__annotations__]
         return class_attributes
 
+
 class PlantGenom:
     def __init__(self, genom: list[AgentGenom]):
         self.genom = genom
@@ -112,7 +113,6 @@ class PlantGenom:
             AgentGenom.random() for _ in range(generations)
         ]) 
 
-
     @staticmethod
     def dict_is_genome(entries_dict: dict) -> bool:
         """
@@ -126,3 +126,26 @@ class PlantGenom:
             return True
         except:
             return False
+
+    @staticmethod 
+    def import_genom(genom: PlantGenom) -> str:
+        values = []
+        for agent in genom.genom:
+            values.append([v for v in asdict(agent).values()])
+
+        genom_str = ""
+        for i in range(len(values[0])):
+            for j in range(len(values)):
+                genom_str += str(values[j][i]) + "\t"
+            genom_str += "\n"
+        return genom_str
+
+    @staticmethod
+    def export_genom(genom: str) -> PlantGenom:
+        pass
+
+
+if __name__ == "__main__":
+    print(PlantGenom.import_genom(PlantGenom.random()))
+
+
