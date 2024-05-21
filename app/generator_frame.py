@@ -33,7 +33,7 @@ class UserFrame(ttk.Frame):
 
         for row in range(self.table_height):
             for column in range(self.table_width):
-                self.genome_entries_tkvar[(row, column)] = tk.StringVar(value="0")
+                self.genome_entries_tkvar[(row, column)] = tk.IntVar(value=0)
                 self.genome_entry_fields[(row, column)] = ttk.Entry(self,
                                                                     width=5,
                                                                     textvariable=self.genome_entries_tkvar[(row, column)])
@@ -121,7 +121,7 @@ class UserFrame(ttk.Frame):
         """
         agent_genome_as_list = []
         for row in range(self.table_height):
-            agent_genome_as_list.append(int(self.genome_entries_tkvar[(row, column)].get()))
+            agent_genome_as_list.append(self.genome_entries_tkvar[(row, column)].get())
         agent_genome_entries = tuple(agent_genome_as_list)
         agent_genome = AgentGenom(*agent_genome_entries)
         return agent_genome
@@ -134,14 +134,8 @@ class UserFrame(ttk.Frame):
         """
         agent_genomes = []
         for column in range(self.table_width):
-            # try:
-            #     agent_genomes.append(self.get_agent_genome(column))
-            # except tk.TclError:
-            #     messagebox.showerror("showerror", f"Неправильне значення геному")
-            #     return
             agent_genomes.append(self.get_agent_genome(column))
-        plant_genome = PlantGenom(agent_genomes)
-        return plant_genome
+        return PlantGenom(agent_genomes)
 
     def get_plant(self) -> Plant:
         self.input_is_valid = PlantGenom.dict_is_genome(
@@ -178,13 +172,12 @@ class UserFrame(ttk.Frame):
             if not host_file:
                 return
             with open(host_file, "w") as file:
-                for row in range(self.table_height):
-                    string = ""
-                    for column in range(self.table_width):
-                        string += f"{self.genome_entries_tkvar[(row, column)].get()} "
-                    file.write(string + "\n")
+                file.write(PlantGenom.export_genom(
+                    self.get_plant().plant_genom
+                ))
             messagebox.showinfo("Message", "Genome exported successfully!")
-        except:
+        except Exception as e:
+            print(e)
             messagebox.showerror("Error", "Please enter a valid genome to enable export:\n"
                                           "All the entries have to be filled out with integers")
 
@@ -194,17 +187,16 @@ class UserFrame(ttk.Frame):
         the file dialogue opener
         """
         try:
-            file = askopenfilename()
-            if not file:  # Exception when user has not chosen any file
+            filename = askopenfilename()
+            if not filename:  # Exception when user has not chosen any file
                 return
             entries = {}
-            with open(file) as f:
-                for r, row in enumerate(f):
-                    for c, entry in enumerate(row.split()):
-                        entries[(r, c)] = entry
-            assert PlantGenom.dict_is_genome(entries)
-            for pair, entry in entries.items():
-                self.genome_entries_tkvar[pair].set(entries[pair])
+            with open(filename) as file:
+                entries = dict(PlantGenom.import_genom(file.read()))
+
+            for c, agent in enumerate(entries.values()):
+                for r, gen in enumerate(agent.values()):
+                    self.genome_entries_tkvar[(r, c)].set(gen)
             messagebox.showinfo("Message", "Genome imported successfully!")
         except:
             messagebox.showerror("Error", "Import attempted with an invalid genome:\n"

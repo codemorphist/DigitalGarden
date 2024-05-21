@@ -62,6 +62,10 @@ class AgentGenom:
         class_attributes = [attr for attr in AgentGenom.__annotations__]
         return class_attributes
 
+    def __iter__(self):
+        for attr in self.attr_list():
+            yield attr, getattr(self, attr)
+
 
 class PlantGenom:
     def __init__(self, genom: list[AgentGenom]):
@@ -107,6 +111,17 @@ class PlantGenom:
 
         return evolved_genom
 
+    def __iter__(self):
+        """
+        Convert genom to dict in next format
+
+        'Agent 1': { ... },
+        'Agent 2': { ... },
+                     ...
+        """
+        for i, agent in enumerate(self.genom):
+            yield f"Agent{i}", dict(agent)
+
     @staticmethod
     def random(generations: int = 9) -> PlantGenom:
         return PlantGenom([
@@ -128,7 +143,10 @@ class PlantGenom:
             return False
 
     @staticmethod 
-    def import_genom(genom: PlantGenom) -> str:
+    def export_genom(genom: PlantGenom) -> str:
+        """
+        Impoort genom to string
+        """
         values = []
         for agent in genom.genom:
             values.append([v for v in asdict(agent).values()])
@@ -141,9 +159,12 @@ class PlantGenom:
         return genom_str
 
     @staticmethod
-    def export_genom(genom: str) -> PlantGenom:
+    def import_genom(genom: str) -> PlantGenom:
+        """
+        Export genom from string
+        """
         values = []
-        for row in genom.split("\n"):
+        for row in genom.rstrip().split("\n"):
             val_row = []
             for val in row.rstrip().split():
                 val_row.append(int(val))
@@ -164,6 +185,6 @@ class PlantGenom:
 if __name__ == "__main__":
     # print(PlantGenom.import_genom(PlantGenom.random()))
     f = open("./coral_palm.txt", "r")
-    __import__('pprint').pprint(PlantGenom.export_genom(f.read().rstrip()))
+    __import__('pprint').pprint(PlantGenom.export_genom(f.read()))
 
 
