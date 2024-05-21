@@ -146,10 +146,7 @@ class UserFrame(ttk.Frame):
         return PlantGenom(agent_genomes)
 
     def get_plant(self) -> Plant:
-        try:
-            plant_genome = self.get_plant_genome()
-        except Exception as e:
-            print(e)
+        plant_genome = self.get_plant_genome()
         start_pos = Vec2(0, 250)
         plant = Plant(plant_genome, start_pos)
         return plant
@@ -175,12 +172,12 @@ class UserFrame(ttk.Frame):
                                       defaultextension=".txt")
             if not host_file:
                 return
+                
+            genom_str = PlantGenom.export_genom(self.get_plant().plant_genom)
             with open(host_file, "w") as file:
-                file.write(PlantGenom.export_genom(
-                    self.get_plant().plant_genom
-                ))
+                file.write(genom_str)
             messagebox.showinfo("Message", "Genome exported successfully!")
-        except Exception as e:
+        except:
             messagebox.showerror("Error", "Please enter a valid genome to enable export:\n"
                                           "All the entries have to be filled out with integers")
 
