@@ -36,7 +36,7 @@ class RootWindow(tk.Tk):
         """
         self.title("Digital Garden")
 
-        self.geometry("1280x1000")
+        self.geometry("1425x1000")
         self.minsize(1024, 512)
   
     def show_frame(self, frame_name: str):
