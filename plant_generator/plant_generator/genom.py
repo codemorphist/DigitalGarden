@@ -150,6 +150,13 @@ class PlantGenom:
     def export_genom(genom: PlantGenom) -> str:
         """
         Impoort genom to string
+
+        Output format
+                A1  A2  A3  ..
+            G1     
+            G2  
+            G3
+            ..
         """
         values = []
         for agent in genom.genom:
@@ -158,7 +165,7 @@ class PlantGenom:
         genom_str = ""
         for i in range(len(values[0])):
             for j in range(len(values)):
-                genom_str += str(values[j][i]) + "\t"
+                genom_str += str(int(values[j][i])) + "\t"
             genom_str += "\n"
         return genom_str
 
@@ -166,6 +173,13 @@ class PlantGenom:
     def import_genom(genom: str) -> PlantGenom:
         """
         Export genom from string
+
+        Imput format
+                A1  A2  A3  ..
+            G1     
+            G2  
+            G3
+            ..
         """
         values = []
         for row in genom.rstrip().split("\n"):
@@ -218,6 +232,24 @@ class SmashGenom:
                     genom2: PlantGenom,
                     probability: float, 
                     mutations: int) -> PlantGenom:
+        """
+        A probabilistic method of smashing two plant genomes
+
+        Algorithm:
+        1.  We go through each gene in the table
+        2.  We randomly generate a number from 0 to 100
+        4.  If it is greater than the Probability, we take the gene for the Descendant from Genome2, 
+            otherwise from Genome1
+        5.  At the end, we randomly select a cell from the Descendant genome
+            and write a randomly generated number into it
+        6.  We repeat [5] as many times as there are mutations
+
+        :param genom1: First parent genom 
+        :param genom2: Second parent genom 
+        :param probability: Probalility for smash
+        :param mutations: Mutations count
+        """
+        # Probalistic part
         genom1_table = genom1.table()
         genom2_table = genom2.table()
         smashed_table = PlantGenom.empty().table()
@@ -227,6 +259,8 @@ class SmashGenom:
                     smashed_table[c][r] = genom2_table[c][r]
                 else:
                     smashed_table[c][r] = genom1_table[c][r]
+
+        # Mutatation part
         mut_table = PlantGenom.random().table()
         while mutations:
             c = randint(0, len(smashed_table))
@@ -238,18 +272,32 @@ class SmashGenom:
 
     @staticmethod
     def average(genom1: PlantGenom,
-                genom2: PlantGenom) -> PlantGenom:
-        pass
+                genom2: PlantGenom,
+                weight: float) -> PlantGenom:
+        """
+        Method of average smashing of two plant genomes
 
+        Algorithm:
+        1.  We go through each gene in the table
+        2.  For Descendant, we put a gene, 
+            the value of which is calculated as follows: 
+            `(Genome1 + Genome2) / Weight`
 
-if __name__ == "__main__":
-    g1 = PlantGenom.random()
-    g2 = PlantGenom.random()
-    g3 = SmashGenom.probalistic(
-        g1, g2, 0.5, 0
-    )
+        :param genom1: First parent genom 
+        :param genom2: Second parent genom 
+        :param weight: Weight for average
+        """
+        # Averate part
+        assert weight > 0, "Weight must be greater than zero"
+        genom1_table = genom1.table()
+        genom2_table = genom2.table()
+        smashed_table = PlantGenom.empty().table()
 
-    with open("test_probalistic", "w") as f:
-        f.write(PlantGenom.export_genom(g1) + "\n")
-        f.write(PlantGenom.export_genom(g2) + "\n")
-        f.write(PlantGenom.export_genom(g3) + "\n")
+        for c, agent in enumerate(smashed_table):
+            for r in range(len(agent)):
+                g1 = genom1_table[c][r]
+                g2 = genom2_table[c][r]
+                smashed_table[c][r] = int( (g1 + g2) / weight )
+
+        return PlantGenom([AgentGenom(*agent) for agent in smashed_table])
+
