@@ -268,7 +268,7 @@ class SmashGenom:
                 genom2: PlantGenom,
                 weight: float) -> PlantGenom:
         """
-        Method of average smashing of two plant genomes
+        Method of weighted average smashing of two plant genomes
 
         Algorithm:
         1.  We go through each gene in the table
@@ -290,7 +290,7 @@ class SmashGenom:
             for r in range(len(agent)):
                 g1 = genom1_table[c][r]
                 g2 = genom2_table[c][r]
-                smashed_table[c][r] = int( (g1 + g2) / weight )
+                smashed_table[c][r] = int( weight * g1 + (1 - weight) * g2 )
 
         return PlantGenom([AgentGenom(*agent) for agent in smashed_table])
 
