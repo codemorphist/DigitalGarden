@@ -215,7 +215,7 @@ class SmashGenom:
     """
     Class which implement smash for genom of plants
     
-    - Probalistic 
+    - Probabilistic
     - Weighted Average
     - TODO: Mass Smash
     """
@@ -238,10 +238,10 @@ class SmashGenom:
         return PlantGenom([AgentGenom(*agent) for agent in genom_table])
 
     @staticmethod
-    def probalistic(genom1: PlantGenom, 
-                    genom2: PlantGenom,
-                    probability: float, 
-                    mutations: int) -> PlantGenom:
+    def probabilistic(genom1: PlantGenom,
+                      genom2: PlantGenom,
+                      probability: float,
+                      mutations: int) -> PlantGenom:
         """
         A probabilistic method of smashing two plant genomes
 
@@ -293,7 +293,7 @@ class SmashGenom:
         :param mutations: Mutations count
         """
         # Averate part
-        assert weight > 0, "Weight must be greater than zero"
+        assert 1 <= weight <= 0, "Weight must lie within [0;1]"
         genom1_table = genom1.table()
         genom2_table = genom2.table()
         smashed_table = PlantGenom.empty().table()
