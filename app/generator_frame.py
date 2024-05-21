@@ -111,6 +111,14 @@ class UserFrame(ttk.Frame):
                               sticky="nsew",
                               padx=5)
         self.save_tip = Hovertip(self.save_button, "Save a picture of your gorgeous plant!")
+
+    def is_int(self, text: str) -> bool:
+        """
+        Check string represent integer value
+        """
+        if text[0] in ("-", "+"):
+            return text[1:].isdigit()
+        return text.isdigit()
    
     def get_agent_genome(self, column: int) -> AgentGenom:
         """
@@ -119,7 +127,9 @@ class UserFrame(ttk.Frame):
         """
         agent_genome_as_list = []
         for row in range(self.table_height):
-            agent_genome_as_list.append(self.genome_entries_tkvar[(row, column)].get())
+            value = self.genome_entry_fields[(row, column)].get()
+            assert self.is_int(value), "Invalid type for gen value"
+            agent_genome_as_list.append(int(value))
         agent_genome_entries = tuple(agent_genome_as_list)
         agent_genome = AgentGenom(*agent_genome_entries)
         return agent_genome
@@ -136,20 +146,24 @@ class UserFrame(ttk.Frame):
         return PlantGenom(agent_genomes)
 
     def get_plant(self) -> Plant:
-        plant_genome = self.get_plant_genome()
+        try:
+            plant_genome = self.get_plant_genome()
+        except Exception as e:
+            print(e)
         start_pos = Vec2(0, 250)
         plant = Plant(plant_genome, start_pos)
         return plant
 
     def set_random(self):
         """
-        Sets random table entry values; bound to the "Random" button
+        Sets random table entry values bound to the "Random" button
         """
-        random_genome = PlantGenom.random()
+        random_genome = PlantGenom.random().table()
         for column in range(self.table_width):
-            agent_genome = random_genome.genom[column]
             for row in range(self.table_height):
-                self.genome_entries_tkvar[(row, column)].set(astuple(agent_genome)[row])
+                self.genome_entries_tkvar[(row, column)].set(
+                    random_genome[column][row]
+                )
 
     def genome_pack(self):
         """
