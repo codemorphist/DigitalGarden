@@ -14,7 +14,9 @@ from generator_frame import PlantFrame
 
 class CanvasFrame(PlantFrame):
     """
-    Contains the canvas where a parent plant is drawn
+    Contains a canvas to draw the plants on: both of
+    the parent plant frames, as well as the heir plant frame,
+    contain such a frame
     """
     def __init__(self, container, controller):
         super().__init__(container, controller)
@@ -28,6 +30,12 @@ class CanvasFrame(PlantFrame):
         return 740
 
 class ParentUserFrame(ttk.Frame):
+    """
+    This frame realises the functionality for the import and
+    showing of the parent plants (i.e. the left-most and the
+    right-most frames respectively); contains the "Import"
+    and "Show" buttons
+    """
     def __init__(self, container, controller):
         super().__init__(container)
         self.controller = controller
@@ -42,6 +50,11 @@ class ParentUserFrame(ttk.Frame):
         self.show_button.pack(padx=10, pady=5)
 
 class HeirUserFrame(ttk.Frame):
+    """
+    This frame contains all the buttons that control what will be
+    drawn on the middle canvas; contains the "Method", "Generate",
+    "Export" and "Save" buttons
+    """
     def __init__(self, container, controller):
         super().__init__(container)
         self.controller = controller
@@ -65,6 +78,11 @@ class HeirUserFrame(ttk.Frame):
         self.method_settings = MethodSettingsWindow(self.controller.controller, self.controller.controller)
 
 class ParentGeneratorFrame(ttk.Frame):
+    """
+    This frame consists of a CanvasFrame and a ParentUserFrame,
+    as well as a progressbar; the parent plants are controlled
+    and drawn here
+    """
     def __init__(self, container, controller):
         super().__init__(container)
         self.controller = controller
@@ -80,6 +98,11 @@ class ParentGeneratorFrame(ttk.Frame):
 
 
 class HeirGeneratorFrame(ttk.Frame):
+    """
+    This frame consists of a CanvasFrame and an HeirUserFrame,
+    as well as a progressbar; the heir plant is controlled
+    and drawn here
+    """
     def __init__(self, container, controller):
         super().__init__(container)
         self.controller = controller
@@ -94,6 +117,10 @@ class HeirGeneratorFrame(ttk.Frame):
         self.heir_user_frame.pack()
 
 class MethodSettingsWindow(tk.Toplevel):
+    """
+    This is a pop-up window where the User can regulate
+    the parameters of the genome smashing method
+    """
     def __init__(self, container, controller):
         super().__init__(container)
         self.controller = controller
@@ -158,6 +185,9 @@ class MethodSettingsWindow(tk.Toplevel):
         self.destroy()
 
 class SmashPlant(ttk.Frame):
+    """
+    The main frame of the feature
+    """
     def __init__(self, container, controller):
         super().__init__(container)
         self.controller = controller
