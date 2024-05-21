@@ -1,8 +1,8 @@
 from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Optional
-from tools import Vec2, Color
-from random import randint, random
+from tools import Color
+from random import randint, random, uniform
 from copy import deepcopy
 
 
@@ -61,6 +61,10 @@ class AgentGenom:
     def attr_list(cls) -> list:
         class_attributes = [attr for attr in AgentGenom.__annotations__]
         return class_attributes
+
+    @staticmethod
+    def empty() -> AgentGenom:
+        return AgentGenom(*[0  for _ in AgentGenom.attr_list()])
 
     def __iter__(self):
         for attr in self.attr_list():
@@ -178,13 +182,74 @@ class PlantGenom:
             agents.append(AgentGenom(*gens))
         return PlantGenom(agents)
 
+    @staticmethod
+    def empty(agents: int=9) -> PlantGenom:
+        genom = []
+        for _ in range(agents):
+            genom.append(AgentGenom.empty())
+        return PlantGenom(genom)
+
+    def table(self) -> list[list]:
+        genom_table = []
+
+        for _, agent in self:
+            a = []
+            for gen in agent.values():
+                a.append(gen)
+            genom_table.append(a)
+
+        return genom_table
+
     def __repr__(self) -> str:
         return str(self.genom)
 
 
+class SmashGenom:
+    """
+    Class which implement smash for genom of plants
+    
+    - Probalistic 
+    - Weighted Average
+    - TODO: Mass Smash
+    """
+
+    @staticmethod
+    def probalistic(genom1: PlantGenom, 
+                    genom2: PlantGenom,
+                    probability: float, 
+                    mutations: int) -> PlantGenom:
+        genom1_table = genom1.table()
+        genom2_table = genom2.table()
+        smashed_table = PlantGenom.empty().table()
+        for c, agent in enumerate(smashed_table):
+            for r in range(len(agent)):
+                if uniform(0.0, 1.0) > probability:
+                    smashed_table[c][r] = genom2_table[c][r]
+                else:
+                    smashed_table[c][r] = genom1_table[c][r]
+        mut_table = PlantGenom.random().table()
+        while mutations:
+            c = randint(0, len(smashed_table))
+            r = randint(0, len(smashed_table[0]))
+            smashed_table[c][r] = mut_table[c][r]
+            mutations -= 1
+
+        return PlantGenom([AgentGenom(*agent) for agent in smashed_table])
+
+    @staticmethod
+    def average(genom1: PlantGenom,
+                genom2: PlantGenom) -> PlantGenom:
+        pass
+
+
 if __name__ == "__main__":
-    # print(PlantGenom.import_genom(PlantGenom.random()))
-    f = open("./coral_palm.txt", "r")
-    __import__('pprint').pprint(PlantGenom.export_genom(f.read()))
+    g1 = PlantGenom.random()
+    g2 = PlantGenom.random()
+    g3 = SmashGenom.probalistic(
+        g1, g2, 0.5, 0
+    )
 
-
+    with open("test_probalistic", "w") as f:
+        f.write(PlantGenom.export_genom(g1) + "\n")
+        f.write(PlantGenom.export_genom(g2) + "\n")
+        f.write(PlantGenom.export_genom(g3) + "\n")
