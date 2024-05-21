@@ -64,14 +64,8 @@ class Plant:
                 new_agents += agent.get_heirs()
         self.agents = new_agents
 
-    @staticmethod
-    def random() -> Plant:
-        return Plant(
-            PlantGenom.random(),
-            Vec2(0, 300)
-        )
-
     def __del__(self):
         del self.plant_genom
         del self
-    
+
+

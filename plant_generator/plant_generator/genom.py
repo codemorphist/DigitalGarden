@@ -1,8 +1,8 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Optional
-from tools import Vec2, Color
-from random import randint, random
+from tools import Color
+from random import randint, random, uniform
 from copy import deepcopy
 
 
@@ -62,6 +62,15 @@ class AgentGenom:
         class_attributes = [attr for attr in AgentGenom.__annotations__]
         return class_attributes
 
+    @staticmethod
+    def empty() -> AgentGenom:
+        return AgentGenom(*[0  for _ in AgentGenom.attr_list()])
+
+    def __iter__(self):
+        for attr in self.attr_list():
+            yield attr, getattr(self, attr)
+
+
 class PlantGenom:
     def __init__(self, genom: list[AgentGenom]):
         self.genom = genom
@@ -106,12 +115,22 @@ class PlantGenom:
 
         return evolved_genom
 
+    def __iter__(self):
+        """
+        Convert genom to dict in next format
+
+        'Agent 1': { ... },
+        'Agent 2': { ... },
+                     ...
+        """
+        for i, agent in enumerate(self.genom):
+            yield f"Agent{i}", dict(agent)
+
     @staticmethod
     def random(generations: int = 9) -> PlantGenom:
         return PlantGenom([
             AgentGenom.random() for _ in range(generations)
         ]) 
-
 
     @staticmethod
     def dict_is_genome(entries_dict: dict) -> bool:
@@ -126,3 +145,165 @@ class PlantGenom:
             return True
         except:
             return False
+
+    @staticmethod 
+    def export_genom(genom: PlantGenom) -> str:
+        """
+        Impoort genom to string
+
+        Output format
+                A1  A2  A3  ..
+            G1     
+            G2  
+            G3
+            ..
+        """
+        transposed = list(zip(*genom.table()))
+        agents_str = [" ".join(map(str, map(int, agent))) for agent in transposed]
+        return "\n".join(agents_str) 
+
+    @staticmethod
+    def import_genom(genom: str) -> PlantGenom:
+        """
+        Export genom from string
+
+        Imput format
+                A1  A2  A3  ..
+            G1     
+            G2  
+            G3
+            ..
+        """
+        values = []
+        for row in genom.rstrip().split("\n"):
+            val_row = []
+            for val in row.rstrip().split():
+                val_row.append(int(val))
+            values.append(val_row)
+            
+        agents = []
+        for c in range(len(values[0])):
+            gens = []
+            for v in range(len(values)):
+                gens.append(values[v][c])
+            agents.append(AgentGenom(*gens))
+        return PlantGenom(agents)
+
+    @staticmethod
+    def empty(agents: int=9) -> PlantGenom:
+        genom = []
+        for _ in range(agents):
+            genom.append(AgentGenom.empty())
+        return PlantGenom(genom)
+
+    def table(self) -> list[list]:
+        genom_table = []
+
+        for _, agent in self:
+            a = []
+            for gen in agent.values():
+                a.append(gen)
+            genom_table.append(a)
+
+        return genom_table
+
+    def __repr__(self) -> str:
+        return f"PlantGenom({self.genom})" 
+
+
+class SmashGenom:
+    """
+    Class which implement smash for genom of plants
+    
+    - Probalistic 
+    - Weighted Average
+    - TODO: Mass Smash
+    """
+    
+    @staticmethod
+    def mutate(genom: PlantGenom,
+               mutations: int) -> PlantGenom:
+        """
+        Mutate genom
+        """
+        genom_table = genom.table()
+
+        mut_table = PlantGenom.random().table()
+        while mutations:
+            c = randint(0, len(genom_table))
+            r = randint(0, len(genom_table[0]))
+            genom_table[c][r] = mut_table[c][r]
+            mutations -= 1
+
+        return PlantGenom([AgentGenom(*agent) for agent in genom_table])
+
+    @staticmethod
+    def probalistic(genom1: PlantGenom, 
+                    genom2: PlantGenom,
+                    probability: float, 
+                    mutations: int) -> PlantGenom:
+        """
+        A probabilistic method of smashing two plant genomes
+
+        Algorithm:
+        1.  We go through each gene in the table
+        2.  We randomly generate a number from 0 to 100
+        4.  If it is greater than the Probability, we take the gene for the Descendant from Genome2, 
+            otherwise from Genome1
+        5.  At the end, we randomly select a cell from the Descendant genome
+            and write a randomly generated number into it
+        6.  We repeat [5] as many times as there are mutations
+
+        :param genom1: First parent genom 
+        :param genom2: Second parent genom 
+        :param probability: Probalility for smash
+        :param mutations: Mutations count
+        """
+        # Probalistic part
+        genom1_table = genom1.table()
+        genom2_table = genom2.table()
+        smashed_table = PlantGenom.empty().table()
+        for c, agent in enumerate(smashed_table):
+            for r in range(len(agent)):
+                if uniform(0.0, 1.0) > probability:
+                    smashed_table[c][r] = genom2_table[c][r]
+                else:
+                    smashed_table[c][r] = genom1_table[c][r]
+
+        smashed_genom = PlantGenom([AgentGenom(*agent) for agent in smashed_table])
+        return SmashGenom.mutate(smashed_genom, mutations) 
+
+    @staticmethod
+    def average(genom1: PlantGenom,
+                genom2: PlantGenom,
+                weight: float,
+                mutations: int) -> PlantGenom:
+        """
+        Method of weighted average smashing of two plant genomes
+
+        Algorithm:
+        1.  We go through each gene in the table
+        2.  For Descendant, we put a gene, 
+            the value of which is calculated as follows: 
+            `Weight * Genome1 + (1 - weight) * Genome22`
+
+        :param genom1: First parent genom 
+        :param genom2: Second parent genom 
+        :param weight: Weight for average
+        :param mutations: Mutations count
+        """
+        # Averate part
+        assert weight > 0, "Weight must be greater than zero"
+        genom1_table = genom1.table()
+        genom2_table = genom2.table()
+        smashed_table = PlantGenom.empty().table()
+
+        for c, agent in enumerate(smashed_table):
+            for r in range(len(agent)):
+                g1 = genom1_table[c][r]
+                g2 = genom2_table[c][r]
+                smashed_table[c][r] = int( weight * g1 + (1 - weight) * g2 )
+
+        smashed_genom = PlantGenom([AgentGenom(*agent) for agent in smashed_table])
+        return SmashGenom.mutate(smashed_genom, mutations)
+
