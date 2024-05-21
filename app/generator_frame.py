@@ -29,8 +29,6 @@ class UserFrame(ttk.Frame):
         self.genome_entries_tkvar = {}
         self.entry_tips = {}
 
-        self.input_is_valid = None
-
         for row in range(self.table_height):
             for column in range(self.table_width):
                 self.genome_entries_tkvar[(row, column)] = tk.IntVar(value=0)
@@ -158,11 +156,7 @@ class UserFrame(ttk.Frame):
         The function that realises the "Export" function through
         the file dialogue opener
         """
-        self.input_is_valid = PlantGenom.dict_is_genome(
-            { k: v.get() for k, v in self.genome_entries_tkvar.items()} 
-        ) 
         try:
-            assert self.input_is_valid
             host_file = asksaveasfilename(filetypes=[("Text file", "*.txt")],
                                       defaultextension=".txt")
             if not host_file:
@@ -173,7 +167,6 @@ class UserFrame(ttk.Frame):
                 ))
             messagebox.showinfo("Message", "Genome exported successfully!")
         except Exception as e:
-            print(e)
             messagebox.showerror("Error", "Please enter a valid genome to enable export:\n"
                                           "All the entries have to be filled out with integers")
 

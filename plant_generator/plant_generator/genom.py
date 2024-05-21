@@ -158,12 +158,9 @@ class PlantGenom:
             G3
             ..
         """
-        genom_str = ""
-        for agent in genom.table():
-            for gen in agent:
-                genom_str += str(int(gen)) + "\t"
-            genom_str += "\n"
-        return genom_str
+        transposed = list(zip(*genom.table()))
+        agents_str = [" ".join(map(str, map(int, agent))) for agent in transposed]
+        return "\n".join(agents_str) 
 
     @staticmethod
     def import_genom(genom: str) -> PlantGenom:
