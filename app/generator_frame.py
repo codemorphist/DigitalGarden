@@ -138,10 +138,6 @@ class UserFrame(ttk.Frame):
         return PlantGenom(agent_genomes)
 
     def get_plant(self) -> Plant:
-        self.input_is_valid = PlantGenom.dict_is_genome(
-            { k: v.get() for k, v in self.genome_entries_tkvar.items()} 
-        ) 
-        assert self.controller.user_frame.input_is_valid
         plant_genome = self.get_plant_genome()
         start_pos = Vec2(0, 250)
         plant = Plant(plant_genome, start_pos)
@@ -190,12 +186,11 @@ class UserFrame(ttk.Frame):
             filename = askopenfilename()
             if not filename:  # Exception when user has not chosen any file
                 return
-            entries = {}
             with open(filename) as file:
-                entries = dict(PlantGenom.import_genom(file.read()))
+                genom = PlantGenom.import_genom(file.read())
 
-            for c, agent in enumerate(entries.values()):
-                for r, gen in enumerate(agent.values()):
+            for c, agent in enumerate(genom.table()):
+                for r, gen in enumerate(agent):
                     self.genome_entries_tkvar[(r, c)].set(gen)
             messagebox.showinfo("Message", "Genome imported successfully!")
         except:

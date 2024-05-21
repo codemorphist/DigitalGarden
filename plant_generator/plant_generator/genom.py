@@ -158,14 +158,10 @@ class PlantGenom:
             G3
             ..
         """
-        values = []
-        for agent in genom.genom:
-            values.append([v for v in asdict(agent).values()])
-
         genom_str = ""
-        for i in range(len(values[0])):
-            for j in range(len(values)):
-                genom_str += str(int(values[j][i])) + "\t"
+        for agent in genom.table():
+            for gen in agent:
+                genom_str += str(int(gen)) + "\t"
             genom_str += "\n"
         return genom_str
 
@@ -215,7 +211,7 @@ class PlantGenom:
         return genom_table
 
     def __repr__(self) -> str:
-        return str(self.genom)
+        return f"PlantGenom({self.genom})" 
 
 
 class SmashGenom:
