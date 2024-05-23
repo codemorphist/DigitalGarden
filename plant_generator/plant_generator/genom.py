@@ -256,10 +256,10 @@ class SmashGenom:
 
         :param genom1: First parent genom 
         :param genom2: Second parent genom 
-        :param probability: Probalility for smash
+        :param probability: Probability for smash
         :param mutations: Mutations count
         """
-        # Probalistic part
+        # Probabilistic part
         genom1_table = genom1.table()
         genom2_table = genom2.table()
         smashed_table = PlantGenom.empty().table()
