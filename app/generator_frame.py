@@ -3,8 +3,9 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from idlelib.tooltip import Hovertip
-from dataclasses import astuple
 from colorsys import hsv_to_rgb
+import time
+from threading import Thread, Event
 
 from PIL import Image, ImageDraw, ImageTk
 
@@ -213,9 +214,86 @@ class UserFrame(ttk.Frame):
         if not host_file:
             return
 
-        plant_image = self.controller.plant_frame.plant_image
-        plant_image.save(host_file, "PNG")
-        messagebox.showinfo("Message", "Image saved successfully!")
+        current_drawing = self.controller.plant_frame.current_drawing
+        if current_drawing:
+            plant_image = current_drawing.image 
+            plant_image.save(host_file, "PNG")
+            messagebox.showinfo("Message", "Image saved successfully!")
+
+
+class StoppableThread(Thread):
+    def __init__(self):
+        super().__init__()
+        self._stop_event = Event()
+
+    def stop(self):
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
+
+
+class AsyncPainter(StoppableThread):
+    def __init__(self, canvas, plant):
+        super().__init__()
+        self.canvas = canvas
+        self.width = canvas.winfo_width()
+        self.height = canvas.winfo_height()
+        self.image = None
+        self.draw = None
+        self.plant = plant
+        self.delay = 0.01
+
+    def clear_canvas(self):
+        """
+        Clear image with plant and update canvas
+        """
+        self.image = Image.new("RGB",
+                               (self.width, self.height),
+                               (255, 255, 255)) 
+        self.draw = ImageDraw.Draw(self.image)
+        self.update_canvas()
+
+    def update_canvas(self):
+        """
+        Show image on canvas
+        """
+        self.canvas.image = ImageTk.PhotoImage(self.image)
+        self.canvas.create_image(self.width // 2, self.height // 2,
+                                 anchor=tk.CENTER, image=self.canvas.image)
+
+    def draw_circle(self, circle: Circle):
+        """
+        Draw circle on image
+
+        Draw 3 circles, main, darker and lighter
+        for 3D effect
+        """
+        x, y = circle.pos + Vec2(self.width // 2, self.height // 2)
+        if x < 0 or x > self.width or y < 0 or y > self.height:
+            return
+        r = abs(circle.radius) + 1
+
+        x0, y0 = x - r, y - r
+        x1, y1 = x + r, y + r
+
+        default_color = circle.color
+        dark_color = circle.color + Color(20, 20, 20)
+        light_color = circle.color - Color(20, 20, 20)
+        self.draw.ellipse((x0, y0, x1, y1),
+                                fill=light_color.rgb)
+        self.draw.ellipse((x0 - 1, y0 - 1, x1 - 1, y1 - 1),
+                                fill=default_color.rgb)
+        self.draw.ellipse((x0 + 1, y0 + 1, x1 + 1, y1 + 1),
+                                fill=dark_color.rgb)
+
+    def run(self):
+        self.clear_canvas()
+        while self.plant.is_growing() and not self.stopped():
+            for circle in self.plant.get_circles():
+                self.draw_circle(circle)
+            time.sleep(self.delay) 
+            self.update_canvas()
 
 
 class PlantFrame(ttk.Frame):
@@ -228,20 +306,15 @@ class PlantFrame(ttk.Frame):
         self.controller = controller
 
         # Canvas with plant
-        # self.canvas_width = 800
-        # self.canvas_height = 800
+        self.canvas_width = 800
+        self.canvas_height = 800
 
         self.canvas = tk.Canvas(master=self,
                                 width=self.canvas_width,
                                 height=self.canvas_height,
                                 bg="lightgray")
 
-        # Image on which draw plant
-        self.background = Color(250, 250, 250)
-        self.plant_image = Image.new("RGBA",
-                                     (self.canvas_width, self.canvas_height),
-                                     self.background.rgb)
-        self.plant_draw = ImageDraw.Draw(self.plant_image)
+        self.current_drawing: AsyncPainter = None
 
         # Progress bar
         self.progress_var = tk.DoubleVar()
@@ -253,16 +326,7 @@ class PlantFrame(ttk.Frame):
                                               maximum=100)
 
         # Plant generation process
-        self.current_drawing = None
         self.configure_widgets()
-
-    @property
-    def canvas_width(self):
-        return 800
-
-    @property
-    def canvas_height(self):
-        return 800
 
     def configure_widgets(self):
         # Style of program
@@ -282,53 +346,7 @@ class PlantFrame(ttk.Frame):
 
         # Configure progress bar
         self.plant_progress.grid(row=0, column=0, pady=10)
-
-    def update_canvas(self):
-        """
-        Show image on canvas
-        """
-        self.canvas.image = ImageTk.PhotoImage(self.plant_image)
-        self.canvas.create_image(self.canvas_width // 2, self.canvas_height // 2,
-                                 anchor=tk.CENTER, image=self.canvas.image)
-
-    def clear_canvas(self):
-        """
-        Clear image with plant and update canvas
-        """
-        self.plant_image = Image.new("RGB",
-                                     (self.canvas_width, self.canvas_height),
-                                     self.background.rgb)
-        self.plant_draw = ImageDraw.Draw(self.plant_image)
-        self.update_canvas()
-
-    def draw_circle(self, circle: Circle):
-        """
-        Draw circle on image
-
-        Draw 3 circles, main, darker and lighter
-        for 3d effect
-        """
-        width = self.canvas_width
-        height = self.canvas_height
-
-        x, y = circle.pos + Vec2(width // 2, height // 2)
-        if x < 0 or x > width or y < 0 or y > height:
-            return
-        r = abs(circle.radius) + 1
-
-        x0, y0 = x - r, y - r
-        x1, y1 = x + r, y + r
-
-        default_color = circle.color
-        dark_color = circle.color + Color(20, 20, 20)
-        light_color = circle.color - Color(20, 20, 20)
-        self.plant_draw.ellipse((x0, y0, x1, y1),
-                                fill=light_color.rgb)
-        self.plant_draw.ellipse((x0 - 1, y0 - 1, x1 - 1, y1 - 1),
-                                fill=default_color.rgb)
-        self.plant_draw.ellipse((x0 + 1, y0 + 1, x1 + 1, y1 + 1),
-                                fill=dark_color.rgb)
-
+    
     def update_progress(self, value: float):
         """
         Update status and color of progressbar
@@ -355,30 +373,18 @@ class PlantFrame(ttk.Frame):
         """
         try:
             if self.current_drawing:
-                self.after_cancel(self.current_drawing)
-            self.clear_canvas()
-            self.progress_var.set(0)
+                self.current_drawing.stop()
+            # self.progress_var.set(0)
             plant = self.controller.user_frame.get_plant()
-            self.current_drawing = self.after(1, self.draw, plant)
-        except:
+            self.current_drawing = AsyncPainter(
+                self.canvas,
+                plant
+            )
+            self.current_drawing.start()
+        except Exception as e:
+            print(e)
             messagebox.showerror("Error", "Generation attempted with an invalid genome:\n"
                                           "All the entries have to be filled out with integers")
-
-    def draw(self, plant: Plant):
-        """
-        Draw plant while it is growing
-        """
-        for circle in plant.get_circles():
-            self.draw_circle(circle)
-        self.update_progress(plant.drawed / plant.total * 100)
-        self.update_canvas()
-
-        if plant.is_growing():
-            self.current_drawing = self.after(1, self.draw, plant)
-        else:
-            self.update_progress(100.0)
-            self.current_drawing = None
-
 
 
 class PlantGenerator(ttk.Frame):

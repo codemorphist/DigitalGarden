@@ -82,7 +82,6 @@ class AsyncPainter(StoppableThread):
                 self.draw_circle(circle)
             time.sleep(self.delay) 
             self.update_canvas()
-        return
 
 
 class DrawPlantFrame(ttk.Frame):
