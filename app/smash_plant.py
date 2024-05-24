@@ -59,15 +59,6 @@ class HeirUserFrame(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
-        """
-        This identifier can be changed by the User through
-        the "Method" dialogue window; this sets the way
-        in which the parent genomes are to be smashed
-        """
-        self.method_identifier = {"Name": "Probabilistic",
-                                  "Proportion": 0.5,
-                                  "Mutations": 0}
-
         self.method_button = ttk.Button(self,
                                         text="Method",
                                         command=self.open_method_settings)
@@ -138,22 +129,19 @@ class MethodSettingsWindow(tk.Toplevel):
 
         self.settings_frame = ttk.Frame(self)
 
-        # Get the method identifier from parent frames to show the current configuration
-        self.method_identifier = self.controller.heir_frame.heir_user_frame.method_identifier.copy()
-
         self.methods = ("Probabilistic", "Weighted Average")
-        self.method_name_var = tk.StringVar(value=self.method_identifier["Name"])
+        self.layout_var = tk.StringVar(value=self.methods[0])
         self.method_box = ttk.Combobox(self.settings_frame,
                                        values=self.methods,
-                                       textvariable=self.method_name_var,
+                                       textvariable=self.layout_var,
                                        state="readonly")
         self.method_label = ttk.Label(self.settings_frame, text="Method: ")
 
-        self.lean_var = tk.IntVar(value=self.method_identifier["Proportion"]*100)
+        lean_var = tk.IntVar(value=50)
         self.lean_slider = tk.Scale(self.settings_frame,
                                     from_=0,
                                     to=100,
-                                    variable=self.lean_var,
+                                    variable=lean_var,
                                     orient=tk.HORIZONTAL,
                                     tickinterval=25,
                                     showvalue=True,
@@ -161,16 +149,16 @@ class MethodSettingsWindow(tk.Toplevel):
         self.lean_label = ttk.Label(self.settings_frame, text="Parent 1 / Parent 2\n"
                                                               "proportion (%):")
 
-        self.mutations_var = tk.IntVar(value=self.method_identifier["Mutations"])
+        self.mutations = tk.IntVar(value=0)
         self.mutation_count_box = ttk.Spinbox(self.settings_frame,
                                               state="readonly",
                                               from_=0,
                                               to=180,
                                               increment=1,
-                                              textvariable=self.mutations_var)
+                                              textvariable=self.mutations)
         self.mutation_label = ttk.Label(self.settings_frame, text="Mutations: ")
 
-        self.apply_button = ttk.Button(self, text="Apply", command=self.communicate_method)
+        self.apply_button = ttk.Button(self, text="Apply", command=self.get_method)
 
         self.resizable(False, False)
         self.transient(controller)
@@ -190,25 +178,11 @@ class MethodSettingsWindow(tk.Toplevel):
         self.settings_frame.pack(padx=15, pady=10)
         self.apply_button.pack(padx=15, pady=10)
 
-    def set_method(self):
+    def get_method(self):
         """
-        Obtains the values of the tkinter variables and updates the method
-        identifier accordingly
+        A placeholder
         """
-        self.method_identifier = {"Name": self.method_name_var.get(),
-                                  "Proportion": self.lean_var.get() / 100,
-                                  "Mutations": self.mutations_var.get()}
-
-    def communicate_method(self):
-        """
-        Sets the method identifier of parent frames to that dictated
-        by the variable values configured by the User; the pop-up window
-        is then destroyed
-        """
-        self.set_method()
-        self.controller.heir_frame.heir_user_frame.method_identifier = self.method_identifier.copy()
         self.destroy()
-
 
 class SmashPlant(ttk.Frame):
     """
