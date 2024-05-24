@@ -178,11 +178,7 @@ class HeirUserFrame(ttk.Frame):
 
     def get_plant(self) -> Plant:
         start_pos = Vec2(0, 250)
-        try:
-            plant = Plant(self.smashed_genome, start_pos)
-        except Exception as e:
-            print(e)
-        print(self.smashed_genome.table())
+        plant = Plant(self.smashed_genome, start_pos)
         return plant
 
 
