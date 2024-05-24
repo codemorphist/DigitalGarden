@@ -1,9 +1,10 @@
 from __future__ import annotations
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from typing import Optional
 from tools import Color
-from random import randint, random, uniform
+from random import randint, uniform
 from copy import deepcopy
+from enum import Enum, auto
 
 
 @dataclass
@@ -211,13 +212,18 @@ class PlantGenom:
         return f"PlantGenom({self.genom})" 
 
 
+class SmashType(Enum):
+    Probalistic = auto()    
+    WeightedAverage = auto()
+
+
 class SmashGenom:
     """
     Class which implement smash for genom of plants
     
-    - Probabilistic
+    - Probalistic 
     - Weighted Average
-    - TODO: Mass Smash
+    - Mass Smash
     """
     
     @staticmethod
@@ -238,10 +244,10 @@ class SmashGenom:
         return PlantGenom([AgentGenom(*agent) for agent in genom_table])
 
     @staticmethod
-    def probabilistic(genom1: PlantGenom,
-                      genom2: PlantGenom,
-                      probability: float,
-                      mutations: int) -> PlantGenom:
+    def probalistic(genom1: PlantGenom, 
+                    genom2: PlantGenom,
+                    probability: float, 
+                    mutations: int) -> PlantGenom:
         """
         A probabilistic method of smashing two plant genomes
 
@@ -256,10 +262,11 @@ class SmashGenom:
 
         :param genom1: First parent genom 
         :param genom2: Second parent genom 
-        :param probability: Probability for smash
+        :param probability: Probalility for smash
         :param mutations: Mutations count
+        :return: smashed_genome
         """
-        # Probabilistic part
+        # Probalistic part
         genom1_table = genom1.table()
         genom2_table = genom2.table()
         smashed_table = PlantGenom.empty().table()
@@ -291,9 +298,10 @@ class SmashGenom:
         :param genom2: Second parent genom 
         :param weight: Weight for average
         :param mutations: Mutations count
+        :return: smashed genome
         """
         # Averate part
-        assert 1 <= weight <= 0, "Weight must lie within [0;1]"
+        assert weight > 0, "Weight must be greater than zero"
         genom1_table = genom1.table()
         genom2_table = genom2.table()
         smashed_table = PlantGenom.empty().table()
@@ -306,4 +314,30 @@ class SmashGenom:
 
         smashed_genom = PlantGenom([AgentGenom(*agent) for agent in smashed_table])
         return SmashGenom.mutate(smashed_genom, mutations)
+
+    @staticmethod
+    def mass_smash(plants: list[PlantGenom], way: SmashType, *args) -> PlantGenom:
+        """
+        Smash many plant for one time 
+
+        :param plants: list of plants to smash
+        :param way: way (method) to smash plants
+        :param *args: other args for way
+        :return: smashed genom
+        """
+        if not plants:
+            return PlantGenom.empty()
+        
+        smash = None
+        match way:
+            case SmashType.Probalistic:
+                smash = SmashGenom.probalistic
+            case SmashType.WeightedAverage:
+                smash = SmashGenom.average
+
+        smashed_genome = plants[0]
+        for plant_genome in plants[1:]:
+            smashed_genome = smash(smashed_genome, plant_genome, *args)
+
+        return smashed_genome
 
