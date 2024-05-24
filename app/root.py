@@ -22,7 +22,7 @@ class RootWindow(tk.Tk):
   
         # Setup all frames
         self.frames = {}  
-        for F in (Menu, PlantGenerator):
+        for F in (Menu, PlantGenerator, SmashPlant):
             frame = F(container, self)
             self.frames[F.__name__] = frame 
             frame.grid(row=0, column=0, sticky="nsew")
@@ -36,7 +36,7 @@ class RootWindow(tk.Tk):
         """
         self.title("Digital Garden")
 
-        self.geometry("1280x1000")
+        self.geometry("1420x1000")
         self.minsize(1024, 512)
   
     def show_frame(self, frame_name: str):
