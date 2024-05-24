@@ -243,7 +243,7 @@ class AsyncPainter(StoppableThread):
         self.height = canvas.winfo_height()
         self.image = None
         self.draw = None
-        self.delay = 0.1
+        self.delay = 0.01
 
         self.progress = progress
 
@@ -283,7 +283,7 @@ class AsyncPainter(StoppableThread):
         x, y = circle.pos + Vec2(self.width // 2, self.height // 2)
         if x < 0 or x > self.width or y < 0 or y > self.height:
             return
-        r = abs(circle.radius) + 1
+        r = abs(circle.radius / 800 * self.width) + 1
 
         x0, y0 = x - r, y - r
         x1, y1 = x + r, y + r
@@ -306,6 +306,7 @@ class AsyncPainter(StoppableThread):
             time.sleep(self.delay) 
             self.update_canvas()
             self.update_progress(self.plant.drawed / self.plant.total * 100)
+        self.update_progress(100)
 
 
 class PlantFrame(ttk.Frame):
@@ -313,17 +314,14 @@ class PlantFrame(ttk.Frame):
     Contains the canvas where the plant is drawn
     """
 
-    def __init__(self, container, controller):
+    def __init__(self, container, controller, 
+                 width: int = 800, height: int = 800 ):
         super().__init__(container)
         self.controller = controller
 
-        # Canvas with plant
-        self.canvas_width = 800
-        self.canvas_height = 800
-
         self.canvas = tk.Canvas(master=self,
-                                width=self.canvas_width,
-                                height=self.canvas_height,
+                                width=width,
+                                height=height,
                                 bg="lightgray")
 
         self.current_drawing: AsyncPainter = None
@@ -333,7 +331,7 @@ class PlantFrame(ttk.Frame):
         self.plant_progress = ttk.Progressbar(self,
                                               style="Custom.Vertical.TProgressbar",
                                               orient=tk.VERTICAL,
-                                              length=self.canvas_height,
+                                              length=height,
                                               variable=self.progress_var,
                                               maximum=100)
 
