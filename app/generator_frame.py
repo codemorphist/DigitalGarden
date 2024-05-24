@@ -234,15 +234,26 @@ class StoppableThread(Thread):
 
 
 class AsyncPainter(StoppableThread):
-    def __init__(self, canvas, plant):
+    def __init__(self, plant, canvas, progress = None):
         super().__init__()
+        self.plant = plant
+
         self.canvas = canvas
         self.width = canvas.winfo_width()
         self.height = canvas.winfo_height()
         self.image = None
         self.draw = None
-        self.plant = plant
-        self.delay = 0.01
+        self.delay = 0.1
+
+        self.progress = progress
+
+    def update_progress(self, value: float):
+        """
+        Update status and color of progressbar
+        by given value
+        """
+        if self.progress:
+           self.progress.set(value)
 
     def clear_canvas(self):
         """
@@ -294,6 +305,7 @@ class AsyncPainter(StoppableThread):
                 self.draw_circle(circle)
             time.sleep(self.delay) 
             self.update_canvas()
+            self.update_progress(self.plant.drawed / self.plant.total * 100)
 
 
 class PlantFrame(ttk.Frame):
@@ -329,13 +341,6 @@ class PlantFrame(ttk.Frame):
         self.configure_widgets()
 
     def configure_widgets(self):
-        # Style of program
-        self.style = ttk.Style()
-        self.style.configure("Custom.Vertical.TProgressbar",
-                             troughcolor='gray')
-
-        # Back button
-
         # Configure Canvas
         self.canvas.grid(padx=0,
                          pady=10,
@@ -347,22 +352,7 @@ class PlantFrame(ttk.Frame):
         # Configure progress bar
         self.plant_progress.grid(row=0, column=0, pady=10)
     
-    def update_progress(self, value: float):
-        """
-        Update status and color of progressbar
-        by given value
-        """
-        self.progress_var.set(value)
-        current_value = self.plant_progress["value"]
-
-        hue = (current_value / 100.0) * 0.3
-        r, g, b = hsv_to_rgb(hue, 1, 1)
-        color = '#%02x%02x%02x' % (int(r * 255), int(g * 255), int(b * 255))
-
-        self.style.configure("Custom.Vertical.TProgressbar",
-                             foreground=color, background=color)
-        self.plant_progress.config(style="Custom.Vertical.TProgressbar")
-
+    
     def start_drawing(self):
         """
         Start drawing and generation of plant
@@ -377,8 +367,9 @@ class PlantFrame(ttk.Frame):
             # self.progress_var.set(0)
             plant = self.controller.user_frame.get_plant()
             self.current_drawing = AsyncPainter(
+                plant,
                 self.canvas,
-                plant
+                self.progress_var
             )
             self.current_drawing.start()
         except Exception as e:
