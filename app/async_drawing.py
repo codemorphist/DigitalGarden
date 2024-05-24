@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageDraw, ImageTk
+import time
 from threading import Thread
 
 from tools import Color, Circle, Vec2
@@ -66,6 +67,7 @@ class AsyncPainter(Thread):
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)
             self.update_canvas()
+            time.sleep(.03) 
         return
 
 
