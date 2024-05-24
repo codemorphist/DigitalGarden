@@ -2,19 +2,33 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageDraw, ImageTk
 import time
-from threading import Thread
+from threading import Thread, Event
+from random import uniform
 
 from tools import Color, Circle, Vec2
 from plant_generator import Plant
 
 
-class AsyncPainter(Thread):
+class StoppableThread(Thread):
+    def __init__(self):
+        super().__init__()
+        self._stop_event = Event()
+
+    def stop(self):
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
+
+
+class AsyncPainter(StoppableThread):
     def __init__(self, canvas, image, draw, plant):
         super().__init__()
         self.canvas = canvas
         self.image = image
         self.draw = draw
         self.plant = plant
+        self.delay = 0.1 / 1.5
 
     def clear_canvas(self):
         """
@@ -39,7 +53,7 @@ class AsyncPainter(Thread):
         Draw circle on image
 
         Draw 3 circles, main, darker and lighter
-        for 3d effect
+        for 3D effect
         """
         width = 600
         height = 600
@@ -63,11 +77,11 @@ class AsyncPainter(Thread):
 
     def run(self):
         self.clear_canvas()
-        while self.plant.is_growing():
+        while self.plant.is_growing() and not self.stopped():
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)
+            time.sleep(self.delay) 
             self.update_canvas()
-            time.sleep(.03) 
         return
 
 
@@ -94,17 +108,11 @@ class DrawPlantFrame(ttk.Frame):
 
         self.canvas.grid(row=0, column=0)
         self.start_button.grid(row=1, column=0, sticky="ew")
-
-    
     
     def start_drawing(self):
-        """
-        Start drawing and generation of plant
+        if self.current_drawing:
+            self.current_drawing.stop()
 
-        1. Stop all previous drawing (if exist)
-        2. Get new plant
-        3. Start drawing and generating new plant
-        """
         self.current_drawing = AsyncPainter(self.canvas,
                                             self.plant_image,
                                             self.plant_draw,
