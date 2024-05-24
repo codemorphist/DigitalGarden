@@ -9,7 +9,7 @@ from copy import deepcopy
 
 from PIL import Image, ImageDraw, ImageTk
 
-from plant_generator import Plant, PlantGenom, AgentGenom
+from plant_generator import Plant, PlantGenom, AgentGenom, SmashMethod
 from tools import Circle, Color, Vec2
 from generator_frame import PlantFrame
 
@@ -36,7 +36,7 @@ class CanvasFrame(PlantFrame):
                 self.after_cancel(self.current_drawing)
             self.clear_canvas()
             self.progress_var.set(0)
-            plant = self.controller.parent_user_frame.get_plant()
+            plant = self.controller.user_frame.get_plant()
             self.current_drawing = self.after(0, self.draw, plant)
         except:
             messagebox.showerror("Error", "Generation attempted with an invalid genome:\n"
@@ -57,7 +57,7 @@ class ParentUserFrame(ttk.Frame):
         self.import_button = ttk.Button(self, text="Import",
                                         command=self.genome_unpack)
         self.show_button = ttk.Button(self, text="Show",
-                                      command=controller.parent_plant_frame.start_drawing)
+                                      command=controller.plant_frame.start_drawing)
 
         self.plant_genome = PlantGenom.empty()
         self.configure_widgets()
@@ -110,11 +110,62 @@ class HeirUserFrame(ttk.Frame):
         self.method_button = ttk.Button(self,
                                         text="Method",
                                         command=self.open_method_settings)
-        self.generate_button = ttk.Button(self, text="Generate")
-        self.export_button = ttk.Button(self, text="Export")
-        self.save_button = ttk.Button(self, text="Save")
+        self.generate_button = ttk.Button(self,
+                                          text="Generate",
+                                          command=self.controller.plant_frame.start_drawing)
+        self.export_button = ttk.Button(self,
+                                        text="Export",
+                                        command=self.genome_pack)
+        self.save_button = ttk.Button(self,
+                                      text="Save",
+                                      command=self.save_plant_as)
 
         self.configure_widgets()
+
+    @property
+    def method(self):
+        function = SmashMethod.construct_method(self.method_identifier)
+        return function
+
+    @property
+    def smashed_genome(self):
+        parent_1 = self.controller.controller.parent_frame_1.user_frame.plant_genome
+        parent_2 = self.controller.controller.parent_frame_2.user_frame.plant_genome
+        return self.method(parent_1, parent_2)
+
+    def genome_pack(self):
+        """
+        The function that realises the "Export" function through
+        the file dialogue opener
+        """
+        try:
+            host_file = asksaveasfilename(filetypes=[("Text file", "*.txt")],
+                                          defaultextension=".txt")
+            if not host_file:
+                return
+
+            genom_str = PlantGenom.export_genom(self.get_plant().plant_genom)
+            with open(host_file, "w") as file:
+                file.write(genom_str)
+            messagebox.showinfo("Message", "Genome exported successfully!")
+        except:
+            messagebox.showerror("Error", "Please enter a valid genome to enable export:\n"
+                                          "All the entries have to be filled out with integers")
+
+    def save_plant_as(self):
+        """
+        This method realises the "Save" button functionality;
+        it saves the current canvas picture (including during
+        generation) in the .png format
+        """
+        host_file = asksaveasfilename(filetypes=[("Image", "*.png")],
+                                      defaultextension=".png")
+        if not host_file:
+            return
+
+        plant_image = self.controller.plant_frame.plant_image
+        plant_image.save(host_file, "PNG")
+        messagebox.showinfo("Message", "Image saved successfully!")
 
     def configure_widgets(self):
         self.method_button.grid(row=0, column=0, sticky="nsew", padx=10, pady=5)
@@ -124,6 +175,18 @@ class HeirUserFrame(ttk.Frame):
 
     def open_method_settings(self):
         self.method_settings = MethodSettingsWindow(self.controller.controller, self.controller.controller)
+
+    def get_plant(self) -> Plant:
+        start_pos = Vec2(0, 250)
+        try:
+            plant = Plant(self.smashed_genome, start_pos)
+        except Exception as e:
+            print(e)
+        print(self.smashed_genome.table())
+        return plant
+
+
+
 
 class ParentGeneratorFrame(ttk.Frame):
     """
@@ -135,14 +198,14 @@ class ParentGeneratorFrame(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
-        self.parent_plant_frame = CanvasFrame(self, self)
-        self.parent_user_frame = ParentUserFrame(self, self)
+        self.plant_frame = CanvasFrame(self, self)
+        self.user_frame = ParentUserFrame(self, self)
 
         self.configure_widgets()
 
     def configure_widgets(self):
-        self.parent_plant_frame.pack()
-        self.parent_user_frame.pack()
+        self.plant_frame.pack()
+        self.user_frame.pack()
 
 
 class HeirGeneratorFrame(ttk.Frame):
@@ -155,14 +218,14 @@ class HeirGeneratorFrame(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
-        self.heir_plant_frame = CanvasFrame(self, self)
-        self.heir_user_frame = HeirUserFrame(self, self)
+        self.plant_frame = CanvasFrame(self, self)
+        self.user_frame = HeirUserFrame(self, self)
 
         self.configure_widgets()
 
     def configure_widgets(self):
-        self.heir_plant_frame.pack()
-        self.heir_user_frame.pack()
+        self.plant_frame.pack()
+        self.user_frame.pack()
 
 class MethodSettingsWindow(tk.Toplevel):
     """
@@ -178,7 +241,7 @@ class MethodSettingsWindow(tk.Toplevel):
         self.settings_frame = ttk.Frame(self)
 
         # Get the method identifier from parent frames to show the current configuration
-        self.method_identifier = self.controller.heir_frame.heir_user_frame.method_identifier.copy()
+        self.method_identifier = self.controller.heir_frame.user_frame.method_identifier.copy()
 
         self.methods = ("Probabilistic", "Weighted Average")
         self.method_name_var = tk.StringVar(value=self.method_identifier["Name"])
@@ -245,7 +308,7 @@ class MethodSettingsWindow(tk.Toplevel):
         is then destroyed
         """
         self.set_method()
-        self.controller.heir_frame.heir_user_frame.method_identifier = self.method_identifier.copy()
+        self.controller.heir_frame.user_frame.method_identifier = self.method_identifier.copy()
         self.destroy()
 
 
