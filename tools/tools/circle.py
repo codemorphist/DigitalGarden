@@ -7,7 +7,7 @@ from random import randint
 
 
 class Circle:
-    def __init__(self, pos: Vec2, radius: float, color: Color):
+    def __init__(self, pos: Vec2, radius: float, color: Color = Color(0, 0, 0)):
         self.pos = pos             
         self.radius = radius
         self.color = color
