@@ -315,7 +315,7 @@ class PlantFrame(ttk.Frame):
     """
 
     def __init__(self, container, controller, 
-                 width: int = 800, height: int = 800 ):
+                 width: int = 800, height: int = 800):
         super().__init__(container)
         self.controller = controller
 
@@ -362,7 +362,6 @@ class PlantFrame(ttk.Frame):
         try:
             if self.current_drawing:
                 self.current_drawing.stop()
-            # self.progress_var.set(0)
             plant = self.controller.user_frame.get_plant()
             self.current_drawing = AsyncPainter(
                 plant,
@@ -370,8 +369,7 @@ class PlantFrame(ttk.Frame):
                 self.progress_var
             )
             self.current_drawing.start()
-        except Exception as e:
-            print(e)
+        except:
             messagebox.showerror("Error", "Generation attempted with an invalid genome:\n"
                                           "All the entries have to be filled out with integers")
 
