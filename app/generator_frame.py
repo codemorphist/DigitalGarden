@@ -223,13 +223,14 @@ class PlantFrame(ttk.Frame):
     Contains the canvas where the plant is drawn
     """
 
-    def __init__(self, container, controller):
+    def __init__(self, container, controller,
+                 width: int = 800, height: int = 800):
         super().__init__(container)
         self.controller = controller
 
         # Canvas with plant
-        # self.canvas_width = 800
-        # self.canvas_height = 800
+        self.canvas_width = width
+        self.canvas_height = height
 
         self.canvas = tk.Canvas(master=self,
                                 width=self.canvas_width,
@@ -255,14 +256,6 @@ class PlantFrame(ttk.Frame):
         # Plant generation process
         self.current_drawing = None
         self.configure_widgets()
-
-    @property
-    def canvas_width(self):
-        return 800
-
-    @property
-    def canvas_height(self):
-        return 800
 
     def configure_widgets(self):
         # Style of program
@@ -378,7 +371,6 @@ class PlantFrame(ttk.Frame):
         else:
             self.update_progress(100.0)
             self.current_drawing = None
-
 
 
 class PlantGenerator(ttk.Frame):

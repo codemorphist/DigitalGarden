@@ -5,6 +5,7 @@ from tkinter.filedialog import asksaveasfilename, askopenfilename
 from idlelib.tooltip import Hovertip
 from dataclasses import astuple
 from colorsys import hsv_to_rgb
+from copy import deepcopy
 
 from PIL import Image, ImageDraw, ImageTk
 
@@ -19,15 +20,28 @@ class CanvasFrame(PlantFrame):
     contain such a frame
     """
     def __init__(self, container, controller):
-        super().__init__(container, controller)
+        super().__init__(container, controller, 
+                         width=450, height=740)
 
-    @property
-    def canvas_width(self):
-        return 450
+    def start_drawing(self):
+        """
+        Start drawing and generation of plant
 
-    @property
-    def canvas_height(self):
-        return 740
+        1. Stop all previous drawing (if exist)
+        2. Get new plant
+        3. Start drawing and generating new plant
+        """
+        try:
+            if self.current_drawing:
+                self.after_cancel(self.current_drawing)
+            self.clear_canvas()
+            self.progress_var.set(0)
+            plant = self.controller.parent_user_frame.get_plant()
+            self.current_drawing = self.after(0, self.draw, plant)
+        except:
+            messagebox.showerror("Error", "Generation attempted with an invalid genome:\n"
+                                          "All the entries have to be filled out with integers")
+    
 
 class ParentUserFrame(ttk.Frame):
     """
@@ -40,14 +54,39 @@ class ParentUserFrame(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
-        self.import_button = ttk.Button(self, text="Import")
-        self.show_button = ttk.Button(self, text="Show")
+        self.import_button = ttk.Button(self, text="Import",
+                                        command=self.genome_unpack)
+        self.show_button = ttk.Button(self, text="Show",
+                                      command=controller.parent_plant_frame.start_drawing)
 
+        self.plant_genome = PlantGenom.empty()
         self.configure_widgets()
 
     def configure_widgets(self):
         self.import_button.pack(padx=10, pady=5)
         self.show_button.pack(padx=10, pady=5)
+    
+    def genome_unpack(self):
+        """
+        The function that realises the "Import" function through
+        the file dialogue opener
+        """
+        try:
+            filename = askopenfilename()
+            if not filename:  # Exception when user has not chosen any file
+                return
+            with open(filename) as file:
+                self.plant_genome = PlantGenom.import_genom(file.read())
+
+            messagebox.showinfo("Message", "Genome imported successfully!")
+        except:
+            messagebox.showerror("Error", "Import attempted with an invalid genome:\n"
+                                          "The genome has to be a .txt file with a 20x9 table of \n"
+                                          "integer inputs separated by spaces")
+    def get_plant(self) -> Plant:
+        start_pos = Vec2(0, 250)
+        plant = Plant(self.plant_genome, start_pos)
+        return plant
 
 class HeirUserFrame(ttk.Frame):
     """
