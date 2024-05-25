@@ -66,11 +66,17 @@ poetry run python app
 
 ### pip
 Клонуйте репозиторій та перейдіть в папку репозиторія.
+```bash
+git clone https://github.com/codemorphist/DigitalGarden.git
+cd DigitalGarden
+```
+
 Створіть нове віртуальне середовище та встановіть залежності
 ```bash
 python -m venv venv
 pip install -r requirements.txt
 ```
+
 Запустіть проєкт
 ```bash
 python app
@@ -81,11 +87,17 @@ python app
 
 ### pip
 Клонуйте репозиторій та перейдіть в папку репозиторія.
+```bash
+git clone https://github.com/codemorphist/DigitalGarden.git
+cd DigitalGarden
+```
+
 Створіть нове віртуальне середовище та встановіть залежності
 ```bash
 python -m venv venv
 pip install -r requirements.txt
 ```
+
 Запустіть проєкт
 ```bash
 python app
