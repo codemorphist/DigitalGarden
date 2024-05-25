@@ -1,4 +1,5 @@
-<div style="text-align: center;">
+<div style="margin-left: auto;
+            margin-right: auto;">
 
 <img 
     style="display: block; 
@@ -9,7 +10,7 @@
     alt="Cover">
 </img>
 
-<p style="font-size: 48px;">DIGITAL GARDEN</p>
+<h1 style="text-align: center;">DIGITAL GARDEN</h1>
 
 </div>
 
