@@ -57,5 +57,5 @@ ___
 
 | <img src="https://avatars.githubusercontent.com/u/112182502?v=4" width="100"> | <img src="https://avatars.githubusercontent.com/u/158076825?v=4" width="100"> |
 |--|--|
-| Alex Katrenko <br> [@codemorphist](github.com/codemorphist) | Illia Karbyshev <br> [@karbyshevillia](github.com/karbyshevillia) |
+| Alex Katrenko <br> [@codemorphist](https://www.github.com/codemorphist) | Illia Karbyshev <br> [@karbyshevillia](https://www.github.com/karbyshevillia) |
 
