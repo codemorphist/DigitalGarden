@@ -59,7 +59,6 @@ poetry run python app
 
 ...
 
-
 <!-- TOC --><a name="linux-macos"></a>
 ## Linux / MacOs
 
@@ -73,12 +72,15 @@ poetry run python app
 | <img src="./gallery/blues.png" width="512"> | <img src="./gallery/coral_palm.png" width="512"> |
 |--|--|
 | [blues.txt](./orangery/blues.txt) | [coral_palm.txt](./orangery/coral_palm.txt) |
+
 | <img src="./gallery/exotic.png" width="512"> | <img src="./gallery/fire_palm.png" width="512"> |
 |--|--|
 | [blues.txt](./orangery/exotic.txt) | [coral_palm.txt](./orangery/fire_palm.txt) |
+
 | <img src="./gallery/luminosity.png" width="512"> | <img src="./gallery/orange_tree.png" width="512"> |
 |--|--|
 | [blues.txt](./orangery/luminosity.txt) | [coral_palm.txt](./orangery/orange_tree.txt) |
+
 | <img src="./gallery/purple_tree.png" width="512"> | <img src="./gallery/violet.png" width="512"> |
 |--|--|
 | [blues.txt](./orangery/purple_tree.txt) | [coral_palm.txt](./orangery/violet.txt) |
