@@ -4,7 +4,6 @@ from typing import Optional
 from tools import Color
 from random import randint, uniform
 from copy import deepcopy
-from enum import Enum, auto
 
 
 @dataclass
@@ -44,9 +43,9 @@ class AgentGenom:
             length_deviation=randint(0, 30),
             size=randint(5, 80),
             size_from_ancestor=randint(10, 90),
-            size_from_level=randint(5, 100), 
+            size_from_level=randint(5, 100),
             size_changes=randint(-30, 30),
-            red=r, green=g, blue=b, 
+            red=r, green=g, blue=b,
             red_changes=rc, green_changes=gc, blue_changes=bc,
             color_deviation=randint(-20, 20),
             color_from_ancestor=randint(0, 80),
@@ -88,21 +87,19 @@ class PlantGenom:
         if generation >= len(self.genom):
             return None
 
-
         evolved_genom = deepcopy(self.genom[generation])
 
-        size_percent = evolved_genom.size_from_ancestor / 100 
+        size_percent = evolved_genom.size_from_ancestor / 100
         evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
         evolved_genom.size = size_percent * (agent_genom.size + evolved_genom.size)
 
         len_deviation = agent_genom.length_deviation
         evolved_genom.length += randint(-len_deviation, len_deviation)
         evolved_genom.angle_branches += agent_genom.angle_deviation
-    
+
         ar = agent_genom.red + evolved_genom.color_deviation
         ag = agent_genom.green + evolved_genom.color_deviation
         ab = agent_genom.blue + evolved_genom.color_deviation
-
 
         sr = evolved_genom.red
         sg = evolved_genom.green
@@ -110,8 +107,8 @@ class PlantGenom:
 
         acolor = Color(ar, ag, ab)
         scolor = Color(sr, sg, sb)
-    
-        r, g, b = ((acolor + scolor)*(evolved_genom.color_from_ancestor/100)).rgb
+
+        r, g, b = ((acolor + scolor) * (evolved_genom.color_from_ancestor / 100)).rgb
 
         evolved_genom.red = r
         evolved_genom.green = g
@@ -134,7 +131,7 @@ class PlantGenom:
     def random(generations: int = 9) -> PlantGenom:
         return PlantGenom([
             AgentGenom.random() for _ in range(generations)
-        ]) 
+        ])
 
     @staticmethod
     def dict_is_genome(entries_dict: dict) -> bool:
@@ -150,21 +147,21 @@ class PlantGenom:
         except:
             return False
 
-    @staticmethod 
+    @staticmethod
     def export_genom(genom: PlantGenom) -> str:
         """
         Impoort genom to string
 
         Output format
                 A1  A2  A3  ..
-            G1     
-            G2  
+            G1
+            G2
             G3
             ..
         """
         transposed = list(zip(*genom.table()))
         agents_str = [" ".join(map(str, map(int, agent))) for agent in transposed]
-        return "\n".join(agents_str) 
+        return "\n".join(agents_str)
 
     @staticmethod
     def import_genom(genom: str) -> PlantGenom:
@@ -173,8 +170,8 @@ class PlantGenom:
 
         Imput format
                 A1  A2  A3  ..
-            G1     
-            G2  
+            G1
+            G2
             G3
             ..
         """
@@ -184,7 +181,7 @@ class PlantGenom:
             for val in row.rstrip().split():
                 val_row.append(int(val))
             values.append(val_row)
-            
+
         agents = []
         for c in range(len(values[0])):
             gens = []
@@ -194,7 +191,7 @@ class PlantGenom:
         return PlantGenom(agents)
 
     @staticmethod
-    def empty(agents: int=9) -> PlantGenom:
+    def empty(agents: int = 9) -> PlantGenom:
         genom = []
         for _ in range(agents):
             genom.append(AgentGenom.empty())
@@ -213,6 +210,3 @@ class PlantGenom:
 
     def __repr__(self) -> str:
         return f"PlantGenom({self.genom})" 
-
-
-
