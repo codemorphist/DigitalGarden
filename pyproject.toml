@@ -14,7 +14,7 @@ plant_generator = { path="./plant_generator/", develop=true }
 tools = {path = "tools", develop=true}
 pillow = "^10.3.0"
 
-[tool.poetry.group.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 ruff = "^0.4.3"
 
 [build-system]
