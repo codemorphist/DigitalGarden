@@ -1,4 +1,4 @@
-<div>
+<div style="text-align: center;">
 
 <img 
     style="display: block; 
@@ -9,7 +9,7 @@
     alt="Cover">
 </img>
 
-<p style="text-align: center; font-size: 48px;">DIGITAL GARDEN<p>
+<p style="font-size: 48px;">DIGITAL GARDEN</p>
 
 </div>
 
