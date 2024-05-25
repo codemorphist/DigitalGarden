@@ -25,7 +25,6 @@ class AsyncPainter(StoppableThread):
     def __init__(self, canvas, image, draw, plant):
         super().__init__()
         self.canvas = canvas
-        self.image_id = None
         self.image = image
         self.draw = draw
         self.plant = plant
@@ -46,11 +45,8 @@ class AsyncPainter(StoppableThread):
         Show image on canvas
         """
         self.canvas.image = ImageTk.PhotoImage(self.image)
-        if self.image_id is None:
-            self.image_id = self.canvas.create_image(600 // 2, 600 // 2,
+        self.canvas.create_image(600 // 2, 600 // 2,
                                  anchor=tk.CENTER, image=self.canvas.image)
-        else:
-            self.canvas.itemconfig(self.image_id, image=self.canvas.image)
 
     def draw_circle(self, circle: Circle):
         """
@@ -85,7 +81,7 @@ class AsyncPainter(StoppableThread):
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)
             time.sleep(self.delay) 
-            self.canvas.after(1, self.update_canvas)
+            self.update_canvas()
 
 
 class DrawPlantFrame(ttk.Frame):

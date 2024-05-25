@@ -304,7 +304,7 @@ class AsyncPainter(StoppableThread):
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)
             time.sleep(self.delay) 
-            self.update_canvas()
+            self.canvas.after(1, self.update_canvas)
             self.update_progress(self.plant.drawed / self.plant.total * 100)
         self.update_progress(100)
 
