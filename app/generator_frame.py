@@ -6,6 +6,7 @@ from idlelib.tooltip import Hovertip
 from colorsys import hsv_to_rgb
 import time
 from threading import Thread, Event
+import sys
 
 from PIL import Image, ImageDraw, ImageTk
 
@@ -233,7 +234,7 @@ class StoppableThread(Thread):
         return self._stop_event.is_set()
 
 
-class AsyncPainter(StoppableThread):
+class ThreadPainter(StoppableThread):
     def __init__(self, plant, canvas, progress = None):
         super().__init__()
         self.plant = plant
@@ -301,16 +302,20 @@ class AsyncPainter(StoppableThread):
 
     def run(self):
         self.clear_canvas()
-        while self.plant.is_growing() and not self.stopped():
+        while self.plant.is_growing():
+            if self.stopped():
+                return
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)
-            time.sleep(self.delay) 
             self.update = self.canvas.after(1, self.update_canvas)
             self.update_progress(self.plant.drawed / self.plant.total * 100)
+            time.sleep(self.delay) 
         self.update_progress(100)
 
     def stop(self):
-        self.canvas.after_cancel(self.update)
+        if self.update:
+            self.canvas.after_cancel(self.update)
+        self.update = None
         super().stop()
 
 
@@ -329,7 +334,7 @@ class PlantFrame(ttk.Frame):
                                 height=height,
                                 bg="lightgray")
 
-        self.current_drawing: AsyncPainter = None
+        self.current_drawing: ThreadPainter = None
 
         # Progress bar
         self.progress_var = tk.DoubleVar()
@@ -355,7 +360,6 @@ class PlantFrame(ttk.Frame):
         # Configure progress bar
         self.plant_progress.grid(row=0, column=0, pady=10)
     
-    
     def start_drawing(self):
         """
         Start drawing and generation of plant
@@ -368,7 +372,7 @@ class PlantFrame(ttk.Frame):
             if self.current_drawing:
                 self.current_drawing.stop()
             plant = self.controller.user_frame.get_plant()
-            self.current_drawing = AsyncPainter(
+            self.current_drawing = ThreadPainter(
                 plant,
                 self.canvas,
                 self.progress_var
@@ -377,6 +381,17 @@ class PlantFrame(ttk.Frame):
         except:
             messagebox.showerror("Error", "Generation attempted with an invalid genome:\n"
                                           "All the entries have to be filled out with integers")
+
+    def stop_drawing(self):
+        if self.current_drawing is None:
+           return 
+
+        self.current_drawing.stop()
+        self.current_drawing.join()
+
+    def destroy(self):
+        self.stop_drawing()
+        super().destroy()
 
 
 class PlantGenerator(ttk.Frame):
@@ -388,13 +403,17 @@ class PlantGenerator(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
-        # Back button
-        self.back_button = ttk.Button(self, text="Back",
-                                      command=lambda: self.controller.show_frame("Menu"))
-
         self.plant_frame = PlantFrame(self, self)
         self.user_frame = UserFrame(self, self)
 
+
+        def back():
+            self.plant_frame.stop_drawing()
+            self.controller.show_frame("Menu")
+        # Back button
+        self.back_button = ttk.Button(self, text="Back",
+                                      command=lambda: back())
+        
         self.configure_widgets()
 
     def configure_widgets(self):
@@ -408,3 +427,5 @@ class PlantGenerator(ttk.Frame):
         self.plant_frame.grid(column=0, row=0, padx=20, pady=20)
         self.user_frame.grid(column=1, row=0, padx=20, pady=30)
         self.back_button.place(x=10, y=10)
+
+    

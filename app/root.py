@@ -45,3 +45,6 @@ class RootWindow(tk.Tk):
         """
         frame = self.frames[frame_name]
         frame.tkraise()
+
+    def quit(self):
+        self.after(10, self.destroy)
