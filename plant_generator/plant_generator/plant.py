@@ -27,6 +27,13 @@ class Plant:
 
         self.init_agents(start_pos)
 
+    @staticmethod
+    def random() -> Plant:
+        return Plant(
+            PlantGenom.random(),
+            Vec2(0, 200)
+        )
+
     def init_agents(self, start_pos: Vec2):
         """
         Init first Agent of Plant

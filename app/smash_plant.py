@@ -12,22 +12,6 @@ from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Circle, Color, Vec2
 from generator_frame import PlantFrame
 
-class CanvasFrame(PlantFrame):
-    """
-    Contains a canvas to draw the plants on: both of
-    the parent plant frames, as well as the heir plant frame,
-    contain such a frame
-    """
-    def __init__(self, container, controller):
-        super().__init__(container, controller)
-
-    @property
-    def canvas_width(self):
-        return 450
-
-    @property
-    def canvas_height(self):
-        return 740
 
 class ParentUserFrame(ttk.Frame):
     """
@@ -48,6 +32,7 @@ class ParentUserFrame(ttk.Frame):
     def configure_widgets(self):
         self.import_button.pack(padx=10, pady=5)
         self.show_button.pack(padx=10, pady=5)
+
 
 class HeirUserFrame(ttk.Frame):
     """
@@ -77,9 +62,10 @@ class HeirUserFrame(ttk.Frame):
     def open_method_settings(self):
         self.method_settings = MethodSettingsWindow(self.controller.controller, self.controller.controller)
 
+
 class ParentGeneratorFrame(ttk.Frame):
     """
-    This frame consists of a CanvasFrame and a ParentUserFrame,
+    This frame consists of a PlantFrame and a ParentUserFrame,
     as well as a progressbar; the parent plants are controlled
     and drawn here
     """
@@ -87,7 +73,7 @@ class ParentGeneratorFrame(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
-        self.parent_plant_frame = CanvasFrame(self, self)
+        self.parent_plant_frame = PlantFrame(self, self, 450, 450)
         self.parent_user_frame = ParentUserFrame(self, self)
 
         self.configure_widgets()
@@ -99,7 +85,7 @@ class ParentGeneratorFrame(ttk.Frame):
 
 class HeirGeneratorFrame(ttk.Frame):
     """
-    This frame consists of a CanvasFrame and an HeirUserFrame,
+    This frame consists of a PlantFrame and an HeirUserFrame,
     as well as a progressbar; the heir plant is controlled
     and drawn here
     """
@@ -107,7 +93,7 @@ class HeirGeneratorFrame(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
-        self.heir_plant_frame = CanvasFrame(self, self)
+        self.heir_plant_frame = PlantFrame(self, self, 450, 450)
         self.heir_user_frame = HeirUserFrame(self, self)
 
         self.configure_widgets()
@@ -202,7 +188,7 @@ class SmashPlant(ttk.Frame):
         self.configure_widgets()
 
     def configure_widgets(self):
-        self.back_button.place(x=5, y=0)
+        self.back_button.place(x=10, y=10)
         self.parent_frame_1.pack(side="left", padx=5)
         self.heir_frame.pack(side="left")
         self.parent_frame_2.pack(side="left", padx=5)

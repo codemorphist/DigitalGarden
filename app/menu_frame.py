@@ -26,8 +26,9 @@ class Menu(ttk.Frame):
         buttons = {
             "Generate Plant": lambda: self.controller.show_frame("PlantGenerator"),
             "Smash Plant": lambda: self.controller.show_frame("SmashPlant"),
-            "Exit": lambda: self.controller.destroy()
+            "Exit": lambda: self.controller.quit()
         }
+
         self.buttons_frame = MenuButtonsFrame(self, buttons)
 
         self.configure_widgets()
