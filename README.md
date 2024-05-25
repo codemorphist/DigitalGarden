@@ -51,15 +51,15 @@ ___
 ### Клонування проєкту та встановлення залежностей
 
 ```bash
-git clone https://github.com/codemorphist/DigitalGarden.git
-cd DigitalGarden
-poetry install
+$ git clone https://github.com/codemorphist/DigitalGarden.git
+$ cd DigitalGarden
+$ poetry install
 ```
 
 ### Запуск
 
 ```bash
-poetry run python app
+$ poetry run python app
 ```
 
 <!-- TOC --><a name="windows"></a>
@@ -67,21 +67,22 @@ poetry run python app
 
 Клонуйте репозиторій та перейдіть в папку репозиторія:
 ```bash
-git clone https://github.com/codemorphist/DigitalGarden.git
-cd DigitalGarden
+$ git clone https://github.com/codemorphist/DigitalGarden.git
+$ cd DigitalGarden
 ```
 
 ### pip
 
 Створіть нове віртуальне середовище та встановіть залежності:
 ```bash
-python -m venv venv
-pip install -r requirements.txt
+$ python -m venv venv
+$ .\venv\Scripts\activate
+$ pip install -r requirements.txt
 ```
 
 Запустіть проєкт:
 ```bash
-python app
+$ python app
 ```
 
 ### conda
@@ -89,14 +90,14 @@ python app
 Якщо ви використувуєту **conda** створіть віртуальне середовище та встановіть залежності: 
 
 ```bash
-conda env create -f environment.yml
-conda activate digitalgarden
+$ conda env create -f environment.yml
+$ conda activate digitalgarden
 ```
 
 Запустіть проєкт
 
 ```bash
-python app
+$ python app
 ```
 
 <!-- TOC --><a name="linux-macos"></a>
@@ -104,8 +105,8 @@ python app
 
 Клонуйте репозиторій та перейдіть в папку репозиторія:
 ```bash
-git clone https://github.com/codemorphist/DigitalGarden.git
-cd DigitalGarden
+$ git clone https://github.com/codemorphist/DigitalGarden.git
+$ cd DigitalGarden
 ```
 
 ### pip
@@ -114,14 +115,15 @@ cd DigitalGarden
 
 Створіть нове віртуальне середовище та встановіть залежності:
 ```bash
-python -m venv venv
-pip install -r requirements.txt
+$ python -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
 ```
 
 Запустіть проєкт
 
 ```bash
-python app
+$ python app
 ```
 
 ### conda
@@ -129,14 +131,14 @@ python app
 Якщо ви використувуєту **conda** створіть віртуальне середовище та встановіть залежності: 
 
 ```bash
-conda env create -f environment.yml
-conda activate digitalgarden
+$ conda env create -f environment.yml
+$ conda activate digitalgarden
 ```
 
 Запустіть проєкт
 
 ```bash
-python app
+$ python app
 ```
 
 <!-- TOC --><a name="gallery"></a>
