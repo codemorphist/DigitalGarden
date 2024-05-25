@@ -65,6 +65,9 @@ class AgentGenom:
 
     @staticmethod
     def empty() -> AgentGenom:
+        """
+        Return empty AgentGenom
+        """
         return AgentGenom(*[0  for _ in AgentGenom.attr_list()])
 
     def __iter__(self):
