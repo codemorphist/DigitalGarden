@@ -65,20 +65,36 @@ poetry run python app
 <!-- TOC --><a name="windows"></a>
 ## Windows
 
-### pip
-Клонуйте репозиторій та перейдіть в папку репозиторія.
+Клонуйте репозиторій та перейдіть в папку репозиторія:
 ```bash
 git clone https://github.com/codemorphist/DigitalGarden.git
 cd DigitalGarden
 ```
 
-Створіть нове віртуальне середовище та встановіть залежності
+### pip
+
+Створіть нове віртуальне середовище та встановіть залежності:
 ```bash
 python -m venv venv
 pip install -r requirements.txt
 ```
 
+Запустіть проєкт:
+```bash
+python app
+```
+
+### conda
+
+Якщо ви використувуєту **conda** створіть віртуальне середовище та встановіть залежності: 
+
+```bash
+conda env create -f environment.yml
+conda activate digitalgarden
+```
+
 Запустіть проєкт
+
 ```bash
 python app
 ```
@@ -86,20 +102,39 @@ python app
 <!-- TOC --><a name="linux-macos"></a>
 ## Linux / MacOs
 
-### pip
-Клонуйте репозиторій та перейдіть в папку репозиторія.
+Клонуйте репозиторій та перейдіть в папку репозиторія:
 ```bash
 git clone https://github.com/codemorphist/DigitalGarden.git
 cd DigitalGarden
 ```
 
-Створіть нове віртуальне середовище та встановіть залежності
+### pip
+
+Якщо ви використовуєте **pip**
+
+Створіть нове віртуальне середовище та встановіть залежності:
 ```bash
 python -m venv venv
 pip install -r requirements.txt
 ```
 
 Запустіть проєкт
+
+```bash
+python app
+```
+
+### conda
+
+Якщо ви використувуєту **conda** створіть віртуальне середовище та встановіть залежності: 
+
+```bash
+conda env create -f environment.yml
+conda activate digitalgarden
+```
+
+Запустіть проєкт
+
 ```bash
 python app
 ```

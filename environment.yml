@@ -38,5 +38,4 @@ dependencies:
   - zlib=1.2.13=h5eee18b_1
   - zstd=1.5.5=hc292b87_2
   - pip:
-      - plant-generator==0.1.0
-      - tools==0.1.1
+    - -e ./plant_generator ./tools
