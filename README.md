@@ -71,7 +71,9 @@ poetry run python app
 <!-- TOC --><a name="gallery"></a>
 # Галерея
 
-...
+| <img src="./gallery/blues.png" width="512"> | <img src="./gallery/coral_palm.png" width="512"> |
+|--|--|
+| [blues.txt](,/orangery/blues.txt) | [coral_palm.txt](./orangery/coral_palm.txt) |
 
 <!-- TOC --><a name="developers"></a>
 # Розробники
