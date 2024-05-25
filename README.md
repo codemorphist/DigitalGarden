@@ -35,17 +35,38 @@ ___
 <!-- TOC --><a name="poetry"></a>
 ## Poetry
 
-...
+Проект використовує менеджер пакетів та залежностей [Poetry](https://python-poetry.org/), 
+тому якщо ви хочете швидко запустити проект можете втановити **Poetry** і виконати наступні команди:
+
+### Клонування проєкту та встановлення залежностей
+
+```bash
+git clone https://github.com/codemorphist/DigitalGarden.git
+cd DigitalGarden
+poetry install
+```
+
+### Запуск
+
+```
+poetry run python app
+```
 
 <!-- TOC --><a name="windows"></a>
 ## Windows
 
+### pip
+
 ...
+
 
 <!-- TOC --><a name="linux-macos"></a>
 ## Linux / MacOs
 
+### pip
+
 ...
+
 
 <!-- TOC --><a name="gallery"></a>
 # Галерея
