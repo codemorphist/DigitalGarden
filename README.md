@@ -13,23 +13,23 @@ ___
 
 # Навігація
 
-- [Про проект](#-)
-- [Як запустити?](#--1)
+- [Про проект](#about)
+- [Як запустити?](#how-to-run)
    * [Poetry](#poetry)
    * [Windows](#windows)
    * [Linux / MacOs](#linux-macos)
-- [Галерея](#)
-- [Розробники](#-1)
+- [Галерея](#gallery)
+- [Розробники](#developers)
 
 <!-- TOC end -->
 
-<!-- TOC --><a name="-"></a>
+<!-- TOC --><a name="about"></a>
 # Про проект
 
 ...
 
 
-<!-- TOC --><a name="--1"></a>
+<!-- TOC --><a name="how-to-run"></a>
 # Як запустити?
 
 <!-- TOC --><a name="poetry"></a>
@@ -47,17 +47,15 @@ ___
 
 ...
 
-<!-- TOC --><a name=""></a>
+<!-- TOC --><a name="gallery"></a>
 # Галерея
 
 ...
 
-<!-- TOC --><a name="-1"></a>
+<!-- TOC --><a name="developers"></a>
 # Розробники
-
 
 | <img src="https://avatars.githubusercontent.com/u/112182502?v=4" width="100"> | <img src="https://avatars.githubusercontent.com/u/158076825?v=4" width="100"> |
 |--|--|
-| Alex Katrenko <br> (@codemorphist) | Illia Karbyshev <br> (@karbyshevillia) |
-
+| Alex Katrenko <br> [@codemorphist](github.com/codemorphist) | Illia Karbyshev <br> [@karbyshevillia](github.com/karbyshevillia) |
 
