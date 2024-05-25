@@ -15,6 +15,7 @@ ___
 
 - [Про проект](#about)
 - [Як запустити?](#how-to-run)
+   * [Залежності](#dependencies)
    * [Poetry](#poetry)
    * [Windows](#windows)
    * [Linux / MacOs](#linux-macos)
@@ -29,8 +30,16 @@ ___
 ...
 
 
-<!-- TOC --><a name="how-to-run"></a>
+<!-- toc --><a name="how-to-run"></a>
 # Як запустити?
+
+
+<!-- toc --><a name="dependencies"></a>
+## Залежності
+- `Python >= 3.11`
+- `Pillow >= 10.3.0`
+- `plant_generator`
+- `tools`
 
 <!-- TOC --><a name="poetry"></a>
 ## Poetry
@@ -56,15 +65,31 @@ poetry run python app
 ## Windows
 
 ### pip
-
-...
+Клонуйте репозиторій та перейдіть в папку репозиторія.
+Створіть нове віртуальне середовище та встановіть залежності
+```bash
+python -m venv venv
+pip install -r requirements.txt
+```
+Запустіть проєкт
+```bash
+python app
+```
 
 <!-- TOC --><a name="linux-macos"></a>
 ## Linux / MacOs
 
 ### pip
-
-...
+Клонуйте репозиторій та перейдіть в папку репозиторія.
+Створіть нове віртуальне середовище та встановіть залежності
+```bash
+python -m venv venv
+pip install -r requirements.txt
+```
+Запустіть проєкт
+```bash
+python app
+```
 
 <!-- TOC --><a name="gallery"></a>
 # Галерея
