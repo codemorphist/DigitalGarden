@@ -83,7 +83,7 @@ class SmashGenom:
         1.  We go through each gene in the table
         2.  For Descendant, we put a gene, 
             the value of which is calculated as follows: 
-            `Weight * Genome1 + (1 - weight) * Genome22`
+            `Weight * Genome1 + (1 - weight) * Genome2`
 
         :param genom1: First parent genom 
         :param genom2: Second parent genom 
