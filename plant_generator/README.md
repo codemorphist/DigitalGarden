@@ -18,11 +18,11 @@
 
 # Модулі
 
-Table of content:
-- [genom](##genom)
-- [agent](##agent)
-- [plant](##plant)
-- [smash](##smash)
+Навігація:
+- [genom](#genom)
+- [agent](#agent)
+- [plant](#plant)
+- [smash](#smash)
 
 ## genom
 ...
