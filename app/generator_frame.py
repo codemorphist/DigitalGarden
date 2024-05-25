@@ -243,6 +243,7 @@ class AsyncPainter(StoppableThread):
         self.height = canvas.winfo_height()
         self.image = None
         self.draw = None
+        self.update = None
         self.delay = 0.01
 
         self.progress = progress
@@ -304,9 +305,13 @@ class AsyncPainter(StoppableThread):
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)
             time.sleep(self.delay) 
-            self.canvas.after(1, self.update_canvas)
+            self.update = self.canvas.after(1, self.update_canvas)
             self.update_progress(self.plant.drawed / self.plant.total * 100)
         self.update_progress(100)
+
+    def stop(self):
+        self.canvas.after_cancel(self.update)
+        super().stop()
 
 
 class PlantFrame(ttk.Frame):
