@@ -234,6 +234,7 @@ class StoppableThread(Thread):
         return self._stop_event.is_set()
 
 
+
 class ThreadPainter(StoppableThread):
     def __init__(self, plant, canvas, progress = None):
         super().__init__()
@@ -246,6 +247,7 @@ class ThreadPainter(StoppableThread):
         self.draw = None
         self.update = None
         self.delay = 0.01
+
 
         self.progress = progress
 
@@ -392,7 +394,6 @@ class PlantFrame(ttk.Frame):
     def destroy(self):
         self.stop_drawing()
         super().destroy()
-
 
 class PlantGenerator(ttk.Frame):
     """
