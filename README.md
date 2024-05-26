@@ -119,13 +119,13 @@ python app
 
 ...
 
-<!-- toc --><a name="generate-plant"></a>
-## Generate Plant
+<!-- toc --><a name="Smash Plants"></a>
+## Smash Plants 
 
 ...
 
-<!-- toc --><a name="generate-plant"></a>
-## Generate Plant
+<!-- toc --><a name="Mass Smash"></a>
+## Mass Smash
 
 ...
 
@@ -151,10 +151,10 @@ python app
 <!-- toc --><a name="license"></a>
 # Ліцензія 
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Heckert_GNU_white.svg/1024px-Heckert_GNU_white.svg.png" width="256" align="right"></img>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Heckert_GNU_white.svg/1024px-Heckert_GNU_white.svg.png" width="128" align="right"></img>
 Код проекту поширюється під ліцензією **GNU General Public License v3.0**
 <br>
-Детальніше ознайомитися з ліцензією можна тут: ![LICENCE](./LICENSE)
+Детальніше ознайомитися з ліцензією можна тут: [LICENCE](./LICENSE)
 
 <!-- TOC --><a name="developers"></a>
 # Розробники
