@@ -7,6 +7,8 @@
     alt="Cover">
 </img>
 
+<p align="center">REAMDE.md lang: </p><a href="." align="center">🇺🇸ENG</a><a href=".">🇺🇦UKR</a>
+
 ___
 
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
