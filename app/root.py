@@ -47,4 +47,4 @@ class RootWindow(tk.Tk):
         frame.tkraise()
 
     def quit(self):
-        self.after(10, self.destroy)
+        self.after(1, self.destroy)
