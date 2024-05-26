@@ -7,7 +7,7 @@
     alt="Cover">
 </img>
 
-<p align="center">REAMDE.md lang: </p><a href="." align="center">🇺🇸ENG</a><a href=".">🇺🇦UKR</a>
+<a href="." align="left">🇺🇸ENG</a><p align="center">REAMDE.md LANG</p><a href="." align="right">🇺🇦UKR</a>
 
 ___
 
