@@ -7,7 +7,9 @@
     alt="Cover">
 </img>
 
-<a href="." align="left">🇺🇸ENG</a><a href="." align="right">🇺🇦UKR</a>
+<div align="center" width="128">
+  <a href="." align="left">🇺🇸ENG</a><a href="." align="right">🇺🇦UKR</a>
+</div>
 
 ___
 
