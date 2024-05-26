@@ -19,7 +19,12 @@ ___
    * [Poetry](#poetry)
    * [Windows](#windows)
    * [Linux / MacOs](#linux-macos)
+- [Як використовувати?](#hot-to-usage)
+  * [Generate Plant](#generate-plant)
+  * [Smash Plants](#smash-plants)
+  * [Mass Smash](#mass-smash)
 - [Галерея](#gallery)
+- [Ліцензія](#license)
 - [Розробники](#developers)
 
 <!-- TOC end -->
@@ -62,7 +67,7 @@ poetry install
 poetry run python app
 ```
 
-<!-- TOC --><a name="windows"></a>
+<!-- toc --><a name="windows"></a>
 ## Windows
 
 ### pip
@@ -104,6 +109,26 @@ pip install -r requirements.txt
 python app
 ```
 
+<!-- toc --><a name="how-to-usage"></a>
+# Як використовувати?
+
+В цій секції ви можете знайти детальну інформацію як генерувати рослини, схрещувати та зберігати.
+
+<!-- toc --><a name="generate-plant"></a>
+## Generate Plant
+
+...
+
+<!-- toc --><a name="generate-plant"></a>
+## Generate Plant
+
+...
+
+<!-- toc --><a name="generate-plant"></a>
+## Generate Plant
+
+...
+
 <!-- TOC --><a name="gallery"></a>
 # Галерея
 
@@ -122,6 +147,14 @@ python app
 | <img src="./gallery/purple_tree.png" width="512"> | <img src="./gallery/violet.png" width="512"> |
 |--|--|
 | [purple_tree.txt](./orangery/purple_tree.txt) | [violet.txt](./orangery/violet.txt) |
+
+<!-- toc --><a name="license"></a>
+# Ліцензія 
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Heckert_GNU_white.svg/1024px-Heckert_GNU_white.svg.png" width="256" align="right"></img>
+Код проекту поширюється під ліцензією **GNU General Public License v3.0**
+<br>
+Детальніше ознайомитися з ліцензією можна тут: ![LICENCE](./LICENSE)
 
 <!-- TOC --><a name="developers"></a>
 # Розробники
