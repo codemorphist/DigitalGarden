@@ -55,8 +55,8 @@ ___
 
 Перш за все клонуйте код проєкту та перейдіть в папку з кодом:
 ```bash
-git clone https://github.com/codemorphist/DigitalGarden.git
-cd DigitalGarden
+$ git clone https://github.com/codemorphist/DigitalGarden.git
+$ cd DigitalGarden
 ```
 
 Дійте далі відповідно до того яку операціну систему та менеджер пакетів ви використовуєте
@@ -69,12 +69,12 @@ cd DigitalGarden
 
 Встановіть залежності:
 ```bash
-poetry install
+$ poetry install
 ```
 
 Запустіть проєкт:
 ```bash
-poetry run python app
+$ poetry run python app
 ```
 
 <!-- toc --><a name="windows"></a>
@@ -91,7 +91,7 @@ $ pip install -r requirements.txt
 
 Запустіть проєкт:
 ```bash
-python app
+$ python app
 ```
 
 ### conda
@@ -113,14 +113,14 @@ $ python app
 ### pip
 Створіть нове віртуальне середовище та встановіть залежності:
 ```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+$ python -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
 ```
 
 Запустіть проєкт:
 ```bash
-python app
+$ python app
 ```
 
 ### conda
