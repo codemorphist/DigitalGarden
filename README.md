@@ -13,7 +13,7 @@ ___
 
 # Навігація
 
-- [Про проект](#about)
+- [Про проєкт](#about)
 - [Як запустити?](#how-to-run)
    * [Залежності](#dependencies)
    * [Poetry](#poetry)
@@ -29,12 +29,15 @@ ___
 
 <!-- TOC end -->
 
+___
 <!-- TOC --><a name="about"></a>
-# Про проект
+# Про проєкт
 
-**DigitalGarden** це поект генерації цифрових рослин за допомогою агентів що малють кола. 
-Окрім генерування власних рослин за геномом ви можете схрещувати раніше згенеровані рослини декількома способами.
+**DigitalGarden** — це поєкт для генерації цифрових рослин за допомогою агентів що малють кола. 
+Окрім генерування власних рослин за геномом ви, також, можете схрещувати раніше згенеровані рослини декількома способами,
+після чого зберігати їх та ділитися своїми результатами.
 
+___
 
 <!-- toc --><a name="how-to-run"></a>
 # Як запустити?
@@ -42,27 +45,31 @@ ___
 
 <!-- toc --><a name="dependencies"></a>
 ## Залежності
-- `Python >= 3.11`
-- `Pillow >= 10.3.0`
-- `plant_generator`
-- `tools`
+- `python >= 3.11`: мова програмування 
+- `Pillow >= 10.3.0`: використовується для малювання рослин
+- `plant_generator`: використовується для генерації рослин
+- `tools`: домоміжні інструметни
+
+Перш за все клонуйте код проєкту та перейдіть в папку з кодом:
+```bash
+git clone https://github.com/codemorphist/DigitalGarden.git
+cd DigitalGarden
+```
+
+Дійте далі відповідно до того яку операціну систему та менеджер пакетів ви використовуєте
 
 <!-- TOC --><a name="poetry"></a>
 ## Poetry
 
-Проект використовує менеджер пакетів та залежностей [Poetry](https://python-poetry.org/), 
-тому якщо ви хочете швидко запустити проект (в незалежності від того, яку операційну систему ви використовуєте) можете втановити **Poetry** і виконати наступні команди:
+Проєкт використовує менеджер пакетів та залежностей [Poetry](https://python-poetry.org/), 
+тому якщо ви хочете швидко запустити проєкт (в незалежності від того, яку операційну систему ви використовуєте) можете втановити **Poetry** і виконати наступні команди:
 
-### Клонування проєкту та встановлення залежностей
-
+Встановіть залежності:
 ```bash
-git clone https://github.com/codemorphist/DigitalGarden.git
-cd DigitalGarden
 poetry install
 ```
 
-### Запуск
-
+Запустіть проєкт:
 ```bash
 poetry run python app
 ```
@@ -71,42 +78,58 @@ poetry run python app
 ## Windows
 
 ### pip
-Клонуйте репозиторій та перейдіть в папку репозиторія.
+
+Створіть нове віртуальне середовище та встановіть залежності:
 ```bash
-git clone https://github.com/codemorphist/DigitalGarden.git
-cd DigitalGarden
+$ python -m venv venv
+$ .\venv\Scripts\activate
+$ pip install -r requirements.txt
 ```
 
-Створіть нове віртуальне середовище та встановіть залежності
+### conda
+
+Якщо ви використувуєту **conda** створіть віртуальне середовище та вктивуйте його: 
+
 ```bash
-python -m venv venv
-pip install -r requirements.txt
+$ conda env create -f environment.yml
+$ conda activate digitalgarden
 ```
 
-Запустіть проєкт
+Запустіть проєкт:
+
 ```bash
-python app
+$ python app
 ```
 
 <!-- TOC --><a name="linux-macos"></a>
-## Linux / MacOs
+## Linux / MacOS
 
 ### pip
-Клонуйте репозиторій та перейдіть в папку репозиторія.
-```bash
-git clone https://github.com/codemorphist/DigitalGarden.git
-cd DigitalGarden
-```
-
-Створіть нове віртуальне середовище та встановіть залежності
+Створіть нове віртуальне середовище та встановіть залежності:
 ```bash
 python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Запустіть проєкт
+Запустіть проєкт:
 ```bash
 python app
+```
+
+### conda
+
+Якщо ви використувуєту **conda** створіть віртуальне середовище та активуйте його: 
+
+```bash
+$ conda env create -f environment.yml
+$ conda activate digitalgarden
+```
+
+Запустіть проєкт:
+
+```bash
+$ python app
 ```
 
 <!-- toc --><a name="how-to-usage"></a>
