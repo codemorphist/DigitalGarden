@@ -86,17 +86,20 @@ $ .\venv\Scripts\activate
 $ pip install -r requirements.txt
 ```
 
+Запустіть проєкт:
+```bash
+python app
+```
+
 ### conda
 
-Якщо ви використувуєту **conda** створіть віртуальне середовище та вктивуйте його: 
-
+Якщо ви використувуєту **conda** створіть віртуальне середовище та активуйте його: 
 ```bash
 $ conda env create -f environment.yml
 $ conda activate digitalgarden
 ```
 
 Запустіть проєкт:
-
 ```bash
 $ python app
 ```
@@ -135,7 +138,7 @@ $ python app
 <!-- toc --><a name="how-to-usage"></a>
 # Як використовувати?
 
-В цій секції ви можете знайти детальну інформацію як генерувати рослини, схрещувати та зберігати.
+В цій секції ви можете знайти детальну інформацію як генерувати рослини, схрещувати та зберігати їх в окремі файли.
 
 <!-- toc --><a name="generate-plant"></a>
 ## Generate Plant
@@ -174,7 +177,7 @@ $ python app
 <!-- toc --><a name="license"></a>
 # Ліцензія 
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Heckert_GNU_white.svg/1024px-Heckert_GNU_white.svg.png" width="128" align="right"></img>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Heckert_GNU_white.svg/1024px-Heckert_GNU_white.svg.png" width="100" align="right"></img>
 Код проекту поширюється під ліцензією **GNU General Public License v3.0**
 <br>
 Детальніше ознайомитися з ліцензією можна тут: [LICENCE](./LICENSE)
