@@ -8,7 +8,7 @@
 </img>
 
 <div align="center" width="128">
-  <a href="." align="left">🇺🇸ENG</a><a href="." align="right">🇺🇦UKR</a>
+  <a href="." align="left" style="padding: 5px;">🇺🇸ENG</a><a href="." align="right" style="padding: 5px;">🇺🇦UKR</a>
 </div>
 
 ___
