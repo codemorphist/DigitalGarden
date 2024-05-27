@@ -4,7 +4,7 @@ from enum import Enum
 
 
 class SmashMethod(Enum):
-    Probalistic = "probalistic"
+    Probabilistic = "probalistic"
     WeightedAverage = "weighted average"
 
     @classmethod
@@ -121,7 +121,7 @@ class SmashGenom:
         :return: smash method
         """
         match method:
-            case SmashMethod.Probalistic:
+            case SmashMethod.Probabilistic:
                 return SmashGenom.probabilistic
             case SmashMethod.WeightedAverage:
                 return SmashGenom.average
@@ -149,4 +149,5 @@ class SmashGenom:
             smashed_genome = smash(smashed_genome, plant_genome, *args, **kwargs)
 
         return smashed_genome
+
 
