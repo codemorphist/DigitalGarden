@@ -43,4 +43,4 @@ class MethodFSM:
 
     def smash(self, plant1: PlantGenom, plant2: PlantGenom) -> PlantGenom:
         smash = SmashGenom.get_smash(self.method)
-        return smash(plant1, plant2, self.proportion, self.mutations)
+        return smash(plant1, plant2, self.proportion/100, self.mutations)
