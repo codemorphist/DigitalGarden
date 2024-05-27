@@ -218,11 +218,9 @@ class UserFrame(ttk.Frame):
         if not host_file:
             return
 
-        current_drawing = self.controller.plant_frame.current_drawing
-        if current_drawing:
-            plant_image = current_drawing.image 
-            plant_image.save(host_file, "PNG")
-            messagebox.showinfo("Message", "Image saved successfully!")
+        plant_image = self.controller.plant_frame.get_image()
+        plant_image.save(host_file, "PNG")
+        messagebox.showinfo("Message", "Image saved successfully!")
 
 
 class StoppableThread(Thread):
@@ -393,6 +391,14 @@ class PlantFrame(ttk.Frame):
 
         self.current_drawing.stop()
         self.current_drawing.join()
+
+    def get_image(self):
+        if self.current_drawing:
+            return self.current_drawing.image
+        else:
+            return Image.new("RGB",
+                            (self.width, self.height),
+                            (255, 255, 255)) 
 
 
 class PlantGenerator(ttk.Frame):
