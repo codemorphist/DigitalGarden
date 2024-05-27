@@ -136,7 +136,7 @@ class HeirUserFrame(ttk.Frame):
         if not host_file:
             return
 
-        plant_image = self.controller.plant_frame.plant_image
+        plant_image = self.controller.plant_frame.get_image()
         plant_image.save(host_file, "PNG")
         messagebox.showinfo("Message", "Image saved successfully!")
 

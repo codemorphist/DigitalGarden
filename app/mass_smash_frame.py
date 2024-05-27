@@ -151,11 +151,9 @@ class MassSmashUserFrame(ttk.Frame):
         if not host_file:
             return
 
-        current_drawing = self.controller.plant_frame.current_drawing
-        if current_drawing:
-            plant_image = current_drawing.image
-            plant_image.save(host_file, "PNG")
-            messagebox.showinfo("Message", "Image saved successfully!")
+        plant_image = self.controller.plant_frame.get_image()
+        plant_image.save(host_file, "PNG")
+        messagebox.showinfo("Message", "Image saved successfully!")
 
     def open_method_settings(self):
         self.method_settings = MethodSettingsWindow(self.controller, self.controller)
