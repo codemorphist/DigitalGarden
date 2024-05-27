@@ -80,7 +80,8 @@ class UserFrame(ttk.Frame):
                                 sticky="nsew",
                                 padx=5,
                                 pady=5)
-        self.import_tip = Hovertip(self.import_button, "Import a genome (.txt) \nto fill out the table")
+        self.import_tip = Hovertip(self.import_button, "Import a genome (.txt) \n"
+                                                       "to fill out the table")
 
         self.random_button.grid(row=self.table_height,
                                 column=3,
@@ -88,7 +89,8 @@ class UserFrame(ttk.Frame):
                                 sticky="nsew",
                                 padx=5,
                                 pady=5)
-        self.random_tip = Hovertip(self.random_button, "Fill out a random gene \n(you could get lucky!)")
+        self.random_tip = Hovertip(self.random_button, "Fill out a random gene \n"
+                                                       "(you could get lucky!)")
 
         self.export_button.grid(row=self.table_height,
                                 column=6,
@@ -96,8 +98,9 @@ class UserFrame(ttk.Frame):
                                 sticky="nsew",
                                 padx=5,
                                 pady=5)
-        self.export_tip = Hovertip(self.export_button, "Export a genome you find the best \nin the .txt "
-                                                       "format (tip: share!)")
+        self.export_tip = Hovertip(self.export_button, "Export the genome of \n"
+                                                       "the plant last generated \n"
+                                                       "in the .txt format (tip: share!)")
 
         self.generate_button.grid(row=self.table_height + 1,
                                   column=0,
@@ -130,7 +133,7 @@ class UserFrame(ttk.Frame):
         agent_genome_as_list = []
         for row in range(self.table_height):
             value = self.genome_entry_fields[(row, column)].get()
-            assert self.is_int(value), "Invalid type for gen value"
+            assert self.is_int(value), "Invalid type for gene value"
             agent_genome_as_list.append(int(value))
         agent_genome_entries = tuple(agent_genome_as_list)
         agent_genome = AgentGenom(*agent_genome_entries)
@@ -380,9 +383,10 @@ class PlantFrame(ttk.Frame):
                 self.progress_var
             )
             self.current_drawing.start()
-        except:
+        except Exception as e:
             messagebox.showerror("Error", "Generation attempted with an invalid genome:\n"
                                           "All the entries have to be filled out with integers")
+            print(e)
 
     def stop_drawing(self):
         if self.current_drawing is None:

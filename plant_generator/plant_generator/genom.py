@@ -211,9 +211,9 @@ class PlantGenom:
 
 class SmashGenom:
     """
-    Class which implement smash for genom of plants
+    Class which implements smash for genomes of plants
 
-    - Probalistic
+    - Probabilistic
     - Weighted Average
     - Mass Smash
     """
@@ -321,9 +321,7 @@ class SmashGenom:
         if not plants:
             return PlantGenom.empty()
 
-        method = SmashMethod.construct_method({"Name": method_name,
-                                               "Proportion": 0.5,
-                                               "Mutations": mutations})
+        method = SmashMethod.construct_method(MethodIdentifier(name=method_name, mutations=mutations))
 
         smashed_genome = plants[0]
         for plant_genome in plants[1:]:
@@ -332,15 +330,54 @@ class SmashGenom:
         return smashed_genome
 
 
+class MethodIdentifier:
+    ALLOWED_METHODS = ("Probabilistic", "Weighted Average")
+
+    def __init__(self, name: str = "Probabilistic", proportion: float = 0.5, mutations: int = 0):
+        assert name in MethodIdentifier.ALLOWED_METHODS, f"The 'name' argument must be in {MethodIdentifier.ALLOWED_METHODS}"
+        assert isinstance(proportion, float) and 0 <= proportion <= 1, "The 'proportion' argument only accepts float values from [0;1]"
+        assert isinstance(mutations, int) and 0 <= mutations <= 180, "The 'mutations' argument only accepts integer values from [0;180]"
+        self.dictionary = {"Name": name, "Proportion": proportion, "Mutations": mutations}
+
+    def __getitem__(self, key):
+        return self.dictionary[key]
+
+    def __setitem__(self, key, value):
+        assert key in self.dictionary.keys(), "The key is either 'Name', 'Proportion', or 'Mutations'"
+        match key:
+            case "Name":
+                assert value in MethodIdentifier.ALLOWED_METHODS, (f"The 'Name' key only accepts "
+                                                                   f"string values from {MethodIdentifier.ALLOWED_METHODS}")
+            case "Proportion":
+                assert isinstance(value, float) and 0 <= value <= 1, ("The 'Proportion' key only accepts"
+                                                                      "float values from [0;1]")
+            case "Mutations":
+                assert isinstance(value, int) and 0 <= value <= 180, ("The 'Mutations' key only accepts"
+                                                                      "integer values from [0;180]")
+        self.dictionary[key] = value
+
+    def copy(self):
+        return self.dictionary.copy()
+
+
 class SmashMethod:
-    REFERENCES = {"Probabilistic": SmashGenom.probabilistic,
-                  "Weighted Average": SmashGenom.average}
+    FUNCTIONS = (SmashGenom.probabilistic, SmashGenom.average)
+    REFERENCES = dict(zip(MethodIdentifier.ALLOWED_METHODS, FUNCTIONS))
 
     @staticmethod
-    def construct_method(method_identifier: dict) -> callable:
+    def construct_method(method_identifier: MethodIdentifier) -> callable:
         function_name = SmashMethod.REFERENCES[method_identifier["Name"]]
         weight = method_identifier["Proportion"]
         mutations = method_identifier["Mutations"]
         function = lambda genome_1, genome_2: function_name(genome_1, genome_2, weight, mutations)
         return function
 
+if __name__ == '__main__':
+    g1 = PlantGenom.random()
+    g2 = PlantGenom.random()
+    m = MethodIdentifier()
+    method = SmashMethod.construct_method(m)
+    g = method(g1, g2)
+    print(g)
+    print(PlantGenom.export_genom(g))
+    print(g)

@@ -9,7 +9,7 @@ from copy import deepcopy
 
 from PIL import Image, ImageDraw, ImageTk
 
-from plant_generator import Plant, PlantGenom, AgentGenom, SmashMethod
+from plant_generator import Plant, PlantGenom, AgentGenom, SmashMethod, MethodIdentifier
 from tools import Circle, Color, Vec2
 from generator_frame import PlantFrame
 
@@ -35,7 +35,11 @@ class ParentUserFrame(ttk.Frame):
 
     def configure_widgets(self):
         self.import_button.pack(padx=10, pady=5)
+        self.import_tip = Hovertip(self.import_button, text=f"Import the genome (.txt) \n"
+                                                            f"of parent {self.controller.parent_number}")
+
         self.show_button.pack(padx=10, pady=5)
+        self.show_tip = Hovertip(self.show_button, text=f"Generate parent {self.controller.parent_number}")
     
     def genome_unpack(self):
         """
@@ -75,9 +79,8 @@ class HeirUserFrame(ttk.Frame):
         the "Method" dialogue window; this sets the way
         in which the parent genomes are to be smashed
         """
-        self.method_identifier = {"Name": "Probabilistic",
-                                  "Proportion": 0.5,
-                                  "Mutations": 0}
+        self.method_identifier = MethodIdentifier()
+        self.plant_genome = PlantGenom.empty()
 
         self.method_button = ttk.Button(self,
                                         text="Method",
@@ -99,11 +102,10 @@ class HeirUserFrame(ttk.Frame):
         function = SmashMethod.construct_method(self.method_identifier)
         return function
 
-    @property
-    def smashed_genome(self):
+    def set_smashed_genome(self):
         parent_1 = self.controller.controller.parent_frame_1.user_frame.plant_genome
         parent_2 = self.controller.controller.parent_frame_2.user_frame.plant_genome
-        return self.method(parent_1, parent_2)
+        self.plant_genome = self.method(parent_1, parent_2)
 
     def genome_pack(self):
         """
@@ -116,7 +118,7 @@ class HeirUserFrame(ttk.Frame):
             if not host_file:
                 return
 
-            genom_str = PlantGenom.export_genom(self.get_plant().plant_genom)
+            genom_str = PlantGenom.export_genom(self.plant_genome)
             with open(host_file, "w") as file:
                 file.write(genom_str)
             messagebox.showinfo("Message", "Genome exported successfully!")
@@ -141,16 +143,26 @@ class HeirUserFrame(ttk.Frame):
 
     def configure_widgets(self):
         self.method_button.grid(row=0, column=0, sticky="nsew", padx=10, pady=5)
+        self.method_tip = Hovertip(self.method_button, text="Set the method of genome-smashing")
+
         self.generate_button.grid(row=0, column=1, sticky="nsew", padx=10, pady=5)
+        self.generate_tip = Hovertip(self.generate_button, text="See what happens!")
+
         self.export_button.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
+        self.export_tip = Hovertip(self.export_button, "Export the genome of \n"
+                                                       "the plant last generated \n"
+                                                       "in the .txt format (tip: share!)")
+
         self.save_button.grid(row=1, column=1, sticky="nsew", padx=10, pady=5)
+        self.save_tip = Hovertip(self.save_button, "Save a picture of your gorgeous plant!")
 
     def open_method_settings(self):
         self.method_settings = MethodSettingsWindow(self.controller.controller, self.controller.controller)
 
     def get_plant(self) -> Plant:
+        self.set_smashed_genome()
         start_pos = Vec2(0, 250)
-        plant = Plant(self.smashed_genome, start_pos)
+        plant = Plant(self.plant_genome, start_pos)
         return plant
 
 class ParentGeneratorFrame(ttk.Frame):
@@ -159,9 +171,10 @@ class ParentGeneratorFrame(ttk.Frame):
     as well as a progressbar; the parent plants are controlled
     and drawn here
     """
-    def __init__(self, container, controller):
+    def __init__(self, container, controller, parent_number: int):
         super().__init__(container)
         self.controller = controller
+        self.parent_number = parent_number
 
         self.plant_frame = PlantFrame(self, self, 450, 450)
         self.user_frame = ParentUserFrame(self, self)
@@ -208,7 +221,7 @@ class MethodSettingsWindow(tk.Toplevel):
         # Get the method identifier from parent frames to show the current configuration
         self.method_identifier = self.controller.heir_frame.user_frame.method_identifier.copy()
 
-        self.methods = ("Probabilistic", "Weighted Average")
+        self.methods = MethodIdentifier.ALLOWED_METHODS
         self.method_name_var = tk.StringVar(value=self.method_identifier["Name"])
         self.method_box = ttk.Combobox(self.settings_frame,
                                        values=self.methods,
@@ -262,9 +275,9 @@ class MethodSettingsWindow(tk.Toplevel):
         Obtains the values of the tkinter variables and updates the method
         identifier accordingly
         """
-        self.method_identifier = {"Name": self.method_name_var.get(),
-                                  "Proportion": self.lean_var.get() / 100,
-                                  "Mutations": self.mutations_var.get()}
+        self.method_identifier = MethodIdentifier(name=self.method_name_var.get(),
+                                                  proportion=self.lean_var.get() / 100,
+                                                  mutations=self.mutations_var.get())
 
     def communicate_method(self):
         """
@@ -285,9 +298,9 @@ class SmashPlant(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
-        self.parent_frame_1 = ParentGeneratorFrame(self, self)
+        self.parent_frame_1 = ParentGeneratorFrame(self, self, 1)
         self.heir_frame = HeirGeneratorFrame(self, self)
-        self.parent_frame_2 = ParentGeneratorFrame(self, self)
+        self.parent_frame_2 = ParentGeneratorFrame(self, self, 2)
 
         self.back_button = ttk.Button(self, text="Back",
             command=lambda: self.controller.show_frame("Menu"))
