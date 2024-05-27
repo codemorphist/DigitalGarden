@@ -9,9 +9,58 @@ from copy import deepcopy
 
 from PIL import Image, ImageDraw, ImageTk
 
-from plant_generator import Plant, PlantGenom, AgentGenom, SmashMethod, MethodIdentifier
+from plant_generator import Plant, PlantGenom
+from plant_generator import SmashMethod, SmashGenom
 from tools import Circle, Color, Vec2
 from generator_frame import PlantFrame
+
+
+class MethodFSM:
+    """
+    Class implement finite state machine for smash method frame
+    """
+    METHODS = [method.value.title() for method in SmashMethod]
+
+    def __init__(self):
+        self._method = SmashMethod.Probalistic
+        self._proportion = 0.5
+        self._mutations = 0
+
+    @property
+    def method(self):
+        return self._method
+    @method.setter
+    def method(self, value):
+        value = SmashMethod(value)
+        if value is None:
+            return
+        self._method = value 
+
+    @property
+    def method_name(self) -> str:
+        return self.method.value.title()
+
+    @property
+    def proportion(self):
+        return int(self._proportion * 100)
+    @proportion.setter
+    def proportion(self, value):
+        self._proportion = value/100
+
+    @property
+    def mutations(self):
+        """The mutations property."""
+        return self._mutations
+    @mutations.setter
+    def mutations(self, value):
+        self._mutations = value
+
+    def smash(self, plant1: PlantGenom, plant2: PlantGenom) -> PlantGenom:
+        smash = SmashGenom.get_smash(self.method)
+        return smash(plant1, plant2, self.proportion, self.mutations)
+
+
+FSM = MethodFSM()
 
 
 class ParentUserFrame(ttk.Frame):
@@ -79,7 +128,6 @@ class HeirUserFrame(ttk.Frame):
         the "Method" dialogue window; this sets the way
         in which the parent genomes are to be smashed
         """
-        self.method_identifier = MethodIdentifier()
         self.plant_genome = PlantGenom.empty()
 
         self.method_button = ttk.Button(self,
@@ -97,15 +145,10 @@ class HeirUserFrame(ttk.Frame):
 
         self.configure_widgets()
 
-    @property
-    def method(self):
-        function = SmashMethod.construct_method(self.method_identifier)
-        return function
-
     def set_smashed_genome(self):
         parent_1 = self.controller.controller.parent_frame_1.user_frame.plant_genome
         parent_2 = self.controller.controller.parent_frame_2.user_frame.plant_genome
-        self.plant_genome = self.method(parent_1, parent_2)
+        self.plant_genome = FSM.smash(parent_1, parent_2)
 
     def genome_pack(self):
         """
@@ -218,18 +261,15 @@ class MethodSettingsWindow(tk.Toplevel):
 
         self.settings_frame = ttk.Frame(self)
 
-        # Get the method identifier from parent frames to show the current configuration
-        self.method_identifier = self.controller.heir_frame.user_frame.method_identifier.copy()
-
-        self.methods = MethodIdentifier.ALLOWED_METHODS
-        self.method_name_var = tk.StringVar(value=self.method_identifier["Name"])
+        self.methods = FSM.METHODS
+        self.method_name_var = tk.StringVar(value=FSM.method_name)
         self.method_box = ttk.Combobox(self.settings_frame,
                                        values=self.methods,
                                        textvariable=self.method_name_var,
                                        state="readonly")
         self.method_label = ttk.Label(self.settings_frame, text="Method: ")
 
-        self.lean_var = tk.IntVar(value=self.method_identifier["Proportion"]*100)
+        self.lean_var = tk.IntVar(value=FSM.proportion)
         self.lean_slider = tk.Scale(self.settings_frame,
                                     from_=0,
                                     to=100,
@@ -241,7 +281,7 @@ class MethodSettingsWindow(tk.Toplevel):
         self.lean_label = ttk.Label(self.settings_frame, text="Parent 1 / Parent 2\n"
                                                               "proportion (%):")
 
-        self.mutations_var = tk.IntVar(value=self.method_identifier["Mutations"])
+        self.mutations_var = tk.IntVar(value=FSM.mutations)
         self.mutation_count_box = ttk.Spinbox(self.settings_frame,
                                               state="readonly",
                                               from_=0,
@@ -275,9 +315,9 @@ class MethodSettingsWindow(tk.Toplevel):
         Obtains the values of the tkinter variables and updates the method
         identifier accordingly
         """
-        self.method_identifier = MethodIdentifier(name=self.method_name_var.get(),
-                                                  proportion=self.lean_var.get() / 100,
-                                                  mutations=self.mutations_var.get())
+        FSM.method = self.method_name_var.get()
+        FSM.proportion = self.lean_var.get()
+        FSM.mutations = self.mutations_var.get()
 
     def communicate_method(self):
         """
@@ -286,7 +326,6 @@ class MethodSettingsWindow(tk.Toplevel):
         is then destroyed
         """
         self.set_method()
-        self.controller.heir_frame.user_frame.method_identifier = self.method_identifier.copy()
         self.destroy()
 
 
