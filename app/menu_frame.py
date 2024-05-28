@@ -4,8 +4,8 @@ from generator_frame import PlantGenerator
 
 
 class MenuButtonsFrame(ttk.Frame):
-    def __init__(self, containter, buttons: dict[str, callable]):
-        super().__init__(containter)
+    def __init__(self, container, buttons: dict[str, callable]):
+        super().__init__(container)
 
         self.buttons = {}
         for text, callback in buttons.items():
@@ -19,13 +19,14 @@ class MenuButtonsFrame(ttk.Frame):
                         sticky="nsew")
 
 class Menu(ttk.Frame):
-    def __init__(self, containter, controller):
-        super().__init__(containter)
+    def __init__(self, container, controller):
+        super().__init__(container)
         self.controller = controller
 
         buttons = {
             "Generate Plant": lambda: self.controller.show_frame("PlantGenerator"),
             "Smash Plant": lambda: self.controller.show_frame("SmashPlant"),
+            "Mass Smash": lambda: self.controller.show_frame("MassSmash"),
             "Exit": lambda: self.controller.quit()
         }
 

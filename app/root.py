@@ -1,7 +1,8 @@
 import tkinter as tk
 from generator_frame import PlantGenerator
 from menu_frame import Menu
-# from smash_plant import SmashPlant
+from smash_plant import SmashPlant
+from mass_smash_frame import MassSmash
 
 
 class RootWindow(tk.Tk):
@@ -22,7 +23,7 @@ class RootWindow(tk.Tk):
   
         # Setup all frames
         self.frames = {}  
-        for F in (Menu, PlantGenerator):
+        for F in (Menu, PlantGenerator, SmashPlant, MassSmash):
             frame = F(container, self)
             self.frames[F.__name__] = frame 
             frame.grid(row=0, column=0, sticky="nsew")
