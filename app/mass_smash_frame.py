@@ -18,7 +18,6 @@ from smash_plant import MethodSettingsWindow
 
 
 Config = MethodConfig()
-Config.proportion = 50
 
 
 class GenomeViewFrame(ttk.Frame):
@@ -158,7 +157,7 @@ class MassSmashUserFrame(ttk.Frame):
         messagebox.showinfo("Message", "Image saved successfully!")
 
     def open_method_settings(self):
-        self.method_settings = MethodSettingsWindow(self.controller, self.controller)
+        self.method_settings = MethodSettingsWindow(self, self, Config)
 
     def get_plant(self) -> Plant:
         self.set_smashed_genome()

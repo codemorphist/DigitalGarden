@@ -156,11 +156,11 @@ class HeirUserFrame(ttk.Frame):
         self.save_tip = Hovertip(self.save_button, "Save a picture of your gorgeous plant!")
 
     def open_method_settings(self):
-        self.method_settings = MethodSettingsWindow(self.controller.controller, self.controller.controller)
+        self.method_settings = MethodSettingsWindow(self, self, Config)
 
     def get_plant(self) -> Plant:
         self.set_smashed_genome()
-        start_pos = Vec2(0, 250)
+        start_pos = Vec2(0, 150)
         plant = Plant(self.plant_genome, start_pos)
         return plant
 
@@ -211,7 +211,7 @@ class MethodSettingsWindow(tk.Toplevel):
     This is a pop-up window where the User can regulate
     the parameters of the genome smashing method
     """
-    def __init__(self, container, controller):
+    def __init__(self, container, controller, config: MethodConfig):
         super().__init__(container)
         self.controller = controller
         self.geometry("500x230")
@@ -219,15 +219,17 @@ class MethodSettingsWindow(tk.Toplevel):
 
         self.settings_frame = ttk.Frame(self)
 
-        self.methods = Config.METHODS
-        self.method_name_var = tk.StringVar(value=Config.method_name)
+        self.config = config
+
+        self.methods = self.config.METHODS
+        self.method_name_var = tk.StringVar(value=self.config.method_name)
         self.method_box = ttk.Combobox(self.settings_frame,
                                        values=self.methods,
                                        textvariable=self.method_name_var,
                                        state="readonly")
         self.method_label = ttk.Label(self.settings_frame, text="Method: ")
 
-        self.lean_var = tk.IntVar(value=Config.proportion)
+        self.lean_var = tk.IntVar(value=self.config.proportion)
         self.lean_slider = tk.Scale(self.settings_frame,
                                     from_=0,
                                     to=100,
@@ -239,7 +241,7 @@ class MethodSettingsWindow(tk.Toplevel):
         self.lean_label = ttk.Label(self.settings_frame, text="Parent 1 / Parent 2\n"
                                                               "proportion (%):")
 
-        self.mutations_var = tk.IntVar(value=Config.mutations)
+        self.mutations_var = tk.IntVar(value=self.config.mutations)
         self.mutation_count_box = ttk.Spinbox(self.settings_frame,
                                               state="readonly",
                                               from_=0,
@@ -273,9 +275,9 @@ class MethodSettingsWindow(tk.Toplevel):
         Obtains the values of the tkinter variables and updates the method
         identifier accordingly
         """
-        Config.method = self.method_name_var.get()
-        Config.proportion = self.lean_var.get()
-        Config.mutations = self.mutations_var.get()
+        self.config.method = self.method_name_var.get()
+        self.config.proportion = self.lean_var.get()
+        self.config.mutations = self.mutations_var.get()
 
     def communicate_method(self):
         """
