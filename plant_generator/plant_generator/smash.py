@@ -24,7 +24,6 @@ class SmashGenom:
     - Weighted Average
     - Mass Smash
     """
-
     @staticmethod
     def mutate(genom: PlantGenom,
                mutations: int) -> PlantGenom:
@@ -71,7 +70,7 @@ class SmashGenom:
         smashed_table = PlantGenom.empty().table()
         for c, agent in enumerate(smashed_table):
             for r in range(len(agent)):
-                if uniform(0.0, 1.0) > probability:
+                if randint(0, 100)/100 > probability:
                     smashed_table[c][r] = genom2_table[c][r]
                 else:
                     smashed_table[c][r] = genom1_table[c][r]
@@ -101,6 +100,7 @@ class SmashGenom:
         """
         # Averaging part
         assert 0 <= weight <= 1, "The weight must be a float the interval [0;1]"
+    
         genom1_table = genom1.table()
         genom2_table = genom2.table()
         smashed_table = PlantGenom.empty().table()
@@ -149,5 +149,4 @@ class SmashGenom:
             smashed_genome = smash(smashed_genome, plant_genome, *args, **kwargs)
 
         return smashed_genome
-
 

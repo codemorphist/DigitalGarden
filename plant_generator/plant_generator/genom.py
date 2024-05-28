@@ -64,7 +64,10 @@ class AgentGenom:
 
     @staticmethod
     def empty() -> AgentGenom:
-        return AgentGenom(*[0 for _ in AgentGenom.attr_list()])
+        """
+        Return empty AgentGenom
+        """
+        return AgentGenom(*[0  for _ in AgentGenom.attr_list()])
 
     def __iter__(self):
         for attr in self.attr_list():
@@ -206,5 +209,4 @@ class PlantGenom:
         return genom_table
 
     def __repr__(self) -> str:
-        return f"PlantGenom({self.genom})"
-
+        return f"PlantGenom({self.genom})" 
