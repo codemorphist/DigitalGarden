@@ -80,12 +80,6 @@ $ poetry run python app
 <!-- toc --><a name="windows"></a>
 ## Windows
 
-Клонуйте репозиторій та перейдіть в папку репозиторія:
-```bash
-$ git clone https://github.com/codemorphist/DigitalGarden.git
-$ cd DigitalGarden
-```
-
 ### pip
 
 Створіть нове віртуальне середовище та встановіть залежності:
@@ -117,12 +111,6 @@ $ python app
 
 <!-- TOC --><a name="linux-macos"></a>
 ## Linux / MacOS
-
-Клонуйте репозиторій та перейдіть в папку репозиторія:
-```bash
-$ git clone https://github.com/codemorphist/DigitalGarden.git
-$ cd DigitalGarden
-```
 
 ### pip
 
