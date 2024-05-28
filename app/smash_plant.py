@@ -160,7 +160,7 @@ class HeirUserFrame(ttk.Frame):
 
     def get_plant(self) -> Plant:
         self.set_smashed_genome()
-        start_pos = Vec2(0, 150)
+        start_pos = Vec2(0, 180)
         plant = Plant(self.plant_genome, start_pos)
         return plant
 
