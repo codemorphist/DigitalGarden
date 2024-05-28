@@ -1,7 +1,7 @@
 from plant_generator import PlantGenom, SmashMethod, SmashGenom
 
 
-class MethodFSM:
+class MethodConfig:
     """
     Class implement finite state machine for smash method frame
     """

@@ -13,11 +13,13 @@ from plant_generator import Plant, PlantGenom, SmashGenom
 from generator_frame import PlantFrame
 from tools import Circle, Color, Vec2
 
-from fsm import MethodFSM
+from fsm import MethodConfig
+from smash_plant import MethodSettingsWindow
 
 
-FSM = MethodFSM()
-FSM.proportion = 50
+Config = MethodConfig()
+Config.proportion = 50
+
 
 class GenomeViewFrame(ttk.Frame):
     def __init__(self, container, controller):
@@ -104,9 +106,9 @@ class MassSmashUserFrame(ttk.Frame):
 
     def set_smashed_genome(self):
         self.plant_genome = SmashGenom.mass_smash(self.parents_list,
-                                                  FSM.method,
-                                                  FSM.proportion / 100,
-                                                  FSM.mutations,)
+                                                  Config.method,
+                                                  Config.proportion / 100,
+                                                  Config.mutations,)
 
     @property
     def parents_list(self) -> list[PlantGenom]:
@@ -163,71 +165,6 @@ class MassSmashUserFrame(ttk.Frame):
         start_pos = Vec2(0, 250)
         plant = Plant(self.plant_genome, start_pos)
         return plant
-
-
-class MethodSettingsWindow(tk.Toplevel):
-    """
-    This is a pop-up window where the User can regulate
-    the parameters of the genome smashing method
-    """
-    def __init__(self, container, controller):
-        super().__init__(container)
-        self.controller = controller
-        self.geometry("500x230")
-        self.title("Method")
-
-        self.settings_frame = ttk.Frame(self)
-
-        self.methods = ("Probabilistic", "Weighted Average")
-        self.method_name_var = tk.StringVar(value=FSM.method_name)
-        self.method_box = ttk.Combobox(self.settings_frame,
-                                       values=self.methods,
-                                       textvariable=self.method_name_var,
-                                       state="readonly")
-        self.method_label = ttk.Label(self.settings_frame, text="Method: ")
-
-        self.mutations_var = tk.IntVar(value=FSM.mutations)
-        self.mutation_count_box = ttk.Spinbox(self.settings_frame,
-                                              state="readonly",
-                                              from_=0,
-                                              to=180,
-                                              increment=1,
-                                              textvariable=self.mutations_var)
-        self.mutation_label = ttk.Label(self.settings_frame, text="Mutations: ")
-
-        self.apply_button = ttk.Button(self, text="Apply", command=self.communicate_method)
-
-        self.resizable(False, False)
-        self.transient(controller)
-        self.grab_set()
-        self.configure_widgets()
-
-    def configure_widgets(self):
-        self.method_label.grid(row=0, column=0, pady=5, sticky="nse")
-        self.method_box.grid(row=0, column=1, padx=20, pady=5, sticky="nsew")
-
-        self.mutation_label.grid(row=1, column=0, pady=5, sticky="nse")
-        self.mutation_count_box.grid(row=1, column=1, padx=20, pady=5, sticky="nsew")
-
-        self.settings_frame.pack(padx=15, pady=10)
-        self.apply_button.pack(padx=15, pady=10)
-
-    def set_method(self):
-        """
-        Obtains the values of the tkinter variables and updates the method
-        identifier accordingly
-        """
-        FSM.method = self.method_name_var.get()
-        FSM.mutations = self.mutations_var.get()
-
-    def communicate_method(self):
-        """
-        Sets the method identifier of parent frames to that dictated
-        by the variable values configured by the User; the pop-up window
-        is then destroyed
-        """
-        self.set_method()
-        self.destroy()
 
 
 class MassSmash(ttk.Frame):

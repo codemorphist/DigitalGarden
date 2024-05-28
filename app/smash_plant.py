@@ -13,10 +13,10 @@ from plant_generator import Plant, PlantGenom
 from tools import Circle, Color, Vec2
 from generator_frame import PlantFrame
 
-from fsm import MethodFSM
+from fsm import MethodConfig
 
 
-FSM = MethodFSM()
+Config = MethodConfig()
 
 
 class ParentUserFrame(ttk.Frame):
@@ -64,7 +64,7 @@ class ParentUserFrame(ttk.Frame):
                                           "The genome has to be a .txt file with a 20x9 table of \n"
                                           "integer inputs separated by spaces")
     def get_plant(self) -> Plant:
-        start_pos = Vec2(0, 250)
+        start_pos = Vec2(0, 180)
         plant = Plant(self.plant_genome, start_pos)
         return plant
 
@@ -104,7 +104,7 @@ class HeirUserFrame(ttk.Frame):
     def set_smashed_genome(self):
         parent_1 = self.controller.controller.parent_frame_1.user_frame.plant_genome
         parent_2 = self.controller.controller.parent_frame_2.user_frame.plant_genome
-        self.plant_genome = FSM.smash(parent_1, parent_2)
+        self.plant_genome = Config.smash(parent_1, parent_2)
 
     def genome_pack(self):
         """
@@ -164,6 +164,7 @@ class HeirUserFrame(ttk.Frame):
         plant = Plant(self.plant_genome, start_pos)
         return plant
 
+
 class ParentGeneratorFrame(ttk.Frame):
     """
     This frame consists of a PlantFrame and a ParentUserFrame,
@@ -204,6 +205,7 @@ class HeirGeneratorFrame(ttk.Frame):
         self.plant_frame.pack()
         self.user_frame.pack()
 
+
 class MethodSettingsWindow(tk.Toplevel):
     """
     This is a pop-up window where the User can regulate
@@ -217,15 +219,15 @@ class MethodSettingsWindow(tk.Toplevel):
 
         self.settings_frame = ttk.Frame(self)
 
-        self.methods = FSM.METHODS
-        self.method_name_var = tk.StringVar(value=FSM.method_name)
+        self.methods = Config.METHODS
+        self.method_name_var = tk.StringVar(value=Config.method_name)
         self.method_box = ttk.Combobox(self.settings_frame,
                                        values=self.methods,
                                        textvariable=self.method_name_var,
                                        state="readonly")
         self.method_label = ttk.Label(self.settings_frame, text="Method: ")
 
-        self.lean_var = tk.IntVar(value=FSM.proportion)
+        self.lean_var = tk.IntVar(value=Config.proportion)
         self.lean_slider = tk.Scale(self.settings_frame,
                                     from_=0,
                                     to=100,
@@ -237,7 +239,7 @@ class MethodSettingsWindow(tk.Toplevel):
         self.lean_label = ttk.Label(self.settings_frame, text="Parent 1 / Parent 2\n"
                                                               "proportion (%):")
 
-        self.mutations_var = tk.IntVar(value=FSM.mutations)
+        self.mutations_var = tk.IntVar(value=Config.mutations)
         self.mutation_count_box = ttk.Spinbox(self.settings_frame,
                                               state="readonly",
                                               from_=0,
@@ -271,9 +273,9 @@ class MethodSettingsWindow(tk.Toplevel):
         Obtains the values of the tkinter variables and updates the method
         identifier accordingly
         """
-        FSM.method = self.method_name_var.get()
-        FSM.proportion = self.lean_var.get()
-        FSM.mutations = self.mutations_var.get()
+        Config.method = self.method_name_var.get()
+        Config.proportion = self.lean_var.get()
+        Config.mutations = self.mutations_var.get()
 
     def communicate_method(self):
         """
