@@ -13,7 +13,7 @@ from plant_generator import Plant, PlantGenom, SmashGenom
 from generator_frame import PlantFrame
 from tools import Circle, Color, Vec2
 
-from fsm import MethodConfig
+from method_config import MethodConfig
 from smash_plant import MethodSettingsWindow
 
 

@@ -13,7 +13,7 @@ from plant_generator import Plant, PlantGenom
 from tools import Circle, Color, Vec2
 from generator_frame import PlantFrame
 
-from fsm import MethodConfig
+from method_config import MethodConfig
 
 
 Config = MethodConfig()
