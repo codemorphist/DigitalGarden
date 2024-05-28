@@ -243,11 +243,13 @@ class ThreadPainter(StoppableThread):
         self.canvas = canvas
         self.width = canvas.winfo_width()
         self.height = canvas.winfo_height()
-        self.image = None
-        self.draw = None
-        self.update = None
-        self.delay = 0.01
 
+        self.image = None
+        self.image_size = (1024, 1024)
+        self.draw = None
+
+        self.update = None # tkinter after() object
+        self.delay = 0.01 # in seconds
 
         self.progress = progress
 
@@ -264,7 +266,7 @@ class ThreadPainter(StoppableThread):
         Clear image with plant and update canvas
         """
         self.image = Image.new("RGB",
-                               (self.width, self.height),
+                               self.image_size,
                                (255, 255, 255)) 
         self.draw = ImageDraw.Draw(self.image)
         self.update_canvas()
@@ -273,7 +275,8 @@ class ThreadPainter(StoppableThread):
         """
         Show image on canvas
         """
-        self.canvas.image = ImageTk.PhotoImage(self.image)
+        canvas_image = self.image.resize((self.width, self.height), Image.LANCZOS)
+        self.canvas.image = ImageTk.PhotoImage(canvas_image)
         self.canvas.create_image(self.width // 2, self.height // 2,
                                  anchor=tk.CENTER, image=self.canvas.image)
 
@@ -284,10 +287,11 @@ class ThreadPainter(StoppableThread):
         Draw 3 circles, main, darker and lighter
         for 3D effect
         """
-        x, y = circle.pos + Vec2(self.width // 2, self.height // 2)
-        if x < 0 or x > self.width or y < 0 or y > self.height:
+        width, height = self.image_size
+        x, y = circle.pos + Vec2(width // 2, height // 2)
+        if x < 0 or x > width or y < 0 or y > height:
             return
-        r = abs(circle.radius / 1000 * self.width) + 1
+        r = circle.radius + 1
 
         x0, y0 = x - r, y - r
         x1, y1 = x + r, y + r
