@@ -9,9 +9,14 @@ from copy import deepcopy
 
 from PIL import Image, ImageDraw, ImageTk
 
-from plant_generator import Plant, PlantGenom, AgentGenom, SmashMethod
+from plant_generator import Plant, PlantGenom
 from tools import Circle, Color, Vec2
 from generator_frame import PlantFrame
+
+from method_config import MethodConfig
+
+
+Config = MethodConfig()
 
 
 class ParentUserFrame(ttk.Frame):
@@ -35,7 +40,11 @@ class ParentUserFrame(ttk.Frame):
 
     def configure_widgets(self):
         self.import_button.pack(padx=10, pady=5)
+        self.import_tip = Hovertip(self.import_button, text=f"Import the genome (.txt) \n"
+                                                            f"of parent {self.controller.parent_number}")
+
         self.show_button.pack(padx=10, pady=5)
+        self.show_tip = Hovertip(self.show_button, text=f"Generate parent {self.controller.parent_number}")
     
     def genome_unpack(self):
         """
@@ -55,7 +64,7 @@ class ParentUserFrame(ttk.Frame):
                                           "The genome has to be a .txt file with a 20x9 table of \n"
                                           "integer inputs separated by spaces")
     def get_plant(self) -> Plant:
-        start_pos = Vec2(0, 250)
+        start_pos = Vec2(0, 180)
         plant = Plant(self.plant_genome, start_pos)
         return plant
 
@@ -75,9 +84,7 @@ class HeirUserFrame(ttk.Frame):
         the "Method" dialogue window; this sets the way
         in which the parent genomes are to be smashed
         """
-        self.method_identifier = {"Name": "Probabilistic",
-                                  "Proportion": 0.5,
-                                  "Mutations": 0}
+        self.plant_genome = PlantGenom.empty()
 
         self.method_button = ttk.Button(self,
                                         text="Method",
@@ -94,16 +101,10 @@ class HeirUserFrame(ttk.Frame):
 
         self.configure_widgets()
 
-    @property
-    def method(self):
-        function = SmashMethod.construct_method(self.method_identifier)
-        return function
-
-    @property
-    def smashed_genome(self):
+    def set_smashed_genome(self):
         parent_1 = self.controller.controller.parent_frame_1.user_frame.plant_genome
         parent_2 = self.controller.controller.parent_frame_2.user_frame.plant_genome
-        return self.method(parent_1, parent_2)
+        self.plant_genome = Config.smash(parent_1, parent_2)
 
     def genome_pack(self):
         """
@@ -116,7 +117,7 @@ class HeirUserFrame(ttk.Frame):
             if not host_file:
                 return
 
-            genom_str = PlantGenom.export_genom(self.get_plant().plant_genom)
+            genom_str = PlantGenom.export_genom(self.plant_genome)
             with open(host_file, "w") as file:
                 file.write(genom_str)
             messagebox.showinfo("Message", "Genome exported successfully!")
@@ -135,23 +136,34 @@ class HeirUserFrame(ttk.Frame):
         if not host_file:
             return
 
-        plant_image = self.controller.plant_frame.plant_image
+        plant_image = self.controller.plant_frame.get_image()
         plant_image.save(host_file, "PNG")
         messagebox.showinfo("Message", "Image saved successfully!")
 
     def configure_widgets(self):
         self.method_button.grid(row=0, column=0, sticky="nsew", padx=10, pady=5)
+        self.method_tip = Hovertip(self.method_button, text="Set the method of genome-smashing")
+
         self.generate_button.grid(row=0, column=1, sticky="nsew", padx=10, pady=5)
+        self.generate_tip = Hovertip(self.generate_button, text="See what happens!")
+
         self.export_button.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
+        self.export_tip = Hovertip(self.export_button, "Export the genome of \n"
+                                                       "the plant last generated \n"
+                                                       "in the .txt format (tip: share!)")
+
         self.save_button.grid(row=1, column=1, sticky="nsew", padx=10, pady=5)
+        self.save_tip = Hovertip(self.save_button, "Save a picture of your gorgeous plant!")
 
     def open_method_settings(self):
-        self.method_settings = MethodSettingsWindow(self.controller.controller, self.controller.controller)
+        self.method_settings = MethodSettingsWindow(self, self, Config)
 
     def get_plant(self) -> Plant:
-        start_pos = Vec2(0, 250)
-        plant = Plant(self.smashed_genome, start_pos)
+        self.set_smashed_genome()
+        start_pos = Vec2(0, 180)
+        plant = Plant(self.plant_genome, start_pos)
         return plant
+
 
 class ParentGeneratorFrame(ttk.Frame):
     """
@@ -159,9 +171,10 @@ class ParentGeneratorFrame(ttk.Frame):
     as well as a progressbar; the parent plants are controlled
     and drawn here
     """
-    def __init__(self, container, controller):
+    def __init__(self, container, controller, parent_number: int):
         super().__init__(container)
         self.controller = controller
+        self.parent_number = parent_number
 
         self.plant_frame = PlantFrame(self, self, 450, 450)
         self.user_frame = ParentUserFrame(self, self)
@@ -192,12 +205,13 @@ class HeirGeneratorFrame(ttk.Frame):
         self.plant_frame.pack()
         self.user_frame.pack()
 
+
 class MethodSettingsWindow(tk.Toplevel):
     """
     This is a pop-up window where the User can regulate
     the parameters of the genome smashing method
     """
-    def __init__(self, container, controller):
+    def __init__(self, container, controller, config: MethodConfig):
         super().__init__(container)
         self.controller = controller
         self.geometry("500x230")
@@ -205,18 +219,17 @@ class MethodSettingsWindow(tk.Toplevel):
 
         self.settings_frame = ttk.Frame(self)
 
-        # Get the method identifier from parent frames to show the current configuration
-        self.method_identifier = self.controller.heir_frame.user_frame.method_identifier.copy()
+        self.config = config
 
-        self.methods = ("Probabilistic", "Weighted Average")
-        self.method_name_var = tk.StringVar(value=self.method_identifier["Name"])
+        self.methods = self.config.METHODS
+        self.method_name_var = tk.StringVar(value=self.config.method_name)
         self.method_box = ttk.Combobox(self.settings_frame,
                                        values=self.methods,
                                        textvariable=self.method_name_var,
                                        state="readonly")
         self.method_label = ttk.Label(self.settings_frame, text="Method: ")
 
-        self.lean_var = tk.IntVar(value=self.method_identifier["Proportion"]*100)
+        self.lean_var = tk.IntVar(value=self.config.proportion)
         self.lean_slider = tk.Scale(self.settings_frame,
                                     from_=0,
                                     to=100,
@@ -228,7 +241,7 @@ class MethodSettingsWindow(tk.Toplevel):
         self.lean_label = ttk.Label(self.settings_frame, text="Parent 1 / Parent 2\n"
                                                               "proportion (%):")
 
-        self.mutations_var = tk.IntVar(value=self.method_identifier["Mutations"])
+        self.mutations_var = tk.IntVar(value=self.config.mutations)
         self.mutation_count_box = ttk.Spinbox(self.settings_frame,
                                               state="readonly",
                                               from_=0,
@@ -262,9 +275,9 @@ class MethodSettingsWindow(tk.Toplevel):
         Obtains the values of the tkinter variables and updates the method
         identifier accordingly
         """
-        self.method_identifier = {"Name": self.method_name_var.get(),
-                                  "Proportion": self.lean_var.get() / 100,
-                                  "Mutations": self.mutations_var.get()}
+        self.config.method = self.method_name_var.get()
+        self.config.proportion = self.lean_var.get()
+        self.config.mutations = self.mutations_var.get()
 
     def communicate_method(self):
         """
@@ -273,7 +286,6 @@ class MethodSettingsWindow(tk.Toplevel):
         is then destroyed
         """
         self.set_method()
-        self.controller.heir_frame.user_frame.method_identifier = self.method_identifier.copy()
         self.destroy()
 
 
@@ -285,9 +297,9 @@ class SmashPlant(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
-        self.parent_frame_1 = ParentGeneratorFrame(self, self)
+        self.parent_frame_1 = ParentGeneratorFrame(self, self, 1)
         self.heir_frame = HeirGeneratorFrame(self, self)
-        self.parent_frame_2 = ParentGeneratorFrame(self, self)
+        self.parent_frame_2 = ParentGeneratorFrame(self, self, 2)
 
         self.back_button = ttk.Button(self, text="Back",
             command=lambda: self.controller.show_frame("Menu"))
