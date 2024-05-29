@@ -99,7 +99,6 @@ class GenomeViewFrame(ttk.Frame):
                                       self.genome_view.parent(item), 
                                       self.genome_view.index(prev_item))
 
-
     def move_down(self):
         selected_item = self.genome_view.selection()
         if not selected_item:
