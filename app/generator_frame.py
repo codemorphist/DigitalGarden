@@ -16,6 +16,7 @@ from tools import Circle, Color, Vec2
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 POT_IMAGE_PATH = os.path.join(SCRIPT_DIR, "..", "resources", "pot_mmf_logo.png")
+BACKGROUND_IMAGE_PATH = os.path.join(SCRIPT_DIR, "..", "resources", "background.png")
 
 
 class UserFrame(ttk.Frame):
@@ -249,10 +250,10 @@ class ThreadPainter(StoppableThread):
         self.height = canvas.winfo_height()
         self.image = None
         self.draw = None
+        self.background = Image.open(BACKGROUND_IMAGE_PATH) 
         self.pot_image = Image.open(POT_IMAGE_PATH)
         self.pot_image = self.pot_image.resize((self.width//4, self.height//4),
                                                Image.LANCZOS)
-
         self.update = None
         self.delay = 0.01
 
@@ -273,6 +274,7 @@ class ThreadPainter(StoppableThread):
         self.image = Image.new("RGB",
                                (self.width, self.height),
                                (255, 255, 255)) 
+        self.image.paste(self.background, (0, 0))
         self.image.paste(self.pot_image, (self.width//2 - self.width//8, 575), self.pot_image)
         self.draw = ImageDraw.Draw(self.image)
         self.update_canvas()
