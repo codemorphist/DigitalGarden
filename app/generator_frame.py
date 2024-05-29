@@ -403,7 +403,6 @@ class PlantFrame(ttk.Frame):
            return 
 
         self.current_drawing.stop()
-        self.current_drawing.join()
 
     def get_image(self):
         if self.current_drawing:
