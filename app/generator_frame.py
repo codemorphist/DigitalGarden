@@ -254,6 +254,8 @@ class ThreadPainter(StoppableThread):
         self.pot_image = Image.open(POT_IMAGE_PATH)
         self.pot_image = self.pot_image.resize((self.width//4, self.height//4),
                                                Image.LANCZOS)
+        self.pot_pos = (self.width//2 - self.width//8,
+                        self.width//2 + self.plant.start_pos.y - 40)
         self.update = None
         self.delay = 0.01
 
@@ -275,7 +277,8 @@ class ThreadPainter(StoppableThread):
                                (self.width, self.height),
                                (255, 255, 255)) 
         self.image.paste(self.background, (0, 0))
-        self.image.paste(self.pot_image, (self.width//2 - self.width//8, 575), self.pot_image)
+        self.image.paste(self.pot_image, self.pot_pos, 
+                         self.pot_image)
         self.draw = ImageDraw.Draw(self.image)
         self.update_canvas()
 
