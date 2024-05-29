@@ -6,12 +6,17 @@ from idlelib.tooltip import Hovertip
 from colorsys import hsv_to_rgb
 import time
 from threading import Thread, Event
-import sys
+import os
 
 from PIL import Image, ImageDraw, ImageTk
 
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Circle, Color, Vec2
+
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+POT_IMAGE_PATH = os.path.join(SCRIPT_DIR, "..", "resources", "pot_mmf_logo.png")
+BACKGROUND_IMAGE_PATH = os.path.join(SCRIPT_DIR, "..", "resources", "background.png")
 
 
 class UserFrame(ttk.Frame):
@@ -152,7 +157,7 @@ class UserFrame(ttk.Frame):
 
     def get_plant(self) -> Plant:
         plant_genome = self.get_plant_genome()
-        start_pos = Vec2(0, 250)
+        start_pos = Vec2(0, 220)
         plant = Plant(plant_genome, start_pos)
         return plant
 
@@ -248,9 +253,15 @@ class ThreadPainter(StoppableThread):
         self.image_size = (1024, 1024)
         self.draw = None
 
-        self.update = None # tkinter after() object
-        self.delay = 0.01 # in seconds
-
+        self.background = Image.open(BACKGROUND_IMAGE_PATH) 
+        self.pot_image = Image.open(POT_IMAGE_PATH)
+        self.pot_image = self.pot_image.resize((self.width//4, self.height//4),
+                                               Image.LANCZOS)
+        self.pot_pos = (self.width//2 - self.width//8,
+                        self.width//2 + self.plant.start_pos.y - 40)
+        self.update = None
+        self.delay = 0.01
+        
         self.progress = progress
 
     def update_progress(self, value: float):
@@ -268,6 +279,9 @@ class ThreadPainter(StoppableThread):
         self.image = Image.new("RGB",
                                self.image_size,
                                (255, 255, 255)) 
+        self.image.paste(self.background, (0, 0))
+        self.image.paste(self.pot_image, self.pot_pos, 
+                         self.pot_image)
         self.draw = ImageDraw.Draw(self.image)
         self.update_canvas()
 
@@ -394,7 +408,6 @@ class PlantFrame(ttk.Frame):
            return 
 
         self.current_drawing.stop()
-        self.current_drawing.join()
 
     def get_image(self):
         if self.current_drawing:
