@@ -6,12 +6,16 @@ from idlelib.tooltip import Hovertip
 from colorsys import hsv_to_rgb
 import time
 from threading import Thread, Event
-import sys
+import os
 
 from PIL import Image, ImageDraw, ImageTk
 
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Circle, Color, Vec2
+
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+POT_IMAGE_PATH = os.path.join(SCRIPT_DIR, "..", "resources", "pot_mmf_logo.png")
 
 
 class UserFrame(ttk.Frame):
@@ -152,7 +156,7 @@ class UserFrame(ttk.Frame):
 
     def get_plant(self) -> Plant:
         plant_genome = self.get_plant_genome()
-        start_pos = Vec2(0, 250)
+        start_pos = Vec2(0, 220)
         plant = Plant(plant_genome, start_pos)
         return plant
 
@@ -245,9 +249,12 @@ class ThreadPainter(StoppableThread):
         self.height = canvas.winfo_height()
         self.image = None
         self.draw = None
+        self.pot_image = Image.open(POT_IMAGE_PATH)
+        self.pot_image = self.pot_image.resize((self.width//4, self.height//4),
+                                               Image.LANCZOS)
+
         self.update = None
         self.delay = 0.01
-
 
         self.progress = progress
 
@@ -266,6 +273,7 @@ class ThreadPainter(StoppableThread):
         self.image = Image.new("RGB",
                                (self.width, self.height),
                                (255, 255, 255)) 
+        self.image.paste(self.pot_image, (self.width//2 - self.width//8, 575), self.pot_image)
         self.draw = ImageDraw.Draw(self.image)
         self.update_canvas()
 
