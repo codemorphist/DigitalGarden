@@ -291,7 +291,7 @@ class ThreadPainter(StoppableThread):
         x, y = circle.pos + Vec2(width // 2, height // 2)
         if x < 0 or x > width or y < 0 or y > height:
             return
-        r = circle.radius + 1
+        r = abs(circle.radius) + 1
 
         x0, y0 = x - r, y - r
         x1, y1 = x + r, y + r
