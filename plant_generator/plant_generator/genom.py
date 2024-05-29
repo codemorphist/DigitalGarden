@@ -89,9 +89,13 @@ class PlantGenom:
 
         evolved_genom = deepcopy(self.genom[generation])
 
-        size_percent = evolved_genom.size_from_ancestor / 100
-        evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
-        evolved_genom.size = size_percent * (agent_genom.size + evolved_genom.size)
+        if evolved_genom.size_from_level != 0:
+            evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
+
+        if evolved_genom.size_from_ancestor != 0:
+            size_percent = evolved_genom.size_from_ancestor / 100
+            evolved_genom.size = size_percent * (agent_genom.size + evolved_genom.size)
+
 
         len_deviation = agent_genom.length_deviation
         evolved_genom.length += randint(-len_deviation, len_deviation)

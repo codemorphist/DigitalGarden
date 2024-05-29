@@ -248,8 +248,11 @@ class ThreadPainter(StoppableThread):
         self.canvas = canvas
         self.width = canvas.winfo_width()
         self.height = canvas.winfo_height()
+
         self.image = None
+        self.image_size = (1024, 1024)
         self.draw = None
+
         self.background = Image.open(BACKGROUND_IMAGE_PATH) 
         self.pot_image = Image.open(POT_IMAGE_PATH)
         self.pot_image = self.pot_image.resize((self.width//4, self.height//4),
@@ -258,7 +261,7 @@ class ThreadPainter(StoppableThread):
                         self.width//2 + self.plant.start_pos.y - 40)
         self.update = None
         self.delay = 0.01
-
+        
         self.progress = progress
 
     def update_progress(self, value: float):
@@ -274,7 +277,7 @@ class ThreadPainter(StoppableThread):
         Clear image with plant and update canvas
         """
         self.image = Image.new("RGB",
-                               (self.width, self.height),
+                               self.image_size,
                                (255, 255, 255)) 
         self.image.paste(self.background, (0, 0))
         self.image.paste(self.pot_image, self.pot_pos, 
@@ -286,7 +289,8 @@ class ThreadPainter(StoppableThread):
         """
         Show image on canvas
         """
-        self.canvas.image = ImageTk.PhotoImage(self.image)
+        canvas_image = self.image.resize((self.width, self.height), Image.LANCZOS)
+        self.canvas.image = ImageTk.PhotoImage(canvas_image)
         self.canvas.create_image(self.width // 2, self.height // 2,
                                  anchor=tk.CENTER, image=self.canvas.image)
 
@@ -297,10 +301,11 @@ class ThreadPainter(StoppableThread):
         Draw 3 circles, main, darker and lighter
         for 3D effect
         """
-        x, y = circle.pos + Vec2(self.width // 2, self.height // 2)
-        if x < 0 or x > self.width or y < 0 or y > self.height:
+        width, height = self.image_size
+        x, y = circle.pos + Vec2(width // 2, height // 2)
+        if x < 0 or x > width or y < 0 or y > height:
             return
-        r = abs(circle.radius / 1000 * self.width) + 1
+        r = abs(circle.radius) + 1
 
         x0, y0 = x - r, y - r
         x1, y1 = x + r, y + r
