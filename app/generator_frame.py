@@ -5,7 +5,7 @@ from tkinter.filedialog import asksaveasfilename, askopenfilename
 from idlelib.tooltip import Hovertip
 from colorsys import hsv_to_rgb
 import time
-from threading import Thread, Event
+from threading import Thread, Event, Condition
 import os
 
 from PIL import Image, ImageDraw, ImageTk
@@ -243,7 +243,11 @@ class StoppableThread(Thread):
 
 class ThreadPainter(StoppableThread):
     def __init__(self, plant, canvas, progress = None):
-        super().__init__(daemon=True)
+        super().__init__()
+        self.daemon = True
+        self.paused = False
+        self.state = Condition()
+
         self.plant = plant
 
         self.canvas = canvas
@@ -264,7 +268,7 @@ class ThreadPainter(StoppableThread):
                         w//2 + self.plant.start_pos.y - 48)
 
         self.update = None
-        self.delay = 0.0001
+        self.delay = 0.01
         
         self.progress = progress
 
@@ -328,17 +332,19 @@ class ThreadPainter(StoppableThread):
                                 fill=default_color.rgb)
 
     def run(self):
+        self.resume()
         self.clear_canvas()
         while self.plant.is_growing():
+            with self.state:
+                if self.paused:
+                    self.state.wait()
             if self.stopped():
                 return
-            if time.time() - self.timer < self.delay:
-                self.timer = time.time()
-                continue
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)
             self.update = self.canvas.after(1, self.update_canvas)
             self.update_progress(self.plant.drawed / self.plant.total * 100)
+            time.sleep(self.delay)
         self.update_progress(100)
 
     def stop(self):
@@ -347,12 +353,18 @@ class ThreadPainter(StoppableThread):
         self.update = None
         super().stop()
 
+    def pause(self):
+        with self.state:
+            self.paused = True  
+
+    def resume(self):
+        with self.state:
+            self.paused = False
+            self.state.notify() 
+
     def get_image(self):
-        # plant_image = self.image.filter(ImageFilter.SMOOTH_MORE)
-        # plant_image = self.image.filter(ImageFilter.GaussianBlur(1))
         enh = ImageEnhance.Color(self.image)
         plant_image = enh.enhance(2.0)
-        # plant_image = self.image
         canvas_image = self.background.copy()
         canvas_image.paste(plant_image, (0, 0), plant_image)
         return canvas_image
