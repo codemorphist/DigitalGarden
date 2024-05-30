@@ -5,13 +5,19 @@ from tkinter.filedialog import asksaveasfilename, askopenfilename
 from idlelib.tooltip import Hovertip
 from colorsys import hsv_to_rgb
 import time
-from threading import Thread, Event
-import sys
+from threading import Thread, Event, Condition
+import os
 
 from PIL import Image, ImageDraw, ImageTk
+from PIL import ImageEnhance
 
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Circle, Color, Vec2
+
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+POT_IMAGE_PATH = os.path.join(SCRIPT_DIR, "..", "resources", "pot_mmf_logo.png")
+BACKGROUND_IMAGE_PATH = os.path.join(SCRIPT_DIR, "..", "resources", "background.png")
 
 
 class UserFrame(ttk.Frame):
@@ -152,7 +158,7 @@ class UserFrame(ttk.Frame):
 
     def get_plant(self) -> Plant:
         plant_genome = self.get_plant_genome()
-        start_pos = Vec2(0, 250)
+        start_pos = Vec2(0, 220)
         plant = Plant(plant_genome, start_pos)
         return plant
 
@@ -237,18 +243,33 @@ class StoppableThread(Thread):
 
 class ThreadPainter(StoppableThread):
     def __init__(self, plant, canvas, progress = None):
-        super().__init__(daemon=True)
+        super().__init__()
+        self.daemon = True
+        self.paused = False
+        self.state = Condition()
+
         self.plant = plant
 
         self.canvas = canvas
         self.width = canvas.winfo_width()
         self.height = canvas.winfo_height()
+
         self.image = None
+        self.image_size = (1024, 1024)
         self.draw = None
+        self.timer = time.time()
+
+        w, h = self.image_size
+        self.background = Image.open(BACKGROUND_IMAGE_PATH) 
+        self.pot_image = Image.open(POT_IMAGE_PATH)
+        self.pot_image = self.pot_image.resize((w//4, h//4),
+                                               Image.LANCZOS)
+        self.pot_pos = (w//2 - w//8,
+                        w//2 + self.plant.start_pos.y - 48)
+
         self.update = None
         self.delay = 0.01
-
-
+        
         self.progress = progress
 
     def update_progress(self, value: float):
@@ -263,17 +284,22 @@ class ThreadPainter(StoppableThread):
         """
         Clear image with plant and update canvas
         """
-        self.image = Image.new("RGB",
-                               (self.width, self.height),
-                               (255, 255, 255)) 
-        self.draw = ImageDraw.Draw(self.image)
+        self.image = Image.new("RGBA",
+                               self.image_size,
+                               (255, 255, 255, 0)) 
+        # self.image.paste(self.background, (0, 0))
+        self.background.paste(self.pot_image, self.pot_pos, 
+                         self.pot_image)
+        self.draw = ImageDraw.Draw(self.image, "RGBA")
         self.update_canvas()
 
     def update_canvas(self):
         """
         Show image on canvas
         """
-        self.canvas.image = ImageTk.PhotoImage(self.image)
+        canvas_image = self.get_image()
+        canvas_image = canvas_image.resize((self.width, self.height), Image.LANCZOS)
+        self.canvas.image = ImageTk.PhotoImage(canvas_image)
         self.canvas.create_image(self.width // 2, self.height // 2,
                                  anchor=tk.CENTER, image=self.canvas.image)
 
@@ -284,10 +310,12 @@ class ThreadPainter(StoppableThread):
         Draw 3 circles, main, darker and lighter
         for 3D effect
         """
-        x, y = circle.pos + Vec2(self.width // 2, self.height // 2)
-        if x < 0 or x > self.width or y < 0 or y > self.height:
+
+        width, height = self.image_size
+        x, y = circle.pos + Vec2(width // 2, height // 2)
+        if x < 0 or x > width or y < 0 or y > height:
             return
-        r = abs(circle.radius / 1000 * self.width) + 1
+        r = abs(circle.radius) + 1
 
         x0, y0 = x - r, y - r
         x1, y1 = x + r, y + r
@@ -295,23 +323,28 @@ class ThreadPainter(StoppableThread):
         default_color = circle.color
         dark_color = circle.color + Color(20, 20, 20)
         light_color = circle.color - Color(20, 20, 20)
-        self.draw.ellipse((x0, y0, x1, y1),
-                                fill=light_color.rgb)
-        self.draw.ellipse((x0 - 1, y0 - 1, x1 - 1, y1 - 1),
-                                fill=default_color.rgb)
-        self.draw.ellipse((x0 + 1, y0 + 1, x1 + 1, y1 + 1),
+
+        self.draw.ellipse((x0 - 2, y0 - 2, x1 - 2, y1 - 2),
                                 fill=dark_color.rgb)
+        self.draw.ellipse((x0 + 2, y0 + 2, x1 + 2, y1 + 2),
+                                fill=light_color.rgb)
+        self.draw.ellipse((x0, y0, x1, y1),
+                                fill=default_color.rgb)
 
     def run(self):
+        self.resume()
         self.clear_canvas()
         while self.plant.is_growing():
+            with self.state:
+                if self.paused:
+                    self.state.wait()
             if self.stopped():
                 return
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)
             self.update = self.canvas.after(1, self.update_canvas)
             self.update_progress(self.plant.drawed / self.plant.total * 100)
-            time.sleep(self.delay) 
+            time.sleep(self.delay)
         self.update_progress(100)
 
     def stop(self):
@@ -319,6 +352,22 @@ class ThreadPainter(StoppableThread):
             self.canvas.after_cancel(self.update)
         self.update = None
         super().stop()
+
+    def pause(self):
+        with self.state:
+            self.paused = True  
+
+    def resume(self):
+        with self.state:
+            self.paused = False
+            self.state.notify() 
+
+    def get_image(self):
+        enh = ImageEnhance.Color(self.image)
+        plant_image = enh.enhance(2.0)
+        canvas_image = self.background.copy()
+        canvas_image.paste(plant_image, (0, 0), plant_image)
+        return canvas_image
 
 
 class PlantFrame(ttk.Frame):
@@ -390,11 +439,10 @@ class PlantFrame(ttk.Frame):
            return 
 
         self.current_drawing.stop()
-        self.current_drawing.join()
 
     def get_image(self):
         if self.current_drawing:
-            return self.current_drawing.image
+            return self.current_drawing.get_image()
         else:
             return Image.new("RGB",
                             (self.width, self.height),

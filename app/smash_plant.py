@@ -64,7 +64,7 @@ class ParentUserFrame(ttk.Frame):
                                           "The genome has to be a .txt file with a 20x9 table of \n"
                                           "integer inputs separated by spaces")
     def get_plant(self) -> Plant:
-        start_pos = Vec2(0, 180)
+        start_pos = Vec2(0, 250)
         plant = Plant(self.plant_genome, start_pos)
         return plant
 
@@ -160,7 +160,7 @@ class HeirUserFrame(ttk.Frame):
 
     def get_plant(self) -> Plant:
         self.set_smashed_genome()
-        start_pos = Vec2(0, 180)
+        start_pos = Vec2(0, 250)
         plant = Plant(self.plant_genome, start_pos)
         return plant
 

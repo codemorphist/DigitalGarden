@@ -13,6 +13,7 @@ class Plant:
         :param start_pos: Start postion of Plant
         """
         self.plant_genom = plant_genom
+        self.start_pos = start_pos
         self.agents = []
 
         # Total count of agents
@@ -25,16 +26,16 @@ class Plant:
         # Conut of dead agents
         self.drawed = 0
 
-        self.init_agents(start_pos)
+        self.init_agents()
 
     @staticmethod
     def random() -> Plant:
         return Plant(
             PlantGenom.random(),
-            Vec2(0, 200)
+            Vec2(0, 220)
         )
 
-    def init_agents(self, start_pos: Vec2):
+    def init_agents(self):
         """
         Init first Agent of Plant
         """
@@ -42,7 +43,7 @@ class Plant:
             agent_genom=self.plant_genom.genom[0],
             plant_genom=self.plant_genom,
             generation=0,
-            start_pos=start_pos
+            start_pos=self.start_pos
         ))
 
     def is_growing(self) -> bool:

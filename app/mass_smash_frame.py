@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from tkinter.filedialog import asksaveasfilename, askopenfilename, askopenfilenames
+from tkinter.filedialog import asksaveasfilename, askopenfilename, askopenfilenames, test
 from idlelib.tooltip import Hovertip
 from dataclasses import astuple
 from colorsys import hsv_to_rgb
@@ -30,6 +30,9 @@ class GenomeViewFrame(ttk.Frame):
         self.genome_view = ttk.Treeview(self, columns=("genomes",), show="headings", height=31)
         self.genome_view.heading("genomes", text="Genomes")
 
+        self.up_button = ttk.Button(self, text="Up", command=self.move_up)
+        self.down_button = ttk.Button(self, text="Down", command=self.move_down)
+
         self.add_button = ttk.Button(self, text="Add", command=self.add_genomes)
         self.remove_button = ttk.Button(self, text="Remove", command=self.remove_genomes)
 
@@ -43,10 +46,16 @@ class GenomeViewFrame(ttk.Frame):
 
         self.genome_view.grid(row=0, column=0, columnspan=2, sticky="nsew")
 
-        self.add_button.grid(row=1, column=0, sticky="new")
+        self.up_button.grid(row=1, column=0, sticky="new")
+        self.up_tip = Hovertip(self.up_button, text="Move genom to the up in list")
+
+        self.down_button.grid(row=1, column=1, sticky="new")
+        self.down_tip = Hovertip(self.down_button, text="Move genom to the down in list")
+
+        self.add_button.grid(row=2, column=0, sticky="new")
         self.add_tip = Hovertip(self.add_button, text="Add parent genomes to the pool")
 
-        self.remove_button.grid(row=1, column=1, sticky="new")
+        self.remove_button.grid(row=2, column=1, sticky="new")
         self.remove_tip = Hovertip(self.remove_button, text="Remove selected parent genomes \n"
                                                             "from the pool")
 
@@ -56,15 +65,55 @@ class GenomeViewFrame(ttk.Frame):
             return
         for genome_file_name in genome_files:
             self.genome_view.insert(parent="", index = "end", iid=genome_file_name, values=(Path(genome_file_name).stem,))
-            with open(genome_file_name) as file:
-                genome = PlantGenom.import_genom(file.read())
-                self.genomes_dict[genome_file_name] = genome
+            genome = self.genome_unpack(genome_file_name)
+            self.genomes_dict[genome_file_name] = genome
+
+    def genome_unpack(self, file_name) -> PlantGenom:
+        """
+        This function returns a plant genome from a read file as a PlantGenome
+        """
+        try:
+            with open(file_name) as file:
+                plant_genome = PlantGenom.import_genom(file.read())
+                return plant_genome
+        except:
+            messagebox.showerror("Error", "Import attempted with an invalid genome:\n"
+                                          "The genome has to be a .txt file with a 20x9 table of \n"
+                                          "integer inputs separated by spaces")
 
     def remove_genomes(self):
         selection = self.genome_view.selection()
         for path in selection:
             self.genome_view.delete(path)
             del self.genomes_dict[path]
+
+    def move_up(self):
+        selected_item = self.genome_view.selection()
+        if not selected_item:
+            return
+
+        for item in selected_item:
+            prev_item = self.genome_view.prev(item)
+            if prev_item:
+                self.genome_view.move(item, 
+                                      self.genome_view.parent(item), 
+                                      self.genome_view.index(prev_item))
+
+    def move_down(self):
+        selected_item = self.genome_view.selection()
+        if not selected_item:
+            return
+
+        for item in reversed(selected_item):
+            next_item = self.genome_view.next(item)
+            if next_item:
+                self.genome_view.move(item, 
+                                      self.genome_view.parent(item), 
+                                      self.genome_view.index(next_item))
+
+    def get_genomes(self):
+        for genome in self.genome_view.get_children():
+            yield self.genomes_dict[genome]
 
 
 class MassSmashUserFrame(ttk.Frame):
@@ -111,7 +160,7 @@ class MassSmashUserFrame(ttk.Frame):
 
     @property
     def parents_list(self) -> list[PlantGenom]:
-        return [genome for genome in list(map(self.genome_unpack, [*self.genome_view.genomes_dict.keys()]))]
+        return list(self.genome_view.get_genomes())
 
     def genome_pack(self):
         """
@@ -127,19 +176,6 @@ class MassSmashUserFrame(ttk.Frame):
         with open(host_file, "w") as file:
             file.write(genome_str)
         messagebox.showinfo("Message", "Genome exported successfully!")
-
-    def genome_unpack(self, file_name) -> PlantGenom:
-        """
-        This function returns a plant genome from a read file as a PlantGenome
-        """
-        try:
-            with open(file_name) as file:
-                plant_genome = PlantGenom.import_genom(file.read())
-                return plant_genome
-        except:
-            messagebox.showerror("Error", "Import attempted with an invalid genome:\n"
-                                          "The genome has to be a .txt file with a 20x9 table of \n"
-                                          "integer inputs separated by spaces")
 
     def save_plant_as(self):
         """
