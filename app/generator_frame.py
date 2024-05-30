@@ -253,6 +253,7 @@ class ThreadPainter(StoppableThread):
         self.image = None
         self.image_size = (1024, 1024)
         self.draw = None
+        self.timer = time.time()
 
         w, h = self.image_size
         self.background = Image.open(BACKGROUND_IMAGE_PATH) 
@@ -263,7 +264,7 @@ class ThreadPainter(StoppableThread):
                         w//2 + self.plant.start_pos.y - 48)
 
         self.update = None
-        self.delay = 0.01
+        self.delay = 0.0001
         
         self.progress = progress
 
@@ -331,11 +332,13 @@ class ThreadPainter(StoppableThread):
         while self.plant.is_growing():
             if self.stopped():
                 return
+            if time.time() - self.timer < self.delay:
+                self.timer = time.time()
+                continue
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)
             self.update = self.canvas.after(1, self.update_canvas)
             self.update_progress(self.plant.drawed / self.plant.total * 100)
-            time.sleep(self.delay) 
         self.update_progress(100)
 
     def stop(self):

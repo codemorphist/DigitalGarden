@@ -109,7 +109,7 @@ class GenomeViewFrame(ttk.Frame):
             if next_item:
                 self.genome_view.move(item, 
                                       self.genome_view.parent(item), 
-                                      self.genome_view.index(next_item) + 1)
+                                      self.genome_view.index(next_item))
 
     def get_genomes(self):
         for genome in self.genome_view.get_children():
