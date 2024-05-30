@@ -40,7 +40,7 @@ class AgentGenom:
 
         return AgentGenom(
             length=randint(20, 150),
-            length_deviation=randint(0, 30),
+            length_deviation=randint(-30, 30),
             size=randint(30, 120),
             size_from_ancestor=randint(10, 90),
             size_from_level=randint(5, 100),
@@ -51,7 +51,7 @@ class AgentGenom:
             color_from_ancestor=randint(0, 80),
             number_branches=randint(1, 3),
             angle_branches=randint(0, 120),
-            angle_deviation=randint(10, 30),
+            angle_deviation=randint(-30, 30),
             turn=randint(-120, 120),
             random_turn=randint(0, 80),
             down=randint(-30, 30)
@@ -77,7 +77,7 @@ class AgentGenom:
 class PlantGenom:
     def __init__(self, genom: list[AgentGenom]):
         self.genom = genom
-        # self.level_sizes = [randint(10, 100) for _ in self.genom]
+        self.level_sizes = [ 150, 100, 80, 60, 40, 20, 10, 5, 2 ]
 
     def evolve(self,
                generation: int,
@@ -93,22 +93,26 @@ class PlantGenom:
         
         evolved_genom = deepcopy(self.genom[generation])
 
-        # if evolved_genom.size_from_level != 0:
-        #     size_percent = evolved_genom.size_from_ancestor / 100
-        #     evolved_genom.size = size_percent * (self.level_sizes[generation] + evolved_genom.size)
+        if evolved_genom.size_from_level != 0:
+            size_percent = evolved_genom.size_from_ancestor / 100
+            evolved_genom.size = size_percent * (self.level_sizes[generation] + evolved_genom.size)
 
         if evolved_genom.size_from_ancestor != 0:
             size_percent = evolved_genom.size_from_ancestor / 100
             evolved_genom.size = size_percent * (agent_genom.size + evolved_genom.size)
 
+        def rnd(e):
+            s, e = 0, e
+            if e < s:
+                s, e = e, s
+            return randint(s, e)
 
-        len_deviation = agent_genom.length_deviation
-        evolved_genom.length += randint(-len_deviation, len_deviation)
-        evolved_genom.angle_branches += agent_genom.angle_deviation
+        evolved_genom.length += rnd(agent_genom.length_deviation)
+        evolved_genom.angle_branches += rnd(agent_genom.angle_deviation)
 
-        ar = agent_genom.red + evolved_genom.color_deviation
-        ag = agent_genom.green + evolved_genom.color_deviation
-        ab = agent_genom.blue + evolved_genom.color_deviation
+        ar = agent_genom.red + rnd(evolved_genom.color_deviation)
+        ag = agent_genom.green + rnd(evolved_genom.color_deviation)
+        ab = agent_genom.blue + rnd(evolved_genom.color_deviation)
 
         sr = evolved_genom.red
         sg = evolved_genom.green

@@ -9,6 +9,7 @@ from threading import Thread, Event
 import os
 
 from PIL import Image, ImageDraw, ImageFilter, ImageTk
+from PIL import ImageEnhance
 
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Circle, Color, Vec2
@@ -346,7 +347,9 @@ class ThreadPainter(StoppableThread):
     def get_image(self):
         # plant_image = self.image.filter(ImageFilter.SMOOTH_MORE)
         # plant_image = self.image.filter(ImageFilter.GaussianBlur(1))
-        plant_image = self.image
+        enh = ImageEnhance.Color(self.image)
+        plant_image = enh.enhance(2.0)
+        # plant_image = self.image
         canvas_image = self.background.copy()
         canvas_image.paste(plant_image, (0, 0), plant_image)
         return canvas_image
