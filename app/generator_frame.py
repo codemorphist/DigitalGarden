@@ -8,7 +8,7 @@ import time
 from threading import Thread, Event
 import os
 
-from PIL import Image, ImageDraw, ImageTk
+from PIL import Image, ImageDraw, ImageFilter, ImageTk
 
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Circle, Color, Vec2
@@ -258,9 +258,9 @@ class ThreadPainter(StoppableThread):
         self.pot_image = Image.open(POT_IMAGE_PATH)
         self.pot_image = self.pot_image.resize((w//4, h//4),
                                                Image.LANCZOS)
-
         self.pot_pos = (w//2 - w//8,
                         w//2 + self.plant.start_pos.y - 48)
+
         self.update = None
         self.delay = 0.01
         
@@ -278,20 +278,21 @@ class ThreadPainter(StoppableThread):
         """
         Clear image with plant and update canvas
         """
-        self.image = Image.new("RGB",
+        self.image = Image.new("RGBA",
                                self.image_size,
-                               (255, 255, 255)) 
-        self.image.paste(self.background, (0, 0))
-        self.image.paste(self.pot_image, self.pot_pos, 
+                               (255, 255, 255, 0)) 
+        # self.image.paste(self.background, (0, 0))
+        self.background.paste(self.pot_image, self.pot_pos, 
                          self.pot_image)
-        self.draw = ImageDraw.Draw(self.image)
+        self.draw = ImageDraw.Draw(self.image, "RGBA")
         self.update_canvas()
 
     def update_canvas(self):
         """
         Show image on canvas
         """
-        canvas_image = self.image.resize((self.width, self.height), Image.LANCZOS)
+        canvas_image = self.get_image()
+        canvas_image = canvas_image.resize((self.width, self.height), Image.LANCZOS)
         self.canvas.image = ImageTk.PhotoImage(canvas_image)
         self.canvas.create_image(self.width // 2, self.height // 2,
                                  anchor=tk.CENTER, image=self.canvas.image)
@@ -303,6 +304,7 @@ class ThreadPainter(StoppableThread):
         Draw 3 circles, main, darker and lighter
         for 3D effect
         """
+
         width, height = self.image_size
         x, y = circle.pos + Vec2(width // 2, height // 2)
         if x < 0 or x > width or y < 0 or y > height:
@@ -315,12 +317,13 @@ class ThreadPainter(StoppableThread):
         default_color = circle.color
         dark_color = circle.color + Color(20, 20, 20)
         light_color = circle.color - Color(20, 20, 20)
-        self.draw.ellipse((x0, y0, x1, y1),
-                                fill=light_color.rgb)
-        self.draw.ellipse((x0 - 1, y0 - 1, x1 - 1, y1 - 1),
-                                fill=default_color.rgb)
-        self.draw.ellipse((x0 + 1, y0 + 1, x1 + 1, y1 + 1),
+
+        self.draw.ellipse((x0 - 2, y0 - 2, x1 - 2, y1 - 2),
                                 fill=dark_color.rgb)
+        self.draw.ellipse((x0, y0, x1, y1),
+                                fill=default_color.rgb)
+        self.draw.ellipse((x0 + 2, y0 + 2, x1 + 2, y1 + 2),
+                                fill=light_color.rgb)
 
     def run(self):
         self.clear_canvas()
@@ -339,6 +342,14 @@ class ThreadPainter(StoppableThread):
             self.canvas.after_cancel(self.update)
         self.update = None
         super().stop()
+
+    def get_image(self):
+        # plant_image = self.image.filter(ImageFilter.SMOOTH_MORE)
+        # plant_image = self.image.filter(ImageFilter.GaussianBlur(1))
+        plant_image = self.image
+        canvas_image = self.background.copy()
+        canvas_image.paste(plant_image, (0, 0), plant_image)
+        return canvas_image
 
 
 class PlantFrame(ttk.Frame):
@@ -413,7 +424,7 @@ class PlantFrame(ttk.Frame):
 
     def get_image(self):
         if self.current_drawing:
-            return self.current_drawing.image
+            return self.current_drawing.get_image()
         else:
             return Image.new("RGB",
                             (self.width, self.height),

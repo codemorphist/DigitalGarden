@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 from tools import Color
-from random import randint, uniform
+from random import randint, random, uniform
 from copy import deepcopy
 
 
@@ -41,7 +41,7 @@ class AgentGenom:
         return AgentGenom(
             length=randint(20, 150),
             length_deviation=randint(0, 30),
-            size=randint(5, 80),
+            size=randint(30, 120),
             size_from_ancestor=randint(10, 90),
             size_from_level=randint(5, 100),
             size_changes=randint(-30, 30),
@@ -77,6 +77,7 @@ class AgentGenom:
 class PlantGenom:
     def __init__(self, genom: list[AgentGenom]):
         self.genom = genom
+        # self.level_sizes = [randint(10, 100) for _ in self.genom]
 
     def evolve(self,
                generation: int,
@@ -87,10 +88,14 @@ class PlantGenom:
         if generation >= len(self.genom):
             return None
 
+        # if randint(0,100) == 0:
+        #     generation = randint(generation, len(self.genom)-1)
+        
         evolved_genom = deepcopy(self.genom[generation])
 
-        if evolved_genom.size_from_level != 0:
-            evolved_genom.size = (evolved_genom.size_from_level + evolved_genom.size) / 2
+        # if evolved_genom.size_from_level != 0:
+        #     size_percent = evolved_genom.size_from_ancestor / 100
+        #     evolved_genom.size = size_percent * (self.level_sizes[generation] + evolved_genom.size)
 
         if evolved_genom.size_from_ancestor != 0:
             size_percent = evolved_genom.size_from_ancestor / 100
