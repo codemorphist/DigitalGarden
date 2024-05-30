@@ -321,10 +321,10 @@ class ThreadPainter(StoppableThread):
 
         self.draw.ellipse((x0 - 2, y0 - 2, x1 - 2, y1 - 2),
                                 fill=dark_color.rgb)
-        self.draw.ellipse((x0, y0, x1, y1),
-                                fill=default_color.rgb)
         self.draw.ellipse((x0 + 2, y0 + 2, x1 + 2, y1 + 2),
                                 fill=light_color.rgb)
+        self.draw.ellipse((x0, y0, x1, y1),
+                                fill=default_color.rgb)
 
     def run(self):
         self.clear_canvas()
