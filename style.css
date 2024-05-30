@@ -1,0 +1,82 @@
+/* styles.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&family=Montserrat:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&family=Jacquard+12&family=Montserrat:wght@400;500;700&display=swap');
+
+
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    font-family: "Fira Mono", monospace;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.gallery-container {
+    text-align: center;
+}
+
+.image-box {
+    width: 80vw; 
+    max-width: 550px; 
+    height: 80vw; 
+    max-height: 550px; 
+    border: 2px solid black;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.image-box img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.image-title {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+.control-button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.control-button {
+    position: relative; 
+    background-color: rgba(0, 0, 0, 0.1);
+    border: none;
+    width: 50px; 
+    height: 50px; 
+    margin: 0 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 20px;
+}
+
+.control-button::after {
+    content: ''; 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%) rotate(90deg); 
+    width: 0; 
+    height: 0; 
+    border-style: solid;
+    border-width: 10px 10px 0; 
+    border-color: black transparent transparent; 
+}
+
+.control-button:last-child::after {
+    transform: translate(-50%, -50%) rotate(-90deg); 
+}
+
