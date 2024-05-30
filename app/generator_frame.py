@@ -8,7 +8,7 @@ import time
 from threading import Thread, Event
 import os
 
-from PIL import Image, ImageDraw, ImageFilter, ImageTk
+from PIL import Image, ImageDraw, ImageTk
 from PIL import ImageEnhance
 
 from plant_generator import Plant, PlantGenom, AgentGenom
