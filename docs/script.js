@@ -16,7 +16,7 @@ async function fetchImages() {
         const imageUrls = images.map(image => image.url);
         const imageNames = images.map(image => image.name);
         
-        const initialLoadCount = 3; // Number of images to load initially
+        const initialLoadCount = 5; // Number of images to load initially
 
         await preloadImages(imageUrls.slice(0, initialLoadCount));
         displayImages(imageUrls, imageNames, initialLoadCount);
@@ -56,6 +56,8 @@ function displayImages(imageUrls, imageNames, initialLoadCount) {
 
     async function updateImage() {
         loaderElement.style.display = "block";
+        document.body.style.backgroundImage = "none";
+        titleElement.textContent = "..."
         imgElement.classList.remove('show');
 
         const img = new Image();
