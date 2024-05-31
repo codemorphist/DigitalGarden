@@ -1,4 +1,4 @@
-const url = "https://api.github.com/repos/codemorphist/DigitalGarden/contents/gallery";
+const url = "https://api.github.com/repos/codemorphist/digitalgarden/contents/gallery?ref=github-pages";
 
 async function fetchImages() {
     try {
