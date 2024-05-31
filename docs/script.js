@@ -1,7 +1,7 @@
 const xhr = new XMLHttpRequest();
 const url = "https://api.github.com/repos/codemorphist/DigitalGarden/contents/gallery";
 
-xhr.open('GET', url, true);
+xhr.open("GET", url, true);
 
 xhr.onload = function() {
     const data = JSON.parse(this.response);
@@ -26,21 +26,32 @@ function preloadImages(urls) {
 function displayImages(imageUrls, imageNames) {
     let currentIndex = 0;
 
-    const imgElement = document.getElementById('current-image');
-    const titleElement = document.getElementById('image-title');
+    const imgElement = document.getElementById("current-image");
+    const titleElement = document.getElementById("image-title");
+    const loaderElement = document.getElementById("loader");
 
     function updateImage() {
-        imgElement.src = imageUrls[currentIndex];
-        titleElement.textContent = imageNames[currentIndex];
-        preloadNextImage(); 
+        loaderElement.style.display = "block"; 
+        // imgElement.style.display = "none"; 
+        imgElement.classList.remove('show');
+
+        const img = new Image();
+        img.src = imageUrls[currentIndex];
+        img.onload = function() {
+            imgElement.src = img.src;
+            titleElement.textContent = imageNames[currentIndex];
+            loaderElement.style.display = "none"; 
+            // imgElement.style.display = "block"; 
+            imgElement.classList.add('show');
+        };
     }
 
-    document.getElementById('prev-button').addEventListener('click', () => {
+    document.getElementById("prev-button").addEventListener("click", () => {
         currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
         updateImage();
     });
 
-    document.getElementById('next-button').addEventListener('click', () => {
+    document.getElementById("next-button").addEventListener("click", () => {
         currentIndex = (currentIndex + 1) % imageUrls.length;
         updateImage();
     });
