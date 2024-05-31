@@ -56,7 +56,7 @@ function displayImages(imageUrls, imageNames, initialLoadCount) {
 
     async function updateImage() {
         loaderElement.style.display = "block";
-        document.body.style.backgroundImage = "none";
+        document.body.style.backgroundImage = "none !important;";
         titleElement.textContent = "..."
         imgElement.classList.remove('show');
 
@@ -72,7 +72,7 @@ function displayImages(imageUrls, imageNames, initialLoadCount) {
             document.body.style.backgroundSize = 'cover';
             document.body.style.backgroundPosition = 'center';
             document.body.style.backgroundRepeat = 'no-repeat';
-            document.body.style.backdropFilter = 'blur(20px)';
+            document.body.style.backdropFilter = 'blur(32px)';
         };
     }
 
