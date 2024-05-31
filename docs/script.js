@@ -1,20 +1,16 @@
-const xhr = new XMLHttpRequest();
 const url = "https://api.github.com/repos/codemorphist/DigitalGarden/contents/gallery";
 
-xhr.open("GET", url, true);
-
-xhr.onload = function() {
-    const data = JSON.parse(this.response);
-
-    const imageFiles = data.filter(file => /\.(jpg|jpeg|png|gif)$/.test(file.name));
-    const imageUrls = imageFiles.map(file => file.download_url);
-    const imageNames = imageFiles.map(file => file.name.split('.png')[0].replace('_', ' '));
-
-    preloadImages(imageUrls); 
-    displayImages(imageUrls, imageNames);
-};
-
-xhr.send();
+fetch(url)
+    .then(response => response.json())
+    .then(data => {
+        const imageFiles = data.filter(file => /\.(jpg|jpeg|png|gif)$/.test(file.name));
+        const imageUrls = imageFiles.map(file => file.download_url);
+        const imageNames = imageFiles.map(file => file.name.split('.')[0].replace('_', ' '));
+        
+        preloadImages(imageUrls);
+        displayImages(imageUrls, imageNames);
+    })
+    .catch(error => console.error('Error fetching images:', error));
 
 function preloadImages(urls) {
     urls.forEach(url => {
@@ -31,7 +27,7 @@ function displayImages(imageUrls, imageNames) {
     const loaderElement = document.getElementById("loader");
 
     function updateImage() {
-        loaderElement.style.display = "block"; 
+        loaderElement.style.display = "block";
         imgElement.classList.remove('show');
 
         const img = new Image();
@@ -39,25 +35,27 @@ function displayImages(imageUrls, imageNames) {
         img.onload = function() {
             imgElement.src = img.src;
             titleElement.textContent = imageNames[currentIndex];
-            loaderElement.style.display = "none"; 
+            loaderElement.style.display = "none";
             imgElement.classList.add('show');
 
             document.body.style.backgroundImage = `url('${img.src}')`;
             document.body.style.backgroundSize = 'cover';
             document.body.style.backgroundPosition = 'center';
             document.body.style.backgroundRepeat = 'no-repeat';
-            document.body.style.backdropFilter = 'blur(20px)';  
+            document.body.style.backdropFilter = 'blur(20px)';
         };
     }
 
     document.getElementById("prev-button").addEventListener("click", () => {
         currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
         updateImage();
+        preloadNextImage(); // Preload next image
     });
 
     document.getElementById("next-button").addEventListener("click", () => {
         currentIndex = (currentIndex + 1) % imageUrls.length;
         updateImage();
+        preloadNextImage(); // Preload next image
     });
 
     updateImage(); 
