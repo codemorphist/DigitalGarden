@@ -32,7 +32,6 @@ function displayImages(imageUrls, imageNames) {
 
     function updateImage() {
         loaderElement.style.display = "block"; 
-        // imgElement.style.display = "none"; 
         imgElement.classList.remove('show');
 
         const img = new Image();
@@ -41,7 +40,6 @@ function displayImages(imageUrls, imageNames) {
             imgElement.src = img.src;
             titleElement.textContent = imageNames[currentIndex];
             loaderElement.style.display = "none"; 
-            // imgElement.style.display = "block"; 
             imgElement.classList.add('show');
         };
     }

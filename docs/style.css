@@ -55,7 +55,7 @@ body {
 }
 
 .controls {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .control-button:hover {
@@ -66,12 +66,12 @@ body {
     position: relative; 
     background-color: rgba(0, 0, 0, 0.1);
     border: none;
-    width: 50px; 
-    height: 50px; 
-    margin: 0 10px;
+    width: 45px; 
+    height: 45px; 
+    margin: 10px;
     cursor: pointer;
     transition: background-color 0.3s;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 .control-button::after {
@@ -106,3 +106,22 @@ body {
     0% { transform:  rotate(0deg); }
     100% { transform:  rotate(360deg); }
 }
+
+#project-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 12px;
+}
+
+#github-logo {
+    width: 32px;
+}
+
+#project-link {
+    margin: 8px;
+    font-size: 16px;
+    color: black;
+    text-decoration: none;
+}
+
