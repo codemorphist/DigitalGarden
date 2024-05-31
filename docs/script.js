@@ -1,32 +1,60 @@
 const url = "https://api.github.com/repos/codemorphist/DigitalGarden/contents/gallery";
 
-fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        const imageFiles = data.filter(file => /\.(jpg|jpeg|png|gif)$/.test(file.name));
-        const imageUrls = imageFiles.map(file => file.download_url);
-        const imageNames = imageFiles.map(file => file.name.split('.')[0].replace('_', ' '));
+async function fetchImages() {
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
         
-        preloadImages(imageUrls);
-        displayImages(imageUrls, imageNames);
-    })
-    .catch(error => console.error('Error fetching images:', error));
+        const imageFiles = data.filter(file => /\.(jpg|jpeg|png|gif)$/.test(file.name));
+        const images = imageFiles.map(file => ({
+            url: file.download_url,
+            name: file.name.split('.')[0].replace('_', ' ')
+        }));
+        
+        shuffleArray(images);
+        
+        const imageUrls = images.map(image => image.url);
+        const imageNames = images.map(image => image.name);
+        
+        const initialLoadCount = 3; // Number of images to load initially
 
-function preloadImages(urls) {
-    urls.forEach(url => {
-        const img = new Image();
-        img.src = url;
-    });
+        await preloadImages(imageUrls.slice(0, initialLoadCount));
+        displayImages(imageUrls, imageNames, initialLoadCount);
+        
+        // Preload the remaining images in the background
+        preloadImages(imageUrls.slice(initialLoadCount));
+    } catch (error) {
+        console.error('Error fetching images:', error);
+    }
 }
 
-function displayImages(imageUrls, imageNames) {
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+async function preloadImages(urls) {
+    const promises = urls.map(url => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = url;
+            img.onload = resolve;
+            img.onerror = reject;
+        });
+    });
+    await Promise.all(promises);
+}
+
+function displayImages(imageUrls, imageNames, initialLoadCount) {
     let currentIndex = 0;
 
     const imgElement = document.getElementById("current-image");
     const titleElement = document.getElementById("image-title");
     const loaderElement = document.getElementById("loader");
 
-    function updateImage() {
+    async function updateImage() {
         loaderElement.style.display = "block";
         imgElement.classList.remove('show');
 
@@ -58,12 +86,16 @@ function displayImages(imageUrls, imageNames) {
         preloadNextImage(); // Preload next image
     });
 
-    updateImage(); 
+    updateImage();
 
     function preloadNextImage() {
         const nextIndex = (currentIndex + 1) % imageUrls.length;
-        const img = new Image();
-        img.src = imageUrls[nextIndex];
+        if (nextIndex >= initialLoadCount) {
+            const img = new Image();
+            img.src = imageUrls[nextIndex];
+        }
     }
 }
+
+fetchImages();
 
