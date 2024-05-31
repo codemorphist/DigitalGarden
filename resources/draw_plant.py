@@ -74,7 +74,7 @@ def draw_all_plants(path_to_plants: str, path_to_save: str):
         if os.path.isfile(filepath) and filename.endswith(".txt"):
             try:
                 draw_plant_from_file(filepath, savepath)
-                print(f"Successfully drawed {filepath} and saved to {savepath}")
+                print(f"- Successfully drawed: {filepath} and saved to {savepath}\n")
             except:
                 print(f"Invalid plant: {filepath}")
 
