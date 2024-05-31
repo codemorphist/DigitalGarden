@@ -8,7 +8,7 @@ xhr.onload = function() {
 
     const imageFiles = data.filter(file => /\.(jpg|jpeg|png|gif)$/.test(file.name));
     const imageUrls = imageFiles.map(file => file.download_url);
-    const imageNames = imageFiles.map(file => file.name);
+    const imageNames = imageFiles.map(file => file.name.split('.png')[0].replace('_', ' '));
 
     preloadImages(imageUrls); 
     displayImages(imageUrls, imageNames);
@@ -41,6 +41,12 @@ function displayImages(imageUrls, imageNames) {
             titleElement.textContent = imageNames[currentIndex];
             loaderElement.style.display = "none"; 
             imgElement.classList.add('show');
+
+            document.body.style.backgroundImage = `url('${img.src}')`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            document.body.style.backdropFilter = 'blur(20px)';  
         };
     }
 
