@@ -28,6 +28,7 @@ sys.excepthook = handle_exception
 
 import tkinter as tk
 from tkinter import ttk
+import pyperclip
 from generator_frame import PlantGenerator
 from menu_frame import Menu
 from smash_plant import SmashPlant
@@ -122,7 +123,10 @@ class LogWindow(tk.Toplevel):
         self.text_handler = TextHandler(self.log_field)
         logger.addHandler(self.text_handler)
 
-        self.clear_button = ttk.Button(self, text="Clear Log", command=self.clear_log)
+        self.button_frame = ttk.Frame(self)
+
+        self.clear_button = ttk.Button(self.button_frame, text="Clear Log", command=self.clear_log)
+        self.copy_button = ttk.Button(self.button_frame, text="Copy Log", command=self.copy_log)
 
         self.protocol("WM_DELETE_WINDOW", self.withdraw)
 
@@ -132,8 +136,11 @@ class LogWindow(tk.Toplevel):
         self.bind("<F12>", lambda _: self.state_switch())
 
     def configure_widgets(self):
+        self.clear_button.pack(side="left", padx=5, pady=(0, 5))
+        self.copy_button.pack(side="left", padx=5, pady=(0, 5))
+
         self.log_field.pack(fill="both", expand=True, padx=2, pady=2)
-        self.clear_button.pack(pady=(0, 5))
+        self.button_frame.pack()
 
     def state_switch(self):
         if self.state() == "normal":
@@ -150,3 +157,9 @@ class LogWindow(tk.Toplevel):
         self.log_field.configure(state="normal")
         self.log_field.delete(1.0, "end")
         self.log_field.configure(state="disabled")
+
+    def copy_log(self):
+        self.log_field.configure(state="normal")
+        log_text = self.log_field.get(1.0, "end")
+        self.log_field.configure(state="disabled")
+        pyperclip.copy(log_text)
