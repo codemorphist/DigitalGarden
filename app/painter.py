@@ -152,10 +152,16 @@ class ThreadPainter(Painter, CustomThread):
     def fast(self):
         self.update_canvas()
         while self.plant.is_growing():
+            with self.state:
+                if self.paused:
+                    self.state.wait()
+            if self.stopped():
+                return
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)
             self.update_progress(self.plant.drawed / self.plant.total * 100)
         self.update_canvas()
+        self.update_progress(100)
 
     def animated(self):
         while self.plant.is_growing():
