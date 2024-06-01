@@ -110,8 +110,8 @@ class LogWindow(tk.Toplevel):
     def __init__(self, container, controller):
         super().__init__(container)
         self.controller = controller
-        self.geometry("700x400")
-        self.minsize(700, 400)
+        self.geometry("800x600")
+        self.minsize(800, 400)
         self.title("Garden Log")
 
         self.log_field = tk.Text(self,
