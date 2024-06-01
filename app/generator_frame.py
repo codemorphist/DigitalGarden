@@ -325,7 +325,7 @@ class PlantFrame(ttk.Frame):
         self.current_drawing.stop()
 
     def get_image(self):
-        self.current_drawing.get_image()
+        return self.current_drawing.get_image()
 
 
 class PlantGenerator(ttk.Frame):
