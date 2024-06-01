@@ -27,6 +27,7 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 sys.excepthook = handle_exception
 
 import tkinter as tk
+from tkinter import ttk
 from generator_frame import PlantGenerator
 from menu_frame import Menu
 from smash_plant import SmashPlant
@@ -110,11 +111,18 @@ class LogWindow(tk.Toplevel):
         super().__init__(container)
         self.controller = controller
         self.geometry("700x400")
+        self.minsize(700, 400)
         self.title("Garden Log")
 
-        self.log_field = tk.Text(self, state="disabled")
+        self.log_field = tk.Text(self,
+                                 state="disabled",
+                                 background="black",
+                                 foreground="white",
+                                 highlightthickness=0)
         self.text_handler = TextHandler(self.log_field)
         logger.addHandler(self.text_handler)
+
+        self.clear_button = ttk.Button(self, text="Clear Log", command=self.clear_log)
 
         self.protocol("WM_DELETE_WINDOW", self.withdraw)
 
@@ -124,7 +132,8 @@ class LogWindow(tk.Toplevel):
         self.bind("<F12>", lambda _: self.state_switch())
 
     def configure_widgets(self):
-        self.log_field.pack(fill="both", expand=True, padx=5, pady=5)
+        self.log_field.pack(fill="both", expand=True, padx=2, pady=2)
+        self.clear_button.pack(pady=(0, 5))
 
     def state_switch(self):
         if self.state() == "normal":
@@ -135,4 +144,9 @@ class LogWindow(tk.Toplevel):
     def add_message_line(self, message: str):
         self.log_field.configure(state="normal")
         self.log_field.insert("end", message)
+        self.log_field.configure(state="disabled")
+
+    def clear_log(self):
+        self.log_field.configure(state="normal")
+        self.log_field.delete(1.0, "end")
         self.log_field.configure(state="disabled")

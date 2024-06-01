@@ -235,13 +235,13 @@ class UserFrame(ttk.Frame):
             plant_image = self.controller.plant_frame.get_image()
             
             if plant_image is None:
-                raise Exception("You don't generated any plant!")
+                raise Exception("You haven't generated any plant!")
 
             plant_image.save(host_file, "PNG")
             logger.info(f"Saved plant to: {host_file}")
             messagebox.showinfo("Message", "Image saved successfully!")
         except Exception as e:
-            messagebox.showerror("Error", "You didn't generated any plant!")
+            messagebox.showerror("Error", "You haven't generated any plant!")
             logger.exception(e)
 
 
@@ -370,7 +370,7 @@ class ThreadPainter(StoppableThread):
             self.canvas.after_cancel(self.update)
         self.update = None
         super().stop()
-        logger.info(f"Stoped generation: {id(self)}")
+        logger.info(f"Stopped generation: {id(self)}")
 
     def pause(self):
         with self.state:

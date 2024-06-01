@@ -71,6 +71,7 @@ class GenomeViewFrame(ttk.Frame):
             self.genome_view.insert(parent="", index = "end", iid=genome_file_name, values=(Path(genome_file_name).stem,))
             genome = self.genome_unpack(genome_file_name)
             self.genomes_dict[genome_file_name] = genome
+            logger.info(f"Genome {genome_file_name} imported and added to pool")
 
     def genome_unpack(self, file_name) -> PlantGenom:
         """
@@ -90,6 +91,7 @@ class GenomeViewFrame(ttk.Frame):
         selection = self.genome_view.selection()
         for path in selection:
             self.genome_view.delete(path)
+            logger.info(f"Genome {path} removed from pool")
             del self.genomes_dict[path]
 
     def move_up(self):
@@ -161,7 +163,9 @@ class MassSmashUserFrame(ttk.Frame):
         self.plant_genome = SmashGenom.mass_smash(self.parents_list,
                                                   Config.method,
                                                   Config.proportion / 100,
-                                                  Config.mutations,)
+                                                  Config.mutations)
+        logger.info(f"Genome smashed from pool with parameters "
+                    f"{(Config.method, Config.proportion / 100, Config.mutations)}")
 
     @property
     def parents_list(self) -> list[PlantGenom]:
@@ -180,6 +184,7 @@ class MassSmashUserFrame(ttk.Frame):
         genome_str = PlantGenom.export_genom(self.plant_genome)
         with open(host_file, "w") as file:
             file.write(genome_str)
+        logger.info(f"Exported genome to: {host_file}")
         messagebox.showinfo("Message", "Genome exported successfully!")
 
     def save_plant_as(self):
