@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from idlelib.tooltip import Hovertip
 
-from painter import ThreadPainter, FastPainter
+from painter import ThreadPainter
 
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Vec2
@@ -258,9 +258,10 @@ class PlantFrame(ttk.Frame):
 
         plant = Plant(PlantGenom.empty(), Vec2(0, 220))
         self.current_drawing = ThreadPainter(
-            plant,
-            self.canvas,
-            self.progress_var
+            plant=plant,
+            canvas=self.canvas,
+            progress=self.progress_var,
+            fast_draw=True
         )
 
         # Plant generation process
@@ -291,12 +292,13 @@ class PlantFrame(ttk.Frame):
                 self.current_drawing.stop()
 
             plant = self.controller.user_frame.get_plant()
-            painter = ThreadPainter if not fast else FastPainter
-            self.current_drawing = painter(
-                plant,
-                self.canvas,
-                self.progress_var
+            self.current_drawing = ThreadPainter(
+                plant=plant,
+                canvas=self.canvas,
+                progress=self.progress_var,
+                fast_draw=fast,
             )
+
             self.current_drawing.start()
         except Exception as e:
             messagebox.showerror("Error", "Generation attempted with an invalid genome:\n"

@@ -121,9 +121,11 @@ class CustomThread(Thread):
 
 
 class ThreadPainter(Painter, CustomThread):
-    def __init__(self, plant, canvas, progress):
+    def __init__(self, plant, canvas, progress, fast_draw):
         Painter.__init__(self, plant, canvas)
         CustomThread.__init__(self)
+
+        self.fast_draw = fast_draw
 
         self.update = None
         self.delay = 0.01
@@ -142,7 +144,20 @@ class ThreadPainter(Painter, CustomThread):
            self.progress.set(value)
 
     def run(self):
-        self.resume()
+        if self.fast_draw:
+            self.fast()
+        else:
+            self.animated()
+
+    def fast(self):
+        self.update_canvas()
+        while self.plant.is_growing():
+            for circle in self.plant.get_circles():
+                self.draw_circle(circle)
+            self.update_progress(self.plant.drawed / self.plant.total * 100)
+        self.update_canvas()
+
+    def animated(self):
         while self.plant.is_growing():
             with self.state:
                 if self.paused:
@@ -162,18 +177,6 @@ class ThreadPainter(Painter, CustomThread):
         self.update = None
         super().stop()
 
-
-class FastPainter(ThreadPainter):
-    def __init__(self, plant, canvas, progress):
-        ThreadPainter.__init__(self, plant, canvas, progress)
-
-    def run(self):
-        self.update_canvas()
-        while self.plant.is_growing():
-            for circle in self.plant.get_circles():
-                self.draw_circle(circle)
-            self.update_progress(self.plant.drawed / self.plant.total * 100)
-        self.update_canvas()
 
 
 
