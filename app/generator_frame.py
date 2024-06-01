@@ -108,19 +108,19 @@ class UserFrame(ttk.Frame):
 
         self.generate_button.grid(row=self.table_height + 1,
                                   column=0,
-                                  columnspan=5,
+                                  columnspan=6,
                                   sticky="nsew",
                                   padx=5,
                                   pady=5)
         self.generate_tip = Hovertip(self.generate_button, "See what happens!")
 
         self.fgenerate_button.grid(row=self.table_height + 1,
-                                  column=5,
-                                  columnspan=6,
+                                  column=6,
+                                  columnspan=3,
                                   sticky="nsew",
                                   padx=5,
                                   pady=5)
-        self.fgenerate_tip = Hovertip(self.fgenerate_button, "Click to fast result!")
+        self.fgenerate_tip = Hovertip(self.fgenerate_button, "Click for a quick generation")
 
         self.save_button.grid(row=self.table_height + 2,
                               column=0,

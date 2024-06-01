@@ -93,7 +93,7 @@ class Painter(ABC):
 
     def get_image(self):
         """
-        Enhance and return drawed plant
+        Enhance and return drawn plant
         """
         enh = ImageEnhance.Color(self.plant_image)
         plant_image = enh.enhance(2.0)
