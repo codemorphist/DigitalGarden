@@ -83,7 +83,7 @@ class UserFrame(ttk.Frame):
                                 columnspan=3,
                                 sticky="nsew",
                                 padx=5,
-                                pady=5)
+                                pady=(5, 0))
         self.import_tip = Hovertip(self.import_button, "Import a genome (.txt) \n"
                                                        "to fill out the table")
 
@@ -92,7 +92,7 @@ class UserFrame(ttk.Frame):
                                 columnspan=3,
                                 sticky="nsew",
                                 padx=5,
-                                pady=5)
+                                pady=(5, 0))
         self.random_tip = Hovertip(self.random_button, "Fill out a random gene \n"
                                                        "(you could get lucky!)")
 
@@ -101,7 +101,7 @@ class UserFrame(ttk.Frame):
                                 columnspan=3,
                                 sticky="nsew",
                                 padx=5,
-                                pady=5)
+                                pady=(5, 0))
         self.export_tip = Hovertip(self.export_button, "Export the genome of \n"
                                                        "the plant last generated \n"
                                                        "in the .txt format (tip: share!)")
@@ -110,16 +110,16 @@ class UserFrame(ttk.Frame):
                                   column=0,
                                   columnspan=6,
                                   sticky="nsew",
-                                  padx=5,
-                                  pady=5)
+                                  padx=5
+                                  )
         self.generate_tip = Hovertip(self.generate_button, "See what happens!")
 
         self.fgenerate_button.grid(row=self.table_height + 1,
                                   column=6,
                                   columnspan=3,
                                   sticky="nsew",
-                                  padx=5,
-                                  pady=5)
+                                  padx=5
+                                  )
         self.fgenerate_tip = Hovertip(self.fgenerate_button, "Click for a quick generation")
 
         self.save_button.grid(row=self.table_height + 2,

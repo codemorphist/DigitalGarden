@@ -33,22 +33,38 @@ class ParentUserFrame(ttk.Frame):
         super().__init__(container)
         self.controller = controller
 
-        self.import_button = ttk.Button(self, text="Import",
+        self.import_button = ttk.Button(self,
+                                        text="Import",
                                         command=self.genome_unpack)
-        self.show_button = ttk.Button(self, text="Show",
-                                      command=controller.plant_frame.start_drawing)
+        self.show_button = ttk.Button(self,
+                                      text="Show",
+                                      command=lambda: self.controller.plant_frame.start_drawing(False))
+        self.fshow_button = ttk.Button(self,
+                                       text="Fast",
+                                       command=lambda: self.controller.plant_frame.start_drawing(True))
 
         self.plant_genome = PlantGenom.empty()
         self.configure_widgets()
 
     def configure_widgets(self):
-        self.import_button.pack(padx=10, pady=5)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
+
+        self.rowconfigure(0, weight=1)
+        self.rowconfigure(1, weight=1)
+
+
+        self.import_button.grid(row=0, column=0, columnspan=2, padx=10, pady=5, sticky="nsew")
         self.import_tip = Hovertip(self.import_button, text=f"Import the genome (.txt) \n"
                                                             f"of parent {self.controller.parent_number}")
 
-        self.show_button.pack(padx=10, pady=5)
+        self.show_button.grid(row=1, column=0, padx=10, pady=5, sticky="nsew")
         self.show_tip = Hovertip(self.show_button, text=f"Generate parent {self.controller.parent_number}")
-    
+
+        self.fshow_button.grid(row=1, column=1, padx=10, pady=5, sticky="nsew")
+        self.fshow_tip = Hovertip(self.fshow_button, text=f"Quick generation of parent {self.controller.parent_number}")
+
+
     def genome_unpack(self):
         """
         The function that realises the "Import" function through
