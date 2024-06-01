@@ -159,7 +159,5 @@ class LogWindow(tk.Toplevel):
         self.log_field.configure(state="disabled")
 
     def copy_log(self):
-        self.log_field.configure(state="normal")
         log_text = self.log_field.get(1.0, "end")
-        self.log_field.configure(state="disabled")
         pyperclip.copy(log_text)
