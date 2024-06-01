@@ -6,21 +6,11 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from idlelib.tooltip import Hovertip
-from colorsys import hsv_to_rgb
-import time
-from threading import Thread, Event, Condition
-import os
 
-from PIL import Image, ImageDraw, ImageTk
-from PIL import ImageEnhance
+from painter import ThreadPainter
 
 from plant_generator import Plant, PlantGenom, AgentGenom
-from tools import Circle, Color, Vec2
-
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-POT_IMAGE_PATH = os.path.join(SCRIPT_DIR, "..", "resources", "pot_mmf_logo.png")
-BACKGROUND_IMAGE_PATH = os.path.join(SCRIPT_DIR, "..", "resources", "background.png")
+from tools import Vec2
 
 
 class UserFrame(ttk.Frame):
@@ -53,8 +43,13 @@ class UserFrame(ttk.Frame):
         self.import_button = ttk.Button(self, text="Import", command=self.genome_unpack)
         self.export_button = ttk.Button(self, text="Export", command=self.genome_pack)
         self.random_button = ttk.Button(self, text="Random", command=self.set_random)
-        self.generate_button = ttk.Button(self, text="Generate Plant",
-                                          command=self.controller.plant_frame.start_drawing)
+
+        draw = lambda fast: self.controller.plant_frame.start_drawing(fast)
+        self.generate_button = ttk.Button(self, text="Generate",
+                                          command=lambda: draw(False))
+        self.fgenerate_button = ttk.Button(self, text="Fast",
+                                           command=lambda: draw(True))
+
         self.save_button = ttk.Button(self, text="Save", command=self.save_plant_as)
 
         self.configure_widgets()
@@ -113,11 +108,19 @@ class UserFrame(ttk.Frame):
 
         self.generate_button.grid(row=self.table_height + 1,
                                   column=0,
-                                  columnspan=9,
+                                  columnspan=6,
                                   sticky="nsew",
                                   padx=5,
                                   pady=5)
         self.generate_tip = Hovertip(self.generate_button, "See what happens!")
+
+        self.fgenerate_button.grid(row=self.table_height + 1,
+                                  column=6,
+                                  columnspan=3,
+                                  sticky="nsew",
+                                  padx=5,
+                                  pady=5)
+        self.fgenerate_tip = Hovertip(self.fgenerate_button, "Click for a quick generation")
 
         self.save_button.grid(row=self.table_height + 2,
                               column=0,
@@ -244,153 +247,7 @@ class UserFrame(ttk.Frame):
             messagebox.showerror("Error", "You haven't generated any plant!")
             logger.exception(e)
 
-
-class StoppableThread(Thread):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._stop_event = Event()
-
-    def stop(self):
-        self._stop_event.set()
-
-    def stopped(self):
-        return self._stop_event.is_set()
-
-
-class ThreadPainter(StoppableThread):
-    def __init__(self, plant, canvas, progress = None):
-        super().__init__()
-        self.daemon = True
-        self.paused = False
-        self.state = Condition()
-
-        self.plant = plant
-
-        self.canvas = canvas
-        self.width = canvas.winfo_width()
-        self.height = canvas.winfo_height()
-
-        self.image = None
-        self.image_size = (1024, 1024)
-        self.draw = None
-        self.timer = time.time()
-
-        w, h = self.image_size
-        self.background = Image.open(BACKGROUND_IMAGE_PATH) 
-        self.pot_image = Image.open(POT_IMAGE_PATH)
-        self.pot_image = self.pot_image.resize((w//4, h//4),
-                                               Image.LANCZOS)
-        self.pot_pos = (w//2 - w//8,
-                        w//2 + self.plant.start_pos.y - 48)
-
-        self.update = None
-        self.delay = 0.01
-        
-        self.progress = progress
-
-    def update_progress(self, value: float):
-        """
-        Update status and color of progressbar
-        by given value
-        """
-        if self.progress:
-           self.progress.set(value)
-
-    def clear_canvas(self):
-        """
-        Clear image with plant and update canvas
-        """
-        self.image = Image.new("RGBA",
-                               self.image_size,
-                               (255, 255, 255, 0)) 
-        # self.image.paste(self.background, (0, 0))
-        self.background.paste(self.pot_image, self.pot_pos, 
-                         self.pot_image)
-        self.draw = ImageDraw.Draw(self.image, "RGBA")
-        self.update_canvas()
-
-    def update_canvas(self):
-        """
-        Show image on canvas
-        """
-        canvas_image = self.get_image()
-        canvas_image = canvas_image.resize((self.width, self.height), Image.LANCZOS)
-        self.canvas.image = ImageTk.PhotoImage(canvas_image)
-        self.canvas.create_image(self.width // 2, self.height // 2,
-                                 anchor=tk.CENTER, image=self.canvas.image)
-
-    def draw_circle(self, circle: Circle):
-        """
-        Draw circle on image
-
-        Draw 3 circles, main, darker and lighter
-        for 3D effect
-        """
-
-        width, height = self.image_size
-        x, y = circle.pos + Vec2(width // 2, height // 2)
-        if x < 0 or x > width or y < 0 or y > height:
-            return
-        r = abs(circle.radius) + 1
-
-        x0, y0 = x - r, y - r
-        x1, y1 = x + r, y + r
-
-        default_color = circle.color
-        dark_color = circle.color + Color(20, 20, 20)
-        light_color = circle.color - Color(20, 20, 20)
-
-        self.draw.ellipse((x0 - 2, y0 - 2, x1 - 2, y1 - 2),
-                                fill=dark_color.rgb)
-        self.draw.ellipse((x0 + 2, y0 + 2, x1 + 2, y1 + 2),
-                                fill=light_color.rgb)
-        self.draw.ellipse((x0, y0, x1, y1),
-                                fill=default_color.rgb)
-
-    def run(self):
-        logger.info(f"Starting generation: {id(self)}")
-        self.resume()
-        self.clear_canvas()
-        while self.plant.is_growing():
-            with self.state:
-                if self.paused:
-                    self.state.wait()
-            if self.stopped():
-                return
-            for circle in self.plant.get_circles():
-                self.draw_circle(circle)
-            self.update = self.canvas.after(1, self.update_canvas)
-            self.update_progress(self.plant.drawed / self.plant.total * 100)
-            time.sleep(self.delay)
-        self.update_progress(100)
-        logger.info(f"Ended generation: {id(self)}")
-
-    def stop(self):
-        if self.update:
-            self.canvas.after_cancel(self.update)
-        self.update = None
-        super().stop()
-        logger.info(f"Stopped generation: {id(self)}")
-
-    def pause(self):
-        with self.state:
-            self.paused = True  
-        logger.info(f"Paused generation: {id(self)}")
-
-    def resume(self):
-        with self.state:
-            self.paused = False
-            self.state.notify() 
-        logger.info(f"Resumed generation: {id(self)}")
-
-    def get_image(self):
-        enh = ImageEnhance.Color(self.image)
-        plant_image = enh.enhance(2.0)
-        canvas_image = self.background.copy()
-        canvas_image.paste(plant_image, (0, 0), plant_image)
-        return canvas_image
-
-
+            
 class PlantFrame(ttk.Frame):
     """
     Contains the canvas where the plant is drawn
@@ -406,8 +263,6 @@ class PlantFrame(ttk.Frame):
                                 height=height,
                                 bg="lightgray")
 
-        self.current_drawing: ThreadPainter = None
-
         # Progress bar
         self.progress_var = tk.DoubleVar()
         self.plant_progress = ttk.Progressbar(self,
@@ -416,6 +271,14 @@ class PlantFrame(ttk.Frame):
                                               length=height,
                                               variable=self.progress_var,
                                               maximum=100)
+
+        plant = Plant(PlantGenom.empty(), Vec2(0, 220))
+        self.current_drawing = ThreadPainter(
+            plant=plant,
+            canvas=self.canvas,
+            progress=self.progress_var,
+            fast_draw=True
+        )
 
         # Plant generation process
         self.configure_widgets()
@@ -432,7 +295,7 @@ class PlantFrame(ttk.Frame):
         # Configure progress bar
         self.plant_progress.grid(row=0, column=0, pady=10)
     
-    def start_drawing(self):
+    def start_drawing(self, fast: bool = True):
         """
         Start drawing and generation of plant
 
@@ -441,14 +304,17 @@ class PlantFrame(ttk.Frame):
         3. Start drawing and generating new plant
         """
         try:
-            if self.current_drawing:
+            if not self.current_drawing.stopped():
                 self.current_drawing.stop()
+
             plant = self.controller.user_frame.get_plant()
             self.current_drawing = ThreadPainter(
-                plant,
-                self.canvas,
-                self.progress_var
+                plant=plant,
+                canvas=self.canvas,
+                progress=self.progress_var,
+                fast_draw=fast,
             )
+
             self.current_drawing.start()
         except Exception as e:
             messagebox.showerror("Error", "Generation attempted with an invalid genome:\n"
@@ -456,14 +322,10 @@ class PlantFrame(ttk.Frame):
             logger.exception(e)
 
     def stop_drawing(self):
-        if self.current_drawing is None:
-           return 
-
         self.current_drawing.stop()
 
     def get_image(self):
-        if self.current_drawing:
-            return self.current_drawing.get_image()
+        self.current_drawing.get_image()
 
 
 class PlantGenerator(ttk.Frame):
