@@ -1,5 +1,30 @@
 import logging
+import sys
+
+FORMAT = "[%(asctime)s] <%(levelname)-8s> %(filename)s:" \
+         "%(lineno)d (%(name)s) : %(message)s" 
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename="digital_garden.log",
+    format=FORMAT,
+    encoding="utf-8",
+    filemode="a"
+)
+
+formatter = logging.Formatter(FORMAT)
+
 logger = logging.getLogger(__name__)
+
+
+def handle_exception(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+
+    logger.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+sys.excepthook = handle_exception
 
 import tkinter as tk
 from generator_frame import PlantGenerator
@@ -15,9 +40,10 @@ class RootWindow(tk.Tk):
     def __init__(self, *args, **kwargs): 
         super().__init__(*args, **kwargs)
 
-        self.setup_window()
         self.setup_log()
-         
+        logger.info("Starting window...")
+        self.setup_window()
+        
         # Creating a container
         container = tk.Frame(self)  
         container.pack(side="top", fill="both", expand=True) 
@@ -55,26 +81,47 @@ class RootWindow(tk.Tk):
 
     def setup_log(self):
         self.log_window = LogWindow(self, self)
-        self.bind("<F12>", lambda event: self.log_window.state_switch())
+        self.bind("<F12>", lambda _: self.log_window.state_switch())
         self.log_window.withdraw()
 
     def quit(self):
+        logger.info("Exit from program!")
         self.destroy()
+
+
+class TextHandler(logging.Handler):
+    def __init__(self, text):
+        logging.Handler.__init__(self)
+        self.setFormatter(formatter)
+        self.text = text
+
+    def emit(self, record):
+        msg = self.format(record)
+        def append():
+            self.text.configure(state="normal")
+            self.text.insert(tk.END, msg + "\n")
+            self.text.configure(state="disabled")
+            self.text.yview(tk.END)
+        self.text.after(0, append)
 
 
 class LogWindow(tk.Toplevel):
     def __init__(self, container, controller):
         super().__init__(container)
         self.controller = controller
-        self.geometry("500x230")
+        self.geometry("700x400")
         self.title("Garden Log")
 
         self.log_field = tk.Text(self, state="disabled")
+        self.text_handler = TextHandler(self.log_field)
+        logger.addHandler(self.text_handler)
 
         self.protocol("WM_DELETE_WINDOW", self.withdraw)
 
         self.transient(controller)
         self.configure_widgets()
+
+        self.bind("<F12>", lambda _: self.state_switch())
 
     def configure_widgets(self):
         self.log_field.pack(fill="both", expand=True, padx=5, pady=5)
