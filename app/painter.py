@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from abc import ABC, abstractmethod
 
 import os
@@ -145,7 +148,10 @@ class ThreadPainter(Painter, CustomThread):
         
         self.progress = progress
 
+        logger.info(f"Initialized{' Fast ' if self.fast_draw else ' '}ThreadPainter: {id(self)} ")
+
     def draw_plant(self):
+        logger.info(f"Started generation: {id(self)}")
         self.start()
 
     def update_progress(self, value: float):
@@ -157,6 +163,7 @@ class ThreadPainter(Painter, CustomThread):
            self.progress.set(value)
 
     def run(self):
+        logger.info(f"Running generation: {id(self)}")
         self.update_canvas()
 
         while self.plant.is_growing():
@@ -186,10 +193,12 @@ class ThreadPainter(Painter, CustomThread):
         self.update = None
 
     def stop(self):
+        logger.info(f"Stopped generation: {id(self)}")
         self.cancel_update()
         return super().stop()
 
     def pause(self):
+        logger.info(f"Paused generation: {id(self)}")
         self.cancel_update()
         return super().pause()
 
