@@ -117,7 +117,7 @@ class UserFrame(ttk.Frame):
                                   sticky="nsew",
                                   padx=5,
                                   pady=5)
-        self.fgenerate_tip = Hovertip(self.generate_button, "Click to fast result!")
+        self.fgenerate_tip = Hovertip(self.fgenerate_button, "Click to fast result!")
 
         self.save_button.grid(row=self.table_height + 2,
                               column=0,
