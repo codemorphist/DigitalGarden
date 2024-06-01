@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -190,10 +193,12 @@ class UserFrame(ttk.Frame):
             genom_str = PlantGenom.export_genom(self.get_plant().plant_genom)
             with open(host_file, "w") as file:
                 file.write(genom_str)
+            logger.info(f"Exported genome to: {host_file}")
             messagebox.showinfo("Message", "Genome exported successfully!")
-        except:
+        except Exception as e:
             messagebox.showerror("Error", "Please enter a valid genome to enable export:\n"
                                           "All the entries have to be filled out with integers")
+            logger.exception(e)
 
     def genome_unpack(self):
         """
@@ -210,11 +215,13 @@ class UserFrame(ttk.Frame):
             for c, agent in enumerate(genom.table()):
                 for r, gen in enumerate(agent):
                     self.genome_entries_tkvar[(r, c)].set(gen)
+            logger.info(f"Imported genome from: {filename}")
             messagebox.showinfo("Message", "Genome imported successfully!")
-        except:
+        except Exception as e:
             messagebox.showerror("Error", "Import attempted with an invalid genome:\n"
                                           "The genome has to be a .txt file with a 20x9 table of \n"
                                           "integer inputs separated by spaces")
+            logger.exception(e)
 
     def save_plant_as(self):
         """
@@ -227,11 +234,20 @@ class UserFrame(ttk.Frame):
         if not host_file:
             return
 
-        plant_image = self.controller.plant_frame.get_image()
-        plant_image.save(host_file, "PNG")
-        messagebox.showinfo("Message", "Image saved successfully!")
+        try:
+            plant_image = self.controller.plant_frame.get_image()
+            
+            if plant_image is None:
+                raise Exception("You haven't generated any plant!")
 
+            plant_image.save(host_file, "PNG")
+            logger.info(f"Saved plant to: {host_file}")
+            messagebox.showinfo("Message", "Image saved successfully!")
+        except Exception as e:
+            messagebox.showerror("Error", "You haven't generated any plant!")
+            logger.exception(e)
 
+            
 class PlantFrame(ttk.Frame):
     """
     Contains the canvas where the plant is drawn
@@ -303,7 +319,7 @@ class PlantFrame(ttk.Frame):
         except Exception as e:
             messagebox.showerror("Error", "Generation attempted with an invalid genome:\n"
                                           "All the entries have to be filled out with integers")
-            print(e)
+            logger.exception(e)
 
     def stop_drawing(self):
         self.current_drawing.stop()

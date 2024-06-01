@@ -4,7 +4,7 @@ from enum import Enum
 
 
 class SmashMethod(Enum):
-    Probabilistic = "probalistic"
+    Probabilistic = "probabilistic"
     WeightedAverage = "weighted average"
 
     @classmethod
