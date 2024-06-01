@@ -184,6 +184,8 @@ class ThreadPainter(Painter, CustomThread):
         self.update_progress(100)
         self.update_canvas()
 
+        logger.info(f"Ended generation: {id(self)}")
+
     def cancel_update(self):
         """
         Cancel tkinter frame update
