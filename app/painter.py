@@ -44,6 +44,9 @@ class Painter(ABC):
         pass
 
     def setup_image(self):
+        """
+        Setup basic image
+        """
         w, h = self.image_size
         background = Image.open(BACKGROUND_IMAGE_PATH) 
         background.resize(self.image_size, Image.LANCZOS)
@@ -55,6 +58,9 @@ class Painter(ABC):
         self.image.paste(pot_image, pot_pos, pot_image)
 
     def draw_circle(self, circle: Circle):
+        """
+        Draw circle on plant image
+        """
         width, height = self.image_size
         x, y = circle.pos + Vec2(width // 2, height // 2)
         if x < 0 or x > width or y < 0 or y > height:
@@ -74,6 +80,13 @@ class Painter(ABC):
                                     fill=light_color.rgb)
         self.draw.ellipse((x0, y0, x1, y1),
                                     fill=default_color.rgb)
+
+    def draw_current_layer(self):
+        """
+        Draw current layer of agents
+        """
+        for circle in self.plant.get_circles():
+            self.draw_circle(circle)
 
     def get_image(self):
         """
@@ -155,18 +168,14 @@ class ThreadPainter(Painter, CustomThread):
                 return
 
             self.draw_current_layer()
+            self.update_progress(self.plant.drawed / self.plant.total * 100)
 
-            if not self.fast_draw: # if not fast draw animate
+            if not self.fast_draw: # if not fast animate
                 self.update = self.canvas.after(1, self.update_canvas)
                 time.sleep(self.delay)
 
         self.update_progress(100)
         self.update_canvas()
-
-    def draw_current_layer(self):
-        for circle in self.plant.get_circles():
-            self.draw_circle(circle)
-        self.update_progress(self.plant.drawed / self.plant.total * 100)
 
     def stop(self):
         if self.update:
