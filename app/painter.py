@@ -144,38 +144,29 @@ class ThreadPainter(Painter, CustomThread):
            self.progress.set(value)
 
     def run(self):
-        if self.fast_draw:
-            self.fast()
-        else:
-            self.animated()
-
-    def fast(self):
         self.update_canvas()
+
         while self.plant.is_growing():
             with self.state:
                 if self.paused:
                     self.state.wait()
-            if self.stopped():
-                return
-            for circle in self.plant.get_circles():
-                self.draw_circle(circle)
-            self.update_progress(self.plant.drawed / self.plant.total * 100)
-        self.update_canvas()
-        self.update_progress(100)
 
-    def animated(self):
-        while self.plant.is_growing():
-            with self.state:
-                if self.paused:
-                    self.state.wait()
             if self.stopped():
                 return
-            for circle in self.plant.get_circles():
-                self.draw_circle(circle)
-            self.update = self.canvas.after(1, self.update_canvas)
-            self.update_progress(self.plant.drawed / self.plant.total * 100)
-            time.sleep(self.delay)
+
+            self.draw_current_layer()
+
+            if not self.fast_draw: # if not fast draw animate
+                self.update = self.canvas.after(1, self.update_canvas)
+                time.sleep(self.delay)
+
         self.update_progress(100)
+        self.update_canvas()
+
+    def draw_current_layer(self):
+        for circle in self.plant.get_circles():
+            self.draw_circle(circle)
+        self.update_progress(self.plant.drawed / self.plant.total * 100)
 
     def stop(self):
         if self.update:
