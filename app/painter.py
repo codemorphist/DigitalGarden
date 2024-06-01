@@ -168,6 +168,7 @@ class FastPainter(ThreadPainter):
         ThreadPainter.__init__(self, plant, canvas, progress)
 
     def run(self):
+        self.update_canvas()
         while self.plant.is_growing():
             for circle in self.plant.get_circles():
                 self.draw_circle(circle)

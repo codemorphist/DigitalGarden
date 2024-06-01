@@ -10,7 +10,6 @@ from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Vec2
 
 
-
 class UserFrame(ttk.Frame):
     """
     Contains the User side of the interface, i.e.
@@ -41,8 +40,13 @@ class UserFrame(ttk.Frame):
         self.import_button = ttk.Button(self, text="Import", command=self.genome_unpack)
         self.export_button = ttk.Button(self, text="Export", command=self.genome_pack)
         self.random_button = ttk.Button(self, text="Random", command=self.set_random)
-        self.generate_button = ttk.Button(self, text="Generate Plant",
-                                          command=self.controller.plant_frame.start_drawing)
+
+        draw = lambda fast: self.controller.plant_frame.start_drawing(fast)
+        self.generate_button = ttk.Button(self, text="Generate",
+                                          command=lambda: draw(False))
+        self.fgenerate_button = ttk.Button(self, text="Fast",
+                                           command=lambda: draw(True))
+
         self.save_button = ttk.Button(self, text="Save", command=self.save_plant_as)
 
         self.configure_widgets()
@@ -101,11 +105,19 @@ class UserFrame(ttk.Frame):
 
         self.generate_button.grid(row=self.table_height + 1,
                                   column=0,
-                                  columnspan=9,
+                                  columnspan=5,
                                   sticky="nsew",
                                   padx=5,
                                   pady=5)
         self.generate_tip = Hovertip(self.generate_button, "See what happens!")
+
+        self.fgenerate_button.grid(row=self.table_height + 1,
+                                  column=5,
+                                  columnspan=6,
+                                  sticky="nsew",
+                                  padx=5,
+                                  pady=5)
+        self.fgenerate_tip = Hovertip(self.generate_button, "Click to fast result!")
 
         self.save_button.grid(row=self.table_height + 2,
                               column=0,
