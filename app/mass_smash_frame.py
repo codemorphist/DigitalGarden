@@ -170,24 +170,6 @@ class MassSmashUserFrame(ttk.Frame):
         self.save_button.grid(row=4, column=0, columnspan=2, sticky="nsew")
         self.save_tip = Hovertip(self.save_button, "Save a picture of your gorgeous plant!")
 
-
-
-        # self.genome_view.pack(fill="both", pady=15)
-        #
-        # self.method_button.pack(fill="both", pady=(5, 0))
-        # self.method_tip = Hovertip(self.method_button, text="Set the method of genome-smashing")
-        #
-        # self.generate_button.pack(fill="both", pady=(5, 0))
-        # self.generate_tip = Hovertip(self.generate_button, text="See what happens!")
-        #
-        # self.export_button.pack(fill="both", pady=(5, 0))
-        # self.export_tip = Hovertip(self.export_button, "Export the genome of \n"
-        #                                                "the plant last generated \n"
-        #                                                "in the .txt format (tip: share!)")
-        #
-        # self.save_button.pack(fill="both", pady=(5, 0))
-        # self.save_tip = Hovertip(self.save_button, "Save a picture of your gorgeous plant!")
-
     def set_smashed_genome(self):
         self.plant_genome = SmashGenom.mass_smash(self.parents_list,
                                                   Config.method,
