@@ -51,10 +51,10 @@ class GenomeViewFrame(ttk.Frame):
         self.genome_view.grid(row=0, column=0, columnspan=2, sticky="nsew")
 
         self.up_button.grid(row=1, column=0, sticky="new")
-        self.up_tip = Hovertip(self.up_button, text="Move genom to the up in list")
+        self.up_tip = Hovertip(self.up_button, text="Move genomes to higher in the list")
 
         self.down_button.grid(row=1, column=1, sticky="new")
-        self.down_tip = Hovertip(self.down_button, text="Move genom to the down in list")
+        self.down_tip = Hovertip(self.down_button, text="Move genomes to lower in the list")
 
         self.add_button.grid(row=2, column=0, sticky="new")
         self.add_tip = Hovertip(self.add_button, text="Add parent genomes to the pool")
@@ -133,7 +133,12 @@ class MassSmashUserFrame(ttk.Frame):
         self.genome_view = GenomeViewFrame(self, self)
 
         self.method_button = ttk.Button(self, text="Method", command=self.open_method_settings)
-        self.generate_button = ttk.Button(self, text="Generate Plant", command=self.controller.plant_frame.start_drawing)
+        self.generate_button = ttk.Button(self,
+                                          text="Generate Plant",
+                                          command=lambda: self.controller.plant_frame.start_drawing(False))
+        self.fgenerate_button = ttk.Button(self,
+                                           text="Fast",
+                                           command=lambda: self.controller.plant_frame.start_drawing(True))
         self.export_button = ttk.Button(self, text="Export", command=self.genome_pack)
         self.save_button = ttk.Button(self, text="Save", command=self.save_plant_as)
 
@@ -143,20 +148,26 @@ class MassSmashUserFrame(ttk.Frame):
         self.configure_widgets()
 
     def configure_widgets(self):
-        self.genome_view.pack(fill="both", pady=15)
+        self.columnconfigure((0, 1), weight=1)
+        self.rowconfigure((0, 1, 2, 3, 4), weight=1)
 
-        self.method_button.pack(fill="both", pady=5)
+        self.genome_view.grid(row=0, column=0, columnspan=2, sticky="nsew")
+
+        self.method_button.grid(row=1, column=0, columnspan=2, pady=(20, 0), sticky="nsew")
         self.method_tip = Hovertip(self.method_button, text="Set the method of genome-smashing")
 
-        self.generate_button.pack(fill="both", pady=5)
+        self.generate_button.grid(row=2, column=0, sticky="nsew")
         self.generate_tip = Hovertip(self.generate_button, text="See what happens!")
 
-        self.export_button.pack(fill="both", pady=5)
+        self.fgenerate_button.grid(row=2, column=1, sticky="nsew")
+        self.fgenerate_tip = Hovertip(self.fgenerate_button, "Click for a quick generation")
+
+        self.export_button.grid(row=3, column=0, columnspan=2, sticky="nsew")
         self.export_tip = Hovertip(self.export_button, "Export the genome of \n"
                                                        "the plant last generated \n"
                                                        "in the .txt format (tip: share!)")
 
-        self.save_button.pack(fill="both", pady=5)
+        self.save_button.grid(row=4, column=0, columnspan=2, sticky="nsew")
         self.save_tip = Hovertip(self.save_button, "Save a picture of your gorgeous plant!")
 
     def set_smashed_genome(self):
@@ -202,13 +213,13 @@ class MassSmashUserFrame(ttk.Frame):
             plant_image = self.controller.plant_frame.get_image()
             
             if plant_image is None:
-                raise Exception("You don't generated any plant!")
+                raise Exception("You haven't generated any plant!")
 
             plant_image.save(host_file, "PNG")
             logger.info(f"Saved plant to: {host_file}")
             messagebox.showinfo("Message", "Image saved successfully!")
         except Exception as e:
-            messagebox.showerror("Error", "You didn't generated any plant!")
+            messagebox.showerror("Error", "You haven't generated any plant!")
             logger.exception(e)
 
     def open_method_settings(self):
@@ -243,6 +254,6 @@ class MassSmash(ttk.Frame):
         Configure place and style of widgets and frames
         """
         self.plant_frame.pack(side="left", padx=20, pady=20)
-        self.user_frame.pack(side="left", padx=20, pady=30, expand=True, fill="both")
+        self.user_frame.pack(side="left", padx=20, pady=30, expand=True, fill="x")
         self.back_button.place(x=10, y=10)
 
