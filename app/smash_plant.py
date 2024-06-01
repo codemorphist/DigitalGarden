@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -59,10 +62,12 @@ class ParentUserFrame(ttk.Frame):
                 self.plant_genome = PlantGenom.import_genom(file.read())
 
             messagebox.showinfo("Message", "Genome imported successfully!")
-        except:
+        except Exception as e:
             messagebox.showerror("Error", "Import attempted with an invalid genome:\n"
                                           "The genome has to be a .txt file with a 20x9 table of \n"
                                           "integer inputs separated by spaces")
+            logger.exception(e)
+
     def get_plant(self) -> Plant:
         start_pos = Vec2(0, 250)
         plant = Plant(self.plant_genome, start_pos)
@@ -121,9 +126,10 @@ class HeirUserFrame(ttk.Frame):
             with open(host_file, "w") as file:
                 file.write(genom_str)
             messagebox.showinfo("Message", "Genome exported successfully!")
-        except:
+        except Exception as e:
             messagebox.showerror("Error", "Please enter a valid genome to enable export:\n"
                                           "All the entries have to be filled out with integers")
+            logger.exception(e)
 
     def save_plant_as(self):
         """

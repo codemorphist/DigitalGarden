@@ -1,3 +1,7 @@
+import logging
+logger = logging.getLogger(__name__)
+
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -76,10 +80,11 @@ class GenomeViewFrame(ttk.Frame):
             with open(file_name) as file:
                 plant_genome = PlantGenom.import_genom(file.read())
                 return plant_genome
-        except:
+        except Exception as e:
             messagebox.showerror("Error", "Import attempted with an invalid genome:\n"
                                           "The genome has to be a .txt file with a 20x9 table of \n"
                                           "integer inputs separated by spaces")
+            logger.exception(e)
 
     def remove_genomes(self):
         selection = self.genome_view.selection()

@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 import tkinter as tk
 from generator_frame import PlantGenerator
 from menu_frame import Menu
@@ -22,11 +25,13 @@ class RootWindow(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
   
         # Setup all frames
+        logger.info("Initializing frames...")
         self.frames = {}  
         for F in (Menu, PlantGenerator, SmashPlant, MassSmash):
             frame = F(container, self)
             self.frames[F.__name__] = frame 
             frame.grid(row=0, column=0, sticky="nsew")
+        logger.info("Frames initialized!")
   
         # Show Menu Frame
         self.show_frame("Menu")
