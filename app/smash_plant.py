@@ -142,9 +142,18 @@ class HeirUserFrame(ttk.Frame):
         if not host_file:
             return
 
-        plant_image = self.controller.plant_frame.get_image()
-        plant_image.save(host_file, "PNG")
-        messagebox.showinfo("Message", "Image saved successfully!")
+        try:
+            plant_image = self.controller.plant_frame.get_image()
+            
+            if plant_image is None:
+                raise Exception("You don't generated any plant!")
+
+            plant_image.save(host_file, "PNG")
+            logger.info(f"Saved plant to: {host_file}")
+            messagebox.showinfo("Message", "Image saved successfully!")
+        except Exception as e:
+            messagebox.showerror("Error", "You didn't generated any plant!")
+            logger.exception(e)
 
     def configure_widgets(self):
         self.method_button.grid(row=0, column=0, sticky="nsew", padx=10, pady=5)
