@@ -1,6 +1,8 @@
+import logging
+logger = logging.getLogger(__name__)
+
 import tkinter as tk
 from tkinter import ttk
-from generator_frame import PlantGenerator
 
 
 class MenuButtonsFrame(ttk.Frame):
