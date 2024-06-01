@@ -177,11 +177,21 @@ class ThreadPainter(Painter, CustomThread):
         self.update_progress(100)
         self.update_canvas()
 
-    def stop(self):
+    def cancel_update(self):
+        """
+        Cancel tkinter frame update
+        """
         if self.update:
             self.canvas.after_cancel(self.update)
         self.update = None
-        super().stop()
+
+    def stop(self):
+        self.cancel_update()
+        return super().stop()
+
+    def pause(self):
+        self.cancel_update()
+        return super().pause()
 
 
 
