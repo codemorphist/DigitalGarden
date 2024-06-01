@@ -16,6 +16,7 @@ class RootWindow(tk.Tk):
         super().__init__(*args, **kwargs)
 
         self.setup_window()
+        self.setup_log()
          
         # Creating a container
         container = tk.Frame(self)  
@@ -52,5 +53,39 @@ class RootWindow(tk.Tk):
         frame = self.frames[frame_name]
         frame.tkraise()
 
+    def setup_log(self):
+        self.log_window = LogWindow(self, self)
+        self.bind("<F12>", lambda event: self.log_window.state_switch())
+        self.log_window.withdraw()
+
     def quit(self):
         self.destroy()
+
+
+class LogWindow(tk.Toplevel):
+    def __init__(self, container, controller):
+        super().__init__(container)
+        self.controller = controller
+        self.geometry("500x230")
+        self.title("Garden Log")
+
+        self.log_field = tk.Text(self, state="disabled")
+
+        self.protocol("WM_DELETE_WINDOW", self.withdraw)
+
+        self.transient(controller)
+        self.configure_widgets()
+
+    def configure_widgets(self):
+        self.log_field.pack(fill="both", expand=True, padx=5, pady=5)
+
+    def state_switch(self):
+        if self.state() == "normal":
+            self.withdraw()
+        elif self.state() == "withdrawn":
+            self.deiconify()
+
+    def add_message_line(self, message: str):
+        self.log_field.configure(state="normal")
+        self.log_field.insert("end", message)
+        self.log_field.configure(state="disabled")
