@@ -193,7 +193,7 @@ $ python app
 
 <summary>Mass Smash</summary>
 
-![Mass Smash](./mass-smash)
+![Mass Smash](./resources/mass_smash_screenshot.png)
 
 1. Канвас з прогрес баром де буде відображатися генерація нащадка
 2. Список з геномами предків
