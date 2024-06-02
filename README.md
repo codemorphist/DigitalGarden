@@ -152,7 +152,7 @@ $ python app
 <!-- TOC --><a name="generate-plant"></a>
 <details>
 
-<summary>Generate Plant<summary>
+<summary>Generate Plant</summary>
 
 ![Generate Plant](./resources/generate_plant_screenshoot.png)
 
@@ -171,7 +171,7 @@ $ python app
 <!-- TOC --><a name="Smash Plants"></a>
 <details>
 
-<summary>Smash Plants<summary>
+<summary>Smash Plants</summary>
 
 ![Smash Plants](./resources/smash_plants_screenshot.png)
 
@@ -191,7 +191,7 @@ $ python app
 <!-- TOC --><a name="Mass Smash"></a>
 <details>
 
-<summary>Mass Smash<summary>
+<summary>Mass Smash</summary>
 
 ![Mass Smash](./mass-smash)
 
