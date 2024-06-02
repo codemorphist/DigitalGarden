@@ -150,6 +150,8 @@ $ python app
 
 
 <!-- TOC --><a name="generate-plant"></a>
+## Generate Plant
+
 <details>
 
 <summary>Generate Plant</summary>
@@ -169,6 +171,8 @@ $ python app
 </details>
 
 <!-- TOC --><a name="Smash Plants"></a>
+## Smash Plants
+
 <details>
 
 <summary>Smash Plants</summary>
@@ -189,6 +193,8 @@ $ python app
 </details>
 
 <!-- TOC --><a name="Mass Smash"></a>
+## Mass Smash
+
 <details>
 
 <summary>Mass Smash</summary>
