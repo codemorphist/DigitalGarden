@@ -229,7 +229,7 @@ In this Section you will find detailed information regarding generating plants, 
 The plant gallery is available via [DigitalGarden Gallery](https://codemorph.xyz/DigitalGarden/)
 
 <!-- toc --><a name="license"></a>
-# 📃 Ліцензія 
+# 📃 License
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Heckert_GNU_white.svg/1024px-Heckert_GNU_white.svg.png" width="100" align="right"></img>
 The project source code is distributed under the **GNU General Public License v3.0**
