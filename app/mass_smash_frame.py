@@ -245,7 +245,7 @@ class MassSmash(ttk.Frame):
         self.user_frame = MassSmashUserFrame(self, self)
 
         self.back_button = ttk.Button(self, text="Back",
-                                      command=lambda: self.controller.show_frame("Menu"))
+                                      command=lambda: self.back())
 
         self.configure_widgets()
 
@@ -256,4 +256,12 @@ class MassSmash(ttk.Frame):
         self.plant_frame.pack(side="left", padx=20, pady=20)
         self.user_frame.pack(side="left", padx=20, pady=30, expand=True, fill="x")
         self.back_button.place(x=10, y=10)
+
+    def back(self):
+        self.controller.show_frame("Menu")
+        self.plant_frame.pause_drawing()
+
+    def resume(self):
+        self.plant_frame.resume_drawing()
+
 

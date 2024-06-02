@@ -28,7 +28,6 @@ sys.excepthook = handle_exception
 
 import tkinter as tk
 from tkinter import ttk
-import pyperclip
 from generator_frame import PlantGenerator
 from menu_frame import Menu
 from smash_plant import SmashPlant
@@ -72,13 +71,16 @@ class RootWindow(tk.Tk):
         self.title("Digital Garden")
 
         self.geometry("1420x1000")
-        self.minsize(1024, 512)
+        self.minsize(1420, 1000)
   
     def show_frame(self, frame_name: str):
         """
         Display frame passed by parameter
         """
         frame = self.frames[frame_name]
+        if isinstance(frame, (PlantGenerator, SmashPlant, MassSmash)):
+            logger.info(f"Resuming generation on frame: {frame}")
+            frame.resume()
         frame.tkraise()
 
     def setup_log(self):
@@ -160,4 +162,5 @@ class LogWindow(tk.Toplevel):
 
     def copy_log(self):
         log_text = self.log_field.get(1.0, "end")
-        pyperclip.copy(log_text)
+        self.controller.clipboard_clear()
+        self.controller.clipboard_append(log_text)
