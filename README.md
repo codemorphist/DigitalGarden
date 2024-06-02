@@ -196,18 +196,6 @@ In this Section you will find detailed information regarding generating plants, 
 
 ![Mass Smash](./resources/mass_smash_screenshot.png)
 
-1. Канвас з прогрес баром де буде відображатися генерація нащадка
-2. Список з геномами предків
-3. Кнопка що зміщує виділеного предка вверх на одну позицію
-4. Кнопка що зміщує виділеного предка вниз на одну позицію
-5. Кнопка для додавання геному ще одного предка
-6. Кнопка для видалення виділеного предка
-7. Кнопка для вибору метода схрещування
-8. Кнопка для генерації нащадка
-9. Кнопка для швидкої генерації нащадка
-10. Кнопка для експортування отриманого геному нащадка
-11. Кнопка для збереження зображення нащадка 
-
 1. The canvas with a progress bar that will display the child plant
 2. The list of parent genomes (order-sensitive)
 3. This button moves the selected parent genomes one position upward in the list
