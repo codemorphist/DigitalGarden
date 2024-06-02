@@ -213,21 +213,7 @@ $ python app
 <!-- TOC --><a name="gallery"></a>
 # 🏞️ Галерея
 
-| <img src="./gallery/blues.png" width="512"> | <img src="./gallery/coral_palm.png" width="512"> |
-|--|--|
-| [blues.txt](./orangery/blues.txt) | [coral_palm.txt](./orangery/coral_palm.txt) |
-
-| <img src="./gallery/exotic.png" width="512"> | <img src="./gallery/fire_palm.png" width="512"> |
-|--|--|
-| [exotic.txt](./orangery/exotic.txt) | [fire_palm.txt](./orangery/fire_palm.txt) |
-
-| <img src="./gallery/luminosity.png" width="512"> | <img src="./gallery/orange_tree.png" width="512"> |
-|--|--|
-| [luminosity.txt](./orangery/luminosity.txt) | [orange_tree.txt](./orangery/orange_tree.txt) |
-
-| <img src="./gallery/purple_tree.png" width="512"> | <img src="./gallery/violet.png" width="512"> |
-|--|--|
-| [purple_tree.txt](./orangery/purple_tree.txt) | [violet.txt](./orangery/violet.txt) |
+Галерея з рослинами доступна за посиланням: [Gallery](https://codemorph.xyz/DigitalGarden/)
 
 <!-- toc --><a name="license"></a>
 # 📃 Ліцензія 
