@@ -27,7 +27,7 @@ ___
   * [Generate Plant](#generate-plant)
   * [Smash Plants](#smash-plants)
   * [Mass Smash](#mass-smash)
-- [🏞️ Galler](#gallery)
+- [🏞️ Gallery](#gallery)
 - [📃 License](#license)
 - [💻 Developers](#developers)
 
