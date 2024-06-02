@@ -142,7 +142,7 @@ $ python app
 <!-- TOC --><a name="how-to-usage"></a>
 # 🔥 How to use it?
 
-In this Section you will find detailed information regarding how you can generate plants, combine them, as well as manage them through a file system:
+In this Section you will find detailed information regarding generating plants, combining them, as well as managing them through a file system:
 
 <!-- TOC --><a name="generate-plant"></a>
 ## Generate Plant
