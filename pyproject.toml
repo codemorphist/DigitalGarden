@@ -13,7 +13,6 @@ python = "^3.11"
 plant_generator = { path="./plant_generator/", develop=true }
 tools = {path = "tools", develop=true}
 pillow = "^10.3.0"
-pyperclip = "^1.8.2"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.3"
