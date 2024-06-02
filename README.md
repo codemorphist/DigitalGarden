@@ -55,7 +55,7 @@ ___
 
 Перш за все клонуйте код проєкту та перейдіть в теку з кодом:
 ```bash
-$ git clone https://github.com/codemorphist/DigitalGarden.git
+$ git clone https://github.com/codemorphist/DigitalGarden.git --depth 1
 $ cd DigitalGarden
 ```
 
