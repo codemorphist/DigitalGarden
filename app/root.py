@@ -28,7 +28,6 @@ sys.excepthook = handle_exception
 
 import tkinter as tk
 from tkinter import ttk
-import pyperclip
 from generator_frame import PlantGenerator
 from menu_frame import Menu
 from smash_plant import SmashPlant
@@ -163,4 +162,5 @@ class LogWindow(tk.Toplevel):
 
     def copy_log(self):
         log_text = self.log_field.get(1.0, "end")
-        pyperclip.copy(log_text)
+        self.controller.clipboard_clear()
+        self.controller.clipboard_append(log_text)
