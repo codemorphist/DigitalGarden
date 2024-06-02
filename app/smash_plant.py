@@ -330,8 +330,14 @@ class SmashPlant(ttk.Frame):
         self.heir_frame = HeirGeneratorFrame(self, self)
         self.parent_frame_2 = ParentGeneratorFrame(self, self, 2)
 
+        self.plant_frames = [
+            self.parent_frame_1.plant_frame,
+            self.heir_frame.plant_frame,
+            self.parent_frame_2.plant_frame
+        ]
+
         self.back_button = ttk.Button(self, text="Back",
-            command=lambda: self.controller.show_frame("Menu"))
+                                      command=lambda: self.back())
 
         self.configure_widgets()
 
@@ -340,3 +346,14 @@ class SmashPlant(ttk.Frame):
         self.parent_frame_1.pack(side="left", padx=5)
         self.heir_frame.pack(side="left")
         self.parent_frame_2.pack(side="left", padx=5)
+
+    def back(self):
+        self.controller.show_frame("Menu")
+        for plant_frame in self.plant_frames:
+            plant_frame.pause_drawing()
+
+    def resume(self):
+        for plant_frame in self.plant_frames:
+            plant_frame.resume_drawing()
+
+

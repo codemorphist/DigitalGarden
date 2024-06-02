@@ -72,13 +72,16 @@ class RootWindow(tk.Tk):
         self.title("Digital Garden")
 
         self.geometry("1420x1000")
-        self.minsize(1024, 512)
+        self.minsize(1420, 1000)
   
     def show_frame(self, frame_name: str):
         """
         Display frame passed by parameter
         """
         frame = self.frames[frame_name]
+        if isinstance(frame, (PlantGenerator, SmashPlant, MassSmash)):
+            logger.info(f"Resuming generation on frame: {frame}")
+            frame.resume()
         frame.tkraise()
 
     def setup_log(self):

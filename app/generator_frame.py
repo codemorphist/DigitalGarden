@@ -321,11 +321,18 @@ class PlantFrame(ttk.Frame):
                                           "All the entries have to be filled out with integers")
             logger.exception(e)
 
-    def stop_drawing(self):
-        self.current_drawing.stop()
+    def pause_drawing(self):
+        self.current_drawing.pause()
+
+    def resume_drawing(self):
+        self.current_drawing.resume()
 
     def get_image(self):
         return self.current_drawing.get_image()
+
+    def destroy(self) -> None:
+        self.current_drawing.stop()
+        return super().destroy()
 
 
 class PlantGenerator(ttk.Frame):
@@ -341,12 +348,9 @@ class PlantGenerator(ttk.Frame):
         self.user_frame = UserFrame(self, self)
 
 
-        def back():
-            self.plant_frame.stop_drawing()
-            self.controller.show_frame("Menu")
-        # Back button
+                # Back button
         self.back_button = ttk.Button(self, text="Back",
-                                      command=lambda: back())
+                                      command=lambda: self.back())
         
         self.configure_widgets()
 
@@ -361,5 +365,13 @@ class PlantGenerator(ttk.Frame):
         self.plant_frame.grid(column=0, row=0, padx=20, pady=20)
         self.user_frame.grid(column=1, row=0, padx=20, pady=30)
         self.back_button.place(x=10, y=10)
+
+    def back(self):
+        self.plant_frame.pause_drawing()
+        self.controller.show_frame("Menu")
+
+    def resume(self):
+        self.plant_frame.resume_drawing()
+
 
     
