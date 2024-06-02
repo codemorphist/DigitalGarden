@@ -1,4 +1,3 @@
 pillow==10.3.0
-pyperclip==1.8.1
 ./plant_generator
 ./tools
