@@ -15,64 +15,61 @@ ___
 
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
-# Навігація
+# Navigation
 
-- [🔎 Про проєкт](#about)
-- [🚀 Як запустити?](#how-to-run)
-   * [Залежності](#dependencies)
+- [🔎 About the Project](#about)
+- [🚀 How to run it?](#how-to-run)
+   * [Dependencies](#dependencies)
    * [Poetry](#poetry)
    * [Windows](#windows)
    * [Linux / MacOs](#linux-macos)
-- [🔥 Як використовувати?](#hot-to-usage)
+- [🔥 How to use it?](#hot-to-usage)
   * [Generate Plant](#generate-plant)
   * [Smash Plants](#smash-plants)
   * [Mass Smash](#mass-smash)
-- [🏞️ Галерея](#gallery)
-- [📃 Ліцензія](#license)
-- [💻 Розробники](#developers)
+- [🏞️ Galler](#gallery)
+- [📃 License](#license)
+- [💻 Developers](#developers)
 
 <!-- TOC end -->
 
 ___
 <!-- TOC --><a name="about"></a>
-# 🔎 Про проєкт
+# 🔎 About the Project
 
-**DigitalGarden** — це проєкт для генерації цифрових рослин за допомогою агентів що малюють кола. 
-Окрім генерування власних рослин за геномом ви, також, можете схрещувати раніше згенеровані рослини декількома способами,
-після чого зберігати їх та ділитися своїми результатами.
-
+**DigitalGarden** is a digital plant generator that employs circle-drawing agents. Apart from stand-alone plant generation, you 
+can also combine (i.e. "smash") previously generated plants in a variety of ways, and save/share your findings thereafter.
 ___
 
 <!-- toc --><a name="how-to-run"></a>
-# 🚀 Як запустити?
+# 🚀 How to run it?
 
 <!-- toc --><a name="dependencies"></a>
-## Залежності
-- 🐍 `python >= 3.11`: мова програмування 
-- 🖼️ `Pillow >= 10.3.0`: використовується для малювання рослин
-- 🪴 `plant_generator`: використовується для генерації рослин
-- 🛠️ `tools`: допоміжні інструменти
+## Dependencies
+- 🐍 `python >= 3.11`: the programming language
+- 🖼️ `Pillow >= 10.3.0`: used for drawing plants
+- 🪴 `plant_generator`: used for plant generation
+- 🛠️ `tools`: ancillary instruments
 
-Перш за все клонуйте код проєкту та перейдіть в теку з кодом:
+First of all, clone the project repository and switch to the corresponding directory:
 ```bash
 $ git clone https://github.com/codemorphist/DigitalGarden.git --depth 1
 $ cd DigitalGarden
 ```
 
-Дійте далі відповідно до того яку операційну систему та менеджер пакетів ви використовуєте
+Your further actions will depend upon the operating system and the dependency manager you are using:
 
 <!-- TOC --><a name="poetry"></a>
 ## Poetry
 
-Проєкт використовує менеджер пакетів та залежностей [Poetry](https://python-poetry.org/), 
-тому якщо ви хочете швидко запустити код (незалежно від того, яку операційну систему ви використовуєте) можете встановити **Poetry** і виконати наступні команди:
+The project employs the [Poetry](https://python-poetry.org/) dependency manager; thus, if you wish to run the code quickly, regardless of your operating system, you can download **Poetry** and execute the following:
 
-Встановіть залежності:
+Download the dependencies:
 ```bash
 $ poetry install
 ```
 
-Запустіть проєкт:
+Run the app:
 ```bash
 $ poetry run python app
 ```
@@ -82,28 +79,28 @@ $ poetry run python app
 
 ### pip
 
-Створіть нове віртуальне середовище та встановіть залежності:
+Create a new virtual environment and download the dependencies:
 ```bash
 $ python -m venv venv
 $ .\venv\Scripts\activate
 $ pip install -r requirements.txt
 ```
 
-Запустіть проєкт:
+Run the app:
 ```bash
 $ python app
 ```
 
 ### conda
 
-Якщо ви використовуєте **conda** створіть віртуальне середовище та активуйте його: 
+If you are using **conda**, create a new virtual environment and activate it:
 
 ```bash
 $ conda env create -f environment.yml
 $ conda activate digitalgarden
 ```
 
-Запустіть проєкт:
+Run the app:
 
 ```bash
 $ python app
@@ -114,40 +111,38 @@ $ python app
 
 ### pip
 
-Якщо ви використовуєте **pip**
+If you are using **pip**, create a new virtual environment and download the dependencies:
 
-Створіть нове віртуальне середовище та встановіть залежності:
 ```bash
 $ python -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-Запустіть проєкт:
+Run the app:
 ```bash
 $ python app
 ```
 
 ### conda
 
-Якщо ви використовуєте **conda** створіть віртуальне середовище та активуйте його: 
+If you are using **conda**, create a new virtual environment and activate it:
 
 ```bash
 $ conda env create -f environment.yml
 $ conda activate digitalgarden
 ```
 
-Запустіть проєкт:
+Run the app:
 
 ```bash
 $ python app
 ```
 
 <!-- TOC --><a name="how-to-usage"></a>
-# 🔥 Як використовувати?
+# 🔥 How to use it?
 
-В цій секції ви можете знайти детальну інформацію як генерувати рослини, схрещувати та зберігати їх в окремі файли.
-
+In this Section you will find detailed information regarding how you can generate plants, combine them, as well as manage them through a file system:
 
 <!-- TOC --><a name="generate-plant"></a>
 ## Generate Plant
@@ -158,15 +153,15 @@ $ python app
 
 ![Generate Plant](./resources/generate_plant_screenshoot.png)
 
-1. Канвас, тут буде відображатися згенерована рослина
-2. Прогрес бар, показує на скільки згенерована рослина в поточний момент
-3. Таблиця з геномом
-4. Кнопка імпортування, імпортує геном у файл
-5. Кнопка для генерації випадкового геному
-6. Кнопка експортування, експортує геном з файлу
-7. Кнопка для генерації рослини з анімацією
-8. Кнопка для швидкої генерації рослини
-9. Кнопка для збереження зображення рослини
+1. The canvas; here the generated plant will display
+2. The progress bar; it shows the current stage of plant generation
+3. The genome input table
+4. The import button; it allows for importing genomes from files
+5. The random generation button; it fills out the genome table with random values
+6. The export button; it allows for exporting the genome into a file
+7. The generation button; it launches an animated generation process
+8. The fast generation button; it launches an animationless generation process
+9. The save button; it allows for saving images of the generated plants
 
 </details>
 
@@ -179,16 +174,16 @@ $ python app
 
 ![Smash Plants](./resources/smash_plants_screenshot.png)
 
-1. Канвас з прогрес баром де буде відображатися генерація першого предку 
-2. Канвас з прогрес баром де буде відображатися генерація нащадка
-3. Канвас з прогрес баром де буде відображатися генерація другого предка
-4. Кнопка для імпортування геному предка
-5. Кнопка для генерації предка з анімацією
-6. Кнопка для швидкої генерації предка
-7. Кнопка для вибору метода схрещування
-8. Кнопка для генерації нащадка
-9. Кнопка для експортування геному нащадка 
-10. Кнопка для збереження зображення нащадка
+1. The canvas with a progress bar that will display the first parent
+2. The canvas with a progress bar that will display the child plant
+3. The canvas with a progress bar that will display the second parent
+4. This import button allows for importing a parent genome
+5. This button launches an animated generation process for a parent
+6. This button launches an animationless generation process for a parent
+7. This button opens a window where the genome combination method can be set
+8. This button launches the generation of the child plant
+9. This button allows for exporting the genome of the child plant
+10. This button allows for saving the image of the child plant
 
 </details>
 
@@ -213,24 +208,36 @@ $ python app
 10. Кнопка для експортування отриманого геному нащадка
 11. Кнопка для збереження зображення нащадка 
 
+1. The canvas with a progress bar that will display the child plant
+2. The list of parent genomes (order-sensitive)
+3. This button moves the selected parent genomes one position upward in the list
+4. This button moves the selected parent genomes one position downward in the list
+5. This button allows for importing other parent genomes and adding them to the list
+6. This buttons allows for deleting selected parent genomes from the list
+7. This button opens a window where the genome combination method can be set
+8. This button launches an animated generation of the child plant
+9. This button launches an animationless generation of the child plant
+10. This button allows for exporting the genome of the child plant
+11. This button allows for saving the image of the child plant
+
 </details>
 
 
 <!-- TOC --><a name="gallery"></a>
-# 🏞️ Галерея
+# 🏞️ Gallery
 
-Галерея з рослинами доступна за посиланням: [DigitalGarden Gallery](https://codemorph.xyz/DigitalGarden/)
+The plant gallery is available via [DigitalGarden Gallery](https://codemorph.xyz/DigitalGarden/)
 
 <!-- toc --><a name="license"></a>
 # 📃 Ліцензія 
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Heckert_GNU_white.svg/1024px-Heckert_GNU_white.svg.png" width="100" align="right"></img>
-Код проєкту поширюється під ліцензією **GNU General Public License v3.0**
+The project source code is distributed under the **GNU General Public License v3.0**
 <br>
-Детальніше ознайомитися з текстом ліцензії можна тут: [LICENCE](./LICENSE)
+Further information about the license is to be found via [LICENCE](./LICENSE)
 
 <!-- TOC --><a name="developers"></a>
-# 💻 Розробники
+# 💻 Developers
 
 | <img src="https://avatars.githubusercontent.com/u/112182502?v=4" width="100"> | <img src="https://avatars.githubusercontent.com/u/158076825?v=4" width="100"> |
 |--|--|
