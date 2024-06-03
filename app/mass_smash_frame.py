@@ -67,17 +67,17 @@ class GenomeViewFrame(ttk.Frame):
         genome_files = askopenfilenames()
         if not genome_files:
             return
-        for genome_file_name in genome_files:
-            try:
+        try:
+            for genome_file_name in genome_files:
                 genome = self.genome_unpack(genome_file_name)
                 assert genome
                 self.genome_view.insert(parent="", index = "end", iid=genome_file_name, values=(Path(genome_file_name).stem,))
                 self.genomes_dict[genome_file_name] = genome
                 logger.info(f"Genome {genome_file_name} imported and added to pool")
-            except AssertionError:
-                messagebox.showerror("Error", "Import attempted with an invalid genome:\n"
-                                              "The genome has to be a .txt file with a 20x9 table of \n"
-                                              "integer inputs separated by spaces")
+        except AssertionError:
+            messagebox.showerror("Error", "Import attempted with an invalid genome:\n"
+                                          "The genome has to be a .txt file with a 20x9 table of \n"
+                                          "integer inputs separated by spaces")
 
     def genome_unpack(self, file_name) -> PlantGenom:
         """
