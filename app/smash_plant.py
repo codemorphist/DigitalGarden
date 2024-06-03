@@ -107,7 +107,10 @@ class HeirUserFrame(ttk.Frame):
                                         command=self.open_method_settings)
         self.generate_button = ttk.Button(self,
                                           text="Generate",
-                                          command=self.controller.plant_frame.start_drawing)
+                                          command=lambda: self.controller.plant_frame.start_drawing(False))
+        self.fgenerate_button = ttk.Button(self,
+                                           text="Fast",
+                                           command=lambda: self.controller.plant_frame.start_drawing(True))
         self.export_button = ttk.Button(self,
                                         text="Export",
                                         command=self.genome_pack)
@@ -170,18 +173,21 @@ class HeirUserFrame(ttk.Frame):
             logger.exception(e)
 
     def configure_widgets(self):
-        self.method_button.grid(row=0, column=0, sticky="nsew", padx=10, pady=5)
+        self.method_button.grid(row=0, column=0, columnspan=2, sticky="nsew", padx=10, pady=5)
         self.method_tip = Hovertip(self.method_button, text="Set the method of genome-smashing")
 
-        self.generate_button.grid(row=0, column=1, sticky="nsew", padx=10, pady=5)
+        self.generate_button.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
         self.generate_tip = Hovertip(self.generate_button, text="See what happens!")
 
-        self.export_button.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
+        self.fgenerate_button.grid(row=1, column=1, sticky="nsew", padx=10, pady=5)
+        self.fgenerate_tip = Hovertip(self.fgenerate_button, text="Click for a quick generation")
+
+        self.export_button.grid(row=2, column=0, sticky="nsew", padx=10, pady=5)
         self.export_tip = Hovertip(self.export_button, "Export the genome of \n"
                                                        "the plant last generated \n"
                                                        "in the .txt format (tip: share!)")
 
-        self.save_button.grid(row=1, column=1, sticky="nsew", padx=10, pady=5)
+        self.save_button.grid(row=2, column=1, sticky="nsew", padx=10, pady=5)
         self.save_tip = Hovertip(self.save_button, "Save a picture of your gorgeous plant!")
 
     def open_method_settings(self):
