@@ -4,14 +4,15 @@ logger = logging.getLogger(__name__)
 from abc import ABC, abstractmethod
 
 import os
+import hashlib
 import time
 from threading import Thread, Event, Condition
 import tkinter as tk
 
 from PIL import Image, ImageDraw, ImageTk
-from PIL import ImageEnhance
+from PIL import ImageEnhance, PngImagePlugin
 
-from plant_generator import Plant
+from plant_generator import Plant, PlantGenom
 from tools import Circle, Color, Vec2
 
 
@@ -110,6 +111,22 @@ class Painter(ABC):
         self.canvas.image = ImageTk.PhotoImage(canvas_image)
         self.canvas.create_image(self.width // 2, self.height // 2,
                                  anchor=tk.CENTER, image=self.canvas.image)
+
+    def save(self, path: str):
+        filename = os.path.basename(path)
+        name = os.path.splitext(filename)[0]
+        genom = PlantGenom.export_genom(self.plant.plant_genom)
+        hash_string = name + genom.replace(" ", "/").replace("\n","|")
+        hash = hashlib.sha256(hash_string.encode("utf-8")).hexdigest()
+
+        image = self.get_image() 
+
+        meta = PngImagePlugin.PngInfo()
+        meta.add_text("Plant", name)
+        meta.add_text("Genom", genom)
+        meta.add_text("PlantHash", hash)
+
+        image.save(path, format="PNG", pnginfo=meta)
 
 
 class CustomThread(Thread):

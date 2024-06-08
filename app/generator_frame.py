@@ -235,12 +235,7 @@ class UserFrame(ttk.Frame):
             return
 
         try:
-            plant_image = self.controller.plant_frame.get_image()
-            
-            if plant_image is None:
-                raise Exception("You haven't generated any plant!")
-
-            plant_image.save(host_file, "PNG")
+            self.controller.plant_frame.save_image(host_file)            
             logger.info(f"Saved plant to: {host_file}")
             messagebox.showinfo("Message", "Image saved successfully!")
         except Exception as e:
@@ -327,8 +322,8 @@ class PlantFrame(ttk.Frame):
     def resume_drawing(self):
         self.current_drawing.resume()
 
-    def get_image(self):
-        return self.current_drawing.get_image()
+    def save_image(self, path: str):
+        return self.current_drawing.save(path)
 
     def destroy(self) -> None:
         self.current_drawing.stop()
