@@ -1,7 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
 
-
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -14,6 +13,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageTk
 
 from plant_generator import Plant, PlantGenom, SmashGenom
+from painter import PainterTools
 from generator_frame import PlantFrame
 from tools import Circle, Color, Vec2
 
@@ -84,9 +84,8 @@ class GenomeViewFrame(ttk.Frame):
         This function returns a plant genome from a read file as a PlantGenome
         """
         try:
-            with open(file_name) as file:
-                plant_genome = PlantGenom.import_genom(file.read())
-                return plant_genome
+            genom, *meta = PainterTools.load(file_name)
+            return genom        
         except Exception as e:
             logger.exception(e)
 
@@ -213,12 +212,8 @@ class MassSmashUserFrame(ttk.Frame):
             return
 
         try:
-            plant_image = self.controller.plant_frame.get_image()
-            
-            if plant_image is None:
-                raise Exception("You haven't generated any plant!")
+            self.controller.plant_frame.save_image(host_file)            
 
-            plant_image.save(host_file, "PNG")
             logger.info(f"Saved plant to: {host_file}")
             messagebox.showinfo("Message", "Image saved successfully!")
         except Exception as e:

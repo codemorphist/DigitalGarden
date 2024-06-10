@@ -13,6 +13,7 @@ from copy import deepcopy
 from PIL import Image, ImageDraw, ImageTk
 
 from plant_generator import Plant, PlantGenom
+from painter import PainterTools
 from tools import Circle, Color, Vec2
 from generator_frame import PlantFrame
 
@@ -74,8 +75,7 @@ class ParentUserFrame(ttk.Frame):
             filename = askopenfilename()
             if not filename:  # Exception when user has not chosen any file
                 return
-            with open(filename) as file:
-                self.plant_genome = PlantGenom.import_genom(file.read())
+            self.plant_genome, *meta = PainterTools.load(filename)
             logger.info(f"Imported genome from: {filename}")
             messagebox.showinfo("Message", "Genome imported successfully!")
         except Exception as e:
@@ -160,12 +160,8 @@ class HeirUserFrame(ttk.Frame):
             return
 
         try:
-            plant_image = self.controller.plant_frame.get_image()
-            
-            if plant_image is None:
-                raise Exception("You haven't generated any plant!")
+            self.controller.plant_frame.save_image(host_file) 
 
-            plant_image.save(host_file, "PNG")
             logger.info(f"Saved plant to: {host_file}")
             messagebox.showinfo("Message", "Image saved successfully!")
         except Exception as e:
