@@ -3,7 +3,7 @@ import hashlib
 from plant_generator import PlantGenom
 
 # Load the image with metadata
-image = Image.open("./fdasfda.png")
+image = Image.open("./fdasfe3.png")
 
 # Retrieve the metadata
 metadata = image.info

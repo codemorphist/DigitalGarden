@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -7,6 +9,7 @@ import os
 import hashlib
 import time
 from threading import Thread, Event, Condition
+from datetime import datetime
 import tkinter as tk
 
 from PIL import Image, ImageDraw, ImageTk
@@ -111,22 +114,66 @@ class Painter(ABC):
         self.canvas.image = ImageTk.PhotoImage(canvas_image)
         self.canvas.create_image(self.width // 2, self.height // 2,
                                  anchor=tk.CENTER, image=self.canvas.image)
+    
 
-    def save(self, path: str):
-        filename = os.path.basename(path)
-        name = os.path.splitext(filename)[0]
-        genom = PlantGenom.export_genom(self.plant.plant_genom)
-        hash_string = name + genom.replace(" ", "/").replace("\n","|")
+class PainterTools:
+    @staticmethod
+    def generate_hash(name: str, genom: PlantGenom, time):
+        genom = PlantGenom.export_genom(genom)
+        genom = genom.replace(" ", "/").replace("\n","|")
+        hash_string = "#".join([time, name, genom])
+
         hash = hashlib.sha256(hash_string.encode("utf-8")).hexdigest()
 
-        image = self.get_image() 
+        return hash
+
+    @staticmethod
+    def save(painter: Painter, path: str, name: str = ""):
+
+        if not name:
+            filename = os.path.basename(path)
+            name = os.path.splitext(filename)[0]
+        else:
+            path = os.path.join(path, name)
+
+        time = str(datetime.now())
+
+        genom = PlantGenom.export_genom(painter.plant.plant_genom)
+        hash = PainterTools.generate_hash(
+            name,
+            painter.plant.plant_genom, 
+            time
+        )
+
+        image = painter.get_image() 
 
         meta = PngImagePlugin.PngInfo()
+        meta.add_text("GenerationTime", time)
         meta.add_text("Plant", name)
         meta.add_text("Genom", genom)
         meta.add_text("PlantHash", hash)
 
         image.save(path, format="PNG", pnginfo=meta)
+
+    @staticmethod
+    def load(path: str) -> tuple[PlantGenom, str, str, str]:
+        try:
+            image = Image.open(path)
+            metadata = image.info
+
+            time = metadata["GenerationTime"]
+            name = metadata["Plant"]
+            genom = metadata["Genom"].replace("|", "\n").replace("/", " ")
+            genom = PlantGenom.import_genom(genom)
+            metahash = metadata["PlantHash"] 
+
+            hash = PainterTools.generate_hash(name, genom, time)
+            if hash != metahash:
+                raise Exception("Invalid genom hash")
+
+            return (genom, name, time, hash)
+        except:
+            raise Exception("Invalid metadata or genom")
 
 
 class CustomThread(Thread):

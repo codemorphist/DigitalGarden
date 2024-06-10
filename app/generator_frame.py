@@ -7,7 +7,7 @@ from tkinter import messagebox
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 from idlelib.tooltip import Hovertip
 
-from painter import ThreadPainter
+from painter import ThreadPainter, PainterTools
 
 from plant_generator import Plant, PlantGenom, AgentGenom
 from tools import Vec2
@@ -209,8 +209,8 @@ class UserFrame(ttk.Frame):
             filename = askopenfilename()
             if not filename:  # Exception when user has not chosen any file
                 return
-            with open(filename) as file:
-                genom = PlantGenom.import_genom(file.read())
+
+            genom, *meta = PainterTools.load(filename) 
 
             for c, agent in enumerate(genom.table()):
                 for r, gen in enumerate(agent):
@@ -323,7 +323,7 @@ class PlantFrame(ttk.Frame):
         self.current_drawing.resume()
 
     def save_image(self, path: str):
-        return self.current_drawing.save(path)
+        PainterTools.save(self.current_drawing, path)
 
     def destroy(self) -> None:
         self.current_drawing.stop()
