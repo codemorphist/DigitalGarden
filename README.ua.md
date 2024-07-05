@@ -219,7 +219,7 @@ $ python app
 <!-- TOC --><a name="gallery"></a>
 # 🏞️ Галерея
 
-Галерея з рослинами доступна за посиланням: [DigitalGarden Gallery](https://codemorph.xyz/DigitalGarden/)
+Галерея з рослинами доступна за посиланням: [DigitalGarden Gallery](https://mrph.xyz/DigitalGarden/)
 
 <!-- toc --><a name="license"></a>
 # 📃 Ліцензія 
