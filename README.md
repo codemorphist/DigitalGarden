@@ -214,7 +214,7 @@ In this Section you will find detailed information regarding generating plants, 
 <!-- TOC --><a name="gallery"></a>
 # 🏞️ Gallery
 
-The plant gallery is available via [DigitalGarden Gallery](https://codemorph.xyz/DigitalGarden/)
+The plant gallery is available via [DigitalGarden Gallery](https://mrph.xyz/DigitalGarden/)
 
 <!-- toc --><a name="license"></a>
 # 📃 License
